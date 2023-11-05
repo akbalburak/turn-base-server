@@ -1,4 +1,5 @@
-﻿using TurnBase.Server.Battle.DTO;
+﻿using TurnBase.Server.Battle.Core.Skills;
+using TurnBase.Server.Battle.DTO;
 
 namespace TurnBase.Server.Battle.Models
 {
@@ -10,6 +11,8 @@ namespace TurnBase.Server.Battle.Models
         public int MaxDamage { get; private set; }
 
         public float AttackSpeed { get; private set; }
+        
+        public List<BaseBattleSkill> Skills { get; set; }
 
         protected BattleUnitAttack(
             int health,
@@ -19,9 +22,10 @@ namespace TurnBase.Server.Battle.Models
             float attackSpeed) :
             base(health, position)
         {
-            MinDamage = minDamage;
-            MaxDamage = maxDamage;
-            AttackSpeed = attackSpeed;
+            this.MinDamage = minDamage;
+            this.MaxDamage = maxDamage;
+            this.AttackSpeed = attackSpeed;
+            this.Skills = new List<BaseBattleSkill>();
         }
 
 
@@ -33,6 +37,22 @@ namespace TurnBase.Server.Battle.Models
         public void Attack(BattleUnit attackerUnit, int damage)
         {
             this.ReduceHealth(damage);
+        }
+
+        public void AddSkill(BaseBattleSkill skill)
+        {
+            this.Skills.Add(skill);
+        }
+        public void UseSkill(BattleSkillUseDTO useData)
+        {
+            BaseBattleSkill? skillToUse = this.Skills.Find(x => x.UniqueId == useData.UniqueSkillID);
+            if (skillToUse == null) 
+                return;
+
+            if (!skillToUse.IsSkillReadyToUse())
+                return;
+
+            skillToUse.UseSkill(useData);
         }
     }
 }

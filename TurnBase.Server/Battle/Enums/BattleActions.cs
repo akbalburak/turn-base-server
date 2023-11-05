@@ -5,7 +5,7 @@
         LoadAll = 1,
         IamReady = 2,
         TurnUpdated = 3,
-        PlayerDoAction = 4,
-        Attack = 5
+        UnitBasicAttack = 4,
+        UnitUseSkill = 5
     }
 }

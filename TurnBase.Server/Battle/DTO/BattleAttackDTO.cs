@@ -27,4 +27,10 @@
             this.Damage = damage;
         }
     }
+
+    public class BattleAttackRequestDTO
+    {
+        public int TargetID { get; set; }
+        public int SkillID { get; set; }
+    }
 }

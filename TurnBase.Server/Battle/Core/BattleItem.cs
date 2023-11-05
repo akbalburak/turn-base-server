@@ -1,15 +1,13 @@
-﻿using TurnBase.Server.Battle.DTO;
+﻿using TurnBase.Server.Battle.Core.Skills;
+using TurnBase.Server.Battle.DTO;
 using TurnBase.Server.Battle.Enums;
 using TurnBase.Server.Battle.Models;
-using TurnBase.Server.Enums;
 using TurnBase.Server.ServerModels;
 
 namespace TurnBase.Server.Battle.Core
 {
     public class BattleItem : IDisposable
     {
-        private int _unitIdCounter;
-        private int _dataIdCounter;
         private bool _gameStarted;
 
         private BattleLevelData _levelData;
@@ -23,6 +21,10 @@ namespace TurnBase.Server.Battle.Core
 
         private BattleWave[] _waves;
         private BattleWave _currentWave;
+
+        private int _skillIdCounter;
+        private int _unitIdCounter;
+        private int _dataIdCounter;
 
         private bool _disposed;
 
@@ -44,17 +46,19 @@ namespace TurnBase.Server.Battle.Core
                 foreach (BattleNpcUnit unit in wave.Units)
                 {
                     unit.SetId(++_unitIdCounter);
+                    unit.SetTeam(2);
                 }
             }
 
             // WE CREATE IDS FOR USERS.
             foreach (BattleUser user in _users)
+            {
                 user.SetId(++_unitIdCounter);
+                user.AddSkill(new BattleDoubleSlashSkill(++_skillIdCounter, this, user));
+                user.SetTeam(1);
+            }
 
-            _turnHandler = new BattleTurnHandler(
-                users,
-                _currentWave.Units
-            );
+            _turnHandler = new BattleTurnHandler(this, users, _currentWave.Units);
         }
 
         public void Dispose()
@@ -77,8 +81,11 @@ namespace TurnBase.Server.Battle.Core
                     break;
                 case BattleActions.TurnUpdated:
                     break;
-                case BattleActions.PlayerDoAction:
-                    PlayerDoAnAction(socketUser);
+                case BattleActions.UnitBasicAttack:
+                    PlayerBasicAttack(socketUser, requestData);
+                    break;
+                case BattleActions.UnitUseSkill:
+                    PlayerUseSkill(socketUser, requestData);
                     break;
             }
         }
@@ -89,39 +96,53 @@ namespace TurnBase.Server.Battle.Core
             _turnHandler.SkipToNextTurn();
             BattleTillAnyPlayerTurn();
         }
-        private void PlayerDoAnAction(SocketUser user)
+        private void PlayerUseSkill(SocketUser socketUser, BattleActionRequestDTO requestData)
         {
-            // DO ATTACK STUFFS OR OTHER SKILLS.
-            var currentUnit = _turnHandler.GetCurrentTurnUnit();
-            if (currentUnit is not BattleUser)
+            BattleSkillUseDTO useData = requestData.GetRequestData<BattleSkillUseDTO>();
+
+            // WE GET THE PLAYER.
+            BattleUser currentUser = GetUser(socketUser);
+            if (currentUser == null)
                 return;
 
-            BattleUser currentUser = currentUnit as BattleUser;
-            if (user != currentUser?.SocketUser)
+            // MAKE SURE PLAYER TURN.
+            if (!_turnHandler.IsUnitTurn(currentUser))
+                return;
+
+            currentUser.UseSkill(useData);
+        }
+        private void PlayerBasicAttack(SocketUser socketUser, BattleActionRequestDTO requestData)
+        {
+            // WE GET THE PLAYER.
+            BattleUser currentUser = GetUser(socketUser);
+            if (currentUser == null)
+                return;
+
+            // MAKE SURE PLAYER TURN.
+            if (!_turnHandler.IsUnitTurn(currentUser))
                 return;
 
             // WE GET A RANDOM ENEMY.
-            BattleNpcUnit firstEnemyToAttack = _currentWave.Units.FirstOrDefault(x=> !x.IsDeath);
-            if (firstEnemyToAttack == null)
+            BattleAttackUseDTO attackUseData = requestData.GetRequestData<BattleAttackUseDTO>();
+            BattleUnitAttack targetEnemy = (BattleUnitAttack)GetUnit(attackUseData.TargetUniqueId);
+            if (targetEnemy == null)
                 return;
 
             // ATTACK TO PLAYER.
-            int damage = currentUser.GetDamage(firstEnemyToAttack);
-            firstEnemyToAttack.Attack(currentUser, damage);
+            int damage = currentUser.GetDamage(targetEnemy);
+            targetEnemy.Attack(currentUser, damage);
 
             // WE WILL SEND THE DAMAGE DATA.
             BattleAttackDTO attackData = new BattleAttackDTO();
             attackData.AddAttack(
                 new BattleAttackItemDTO(currentUser.Id,
-                    firstEnemyToAttack.Id,
+                    targetEnemy.Id,
                     damage
                 )
             );
-            SendToAllUsers(BattleActions.Attack, attackData);
+            SendToAllUsers(BattleActions.UnitBasicAttack, attackData);
 
-            // FINALLY WE SKIP TO NEXT PLAYER.
-            _turnHandler.SkipToNextTurn();
-            BattleTillAnyPlayerTurn();
+            EndTurn();
         }
         private void BattleTillAnyPlayerTurn()
         {
@@ -130,7 +151,7 @@ namespace TurnBase.Server.Battle.Core
             while (currentTurnUnit is not BattleUser)
             {
                 // WE GET A RANDOM ENEMY.
-                BattleUser firstUserToAttack = _users.FirstOrDefault(x=> !x.IsDeath);
+                BattleUser firstUserToAttack = _users.FirstOrDefault(x => !x.IsDeath);
                 if (firstUserToAttack == null)
                     break;
 
@@ -146,7 +167,7 @@ namespace TurnBase.Server.Battle.Core
                         damage
                     )
                 );
-                SendToAllUsers(BattleActions.Attack, attackData);
+                SendToAllUsers(BattleActions.UnitBasicAttack, attackData);
 
                 // FINALIZE UNIT TURN AND SKIP TO NEXT UNIT.
                 _turnHandler.SkipToNextTurn();
@@ -170,7 +191,8 @@ namespace TurnBase.Server.Battle.Core
                         Position = z.Position,
                         MaxHealth = z.MaxHealth,
                         IsDead = z.IsDeath,
-                        UnitId = z.UnitId
+                        UnitId = z.UnitId,
+                        TeamIndex = z.TeamIndex
                     }).ToArray()
                 }).ToArray(),
                 Players = _users.Select(z => new BattlePlayerDTO
@@ -184,14 +206,22 @@ namespace TurnBase.Server.Battle.Core
                     IsRealPlayer = z.SocketUser == socketUser,
                     PlayerName = z.PlayerName,
                     MaxHealth = z.MaxHealth,
-                    IsDead = z.IsDeath
+                    IsDead = z.IsDeath,
+                    TeamIndex = z.TeamIndex,
+                    Skills = z.Skills.Select(v => new BattleSkillDTO
+                    {
+                        LeftTurnToUse = v.LeftTurnToUse,
+                        UniqueID = v.UniqueId,
+                        Skill = v.Skill,
+                        TurnCooldown = v.TurnCooldown,
+                    }).ToArray()
                 }).ToArray()
             };
 
             SendToUser(socketUser, BattleActions.LoadAll, loadData);
         }
 
-        private void SendToAllUsers(BattleActions battleAction, object data)
+        public void SendToAllUsers(BattleActions battleAction, object data)
         {
             SocketResponse dataToSend = BattleActionResponseDTO.GetSuccess(
                 ++_dataIdCounter,
@@ -207,7 +237,7 @@ namespace TurnBase.Server.Battle.Core
                 user.SocketUser.AddToUnExpectedAfterSendIt(dataToSend);
             }
         }
-        private void SendToUser(SocketUser user, BattleActions battleAction, object data)
+        public void SendToUser(SocketUser user, BattleActions battleAction, object data)
         {
             SocketResponse dataToSend = BattleActionResponseDTO.GetSuccess(
                 ++_dataIdCounter,
@@ -216,6 +246,34 @@ namespace TurnBase.Server.Battle.Core
             );
 
             user.AddToUnExpectedAfterSendIt(dataToSend);
+        }
+
+        public BattleUser GetUser(SocketUser socketUser)
+        {
+            return _users.FirstOrDefault(y => y.SocketUser == socketUser);
+        }
+        public BattleUnit GetUnit(int targetUnitID)
+        {
+            BattleUser? user = _users.FirstOrDefault(y => y.Id == targetUnitID);
+            if (user != null)
+                return user;
+
+            BattleNpcUnit unit = _currentWave.Units.FirstOrDefault(y => y.Id == targetUnitID);
+            if (unit != null)
+                return unit;
+
+            return null;
+        }
+        public BattleUnit GetAliveEnemyUnit(BattleUnit owner)
+        {
+            return _currentWave.Units.OrderBy(y => Guid.NewGuid())
+                .FirstOrDefault(y => !y.IsDeath && y.Id != owner.Id);
+        }
+
+        public void EndTurn()
+        {
+            _turnHandler.SkipToNextTurn();
+            BattleTillAnyPlayerTurn();
         }
     }
 }

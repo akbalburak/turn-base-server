@@ -12,5 +12,12 @@ namespace TurnBase.Server.Battle.DTO
         [JsonProperty("F")] public int MinDamage { get; set; }
         [JsonProperty("G")] public int MaxDamage { get; set; }
         [JsonProperty("H")] public float AttackSpeed { get; set; }
+        [JsonProperty("I")] public BattleSkillDTO[] Skills { get; set; }
+        [JsonProperty("J")] public int TeamIndex { get; set; }
+
+        public BattleUnitDTO()
+        {
+            Skills = Array.Empty<BattleSkillDTO>();
+        }
     }
 }

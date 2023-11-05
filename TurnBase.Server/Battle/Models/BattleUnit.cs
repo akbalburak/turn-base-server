@@ -2,6 +2,7 @@
 {
     public abstract class BattleUnit
     {
+        public int TeamIndex { get; set; }
         public int Id { get; private set; }
         public int MaxHealth { get; }
         public int Health { get; private set; }
@@ -15,6 +16,10 @@
             Position = position;
         }
 
+        public void SetTeam(int teamIndex)
+        {
+            this.TeamIndex = teamIndex;
+        }
         public void SetId(int id) { Id = id; }
         public void ReduceHealth(int reduction)
         {
@@ -26,6 +31,12 @@
         public void Kill()
         {
             this.IsDeath = true;
+        }
+
+        public Action OnTurnStart;
+        public void CallTurnStart()
+        {
+            OnTurnStart?.Invoke();
         }
     }
 }

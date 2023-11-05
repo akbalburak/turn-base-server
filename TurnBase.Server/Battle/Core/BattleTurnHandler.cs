@@ -8,15 +8,20 @@ namespace TurnBase.Server.Battle.Core
 {
     public class BattleTurnHandler
     {
-        private int _idCounter = 99;
+        private BattleItem _battle;
         private BattleUnitAttack[] _npcUnits;
         private BattleUnitAttack[] _playerUnits;
         private List<BattleTurnItem> _attackTurns;
         private BattleTurnItem _currentTurn;
         private BattleTurnDTO _lastSentTurnData;
 
-        public BattleTurnHandler(BattleUnitAttack[] players, BattleUnitAttack[] battleUnits)
+        public BattleTurnHandler(
+            BattleItem battle,
+            BattleUnitAttack[] players, 
+            BattleUnitAttack[] battleUnits)
         {
+            this._battle = battle;
+
             _attackTurns = new List<BattleTurnItem>();
             _lastSentTurnData = new BattleTurnDTO();
 
@@ -26,6 +31,10 @@ namespace TurnBase.Server.Battle.Core
             CalculateAttacks();
         }
 
+        public bool IsUnitTurn(BattleUnitAttack unit)
+        {
+            return GetCurrentTurnUnit() == unit;
+        }
         public BattleUnitAttack GetCurrentTurnUnit()
         {
             return _currentTurn?.Unit;
@@ -35,7 +44,8 @@ namespace TurnBase.Server.Battle.Core
         {
             _currentTurn?.UpdateNextAttack();
 
-            _currentTurn = _attackTurns.OrderBy(y => y.NextAttackTurn)
+            _currentTurn = _attackTurns
+                .OrderBy(y => y.NextAttackTurn)
                 .FirstOrDefault(x=> !x.Unit.IsDeath);
 
             if (_currentTurn == null)
@@ -45,20 +55,9 @@ namespace TurnBase.Server.Battle.Core
             _lastSentTurnData.UnitId = _currentTurn.Unit.Id;
 
             // TURN CHANGED DATA.
-            SocketResponse actionData = BattleActionResponseDTO.GetSuccess(
-                ++_idCounter,
-                BattleActions.TurnUpdated,
-                _lastSentTurnData
-            );
+            _battle.SendToAllUsers(BattleActions.TurnUpdated, _lastSentTurnData);
 
-            // WE SENT ALL THE PLAYERS WHOSE TURN.
-            foreach (BattleUser player in _playerUnits)
-            {
-                if (!player.IsConnected)
-                    continue;
-
-                player.SocketUser.AddToUnExpectedAfterSendIt(actionData);
-            }
+            _currentTurn.Unit.CallTurnStart();
         }
 
         private void CalculateAttacks()
