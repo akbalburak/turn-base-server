@@ -12,13 +12,12 @@ namespace TurnBase.Server.Battle
 
         public BattleUser(SocketUser user,
             string playerName,
-            int id,
             int health,
             int position,
             int minDamage,
             int maxDamage,
             float attackSpeed)
-            : base(id, health, position, minDamage, maxDamage, attackSpeed)
+            : base(health, position, minDamage, maxDamage, attackSpeed)
         {
             this.SocketUser = user;
             this.PlayerName = playerName;

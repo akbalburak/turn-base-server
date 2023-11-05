@@ -12,13 +12,12 @@ namespace TurnBase.Server.Battle.Models
         public float AttackSpeed { get; private set; }
 
         protected BattleUnitAttack(
-            int id,
             int health,
             int position,
             int minDamage,
             int maxDamage,
             float attackSpeed) :
-            base(id, health, position)
+            base(health, position)
         {
             MinDamage = minDamage;
             MaxDamage = maxDamage;

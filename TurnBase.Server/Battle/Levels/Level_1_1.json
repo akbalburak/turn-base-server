@@ -9,7 +9,7 @@
           "Units": [
             {
               "Position": 0,
-              "Unit": 1,
+              "UnitId": 1,
               "Health": 6,
               "MinDamage": 1,
               "MaxDamage": 3,
@@ -17,7 +17,7 @@
             },
             {
               "Position": 1,
-              "Unit": 1,
+              "UnitId": 1,
               "Health": 6,
               "MinDamage": 1,
               "MaxDamage": 3,

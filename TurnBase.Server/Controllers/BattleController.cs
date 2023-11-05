@@ -21,7 +21,6 @@ namespace TurnBase.Server.Controllers
                     new BattleUser(
                         user: smp.SocketUser,
                         playerName: smp.SocketUser.User.UserName,
-                        id: 99,
                         health: 50,
                         position: 0,
                         minDamage: 1,

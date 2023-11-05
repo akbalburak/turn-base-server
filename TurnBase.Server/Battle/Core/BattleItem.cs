@@ -8,7 +8,8 @@ namespace TurnBase.Server.Battle.Core
 {
     public class BattleItem : IDisposable
     {
-        private int _idCounter;
+        private int _unitIdCounter;
+        private int _dataIdCounter;
         private bool _gameStarted;
 
         private BattleLevelData _levelData;
@@ -36,6 +37,19 @@ namespace TurnBase.Server.Battle.Core
 
             _waves = _difficulityData.Waves.ToArray();
             _currentWave = _waves[0];
+
+            // WE CREATE IDS FOR UNITS.
+            foreach (BattleWave wave in _waves)
+            {
+                foreach (BattleNpcUnit unit in wave.Units)
+                {
+                    unit.SetId(++_unitIdCounter);
+                }
+            }
+
+            // WE CREATE IDS FOR USERS.
+            foreach (BattleUser user in _users)
+                user.SetId(++_unitIdCounter);
 
             _turnHandler = new BattleTurnHandler(
                 users,
@@ -150,18 +164,18 @@ namespace TurnBase.Server.Battle.Core
                     {
                         AttackSpeed = z.AttackSpeed,
                         Health = z.Health,
-                        Id = z.Id,
+                        UniqueId = z.Id,
                         MaxDamage = z.MaxDamage,
                         MinDamage = z.MinDamage,
                         Position = z.Position,
-                        Unit = z.UnitType,
                         MaxHealth = z.MaxHealth,
-                        IsDead = z.IsDeath
+                        IsDead = z.IsDeath,
+                        UnitId = z.UnitId
                     }).ToArray()
                 }).ToArray(),
                 Players = _users.Select(z => new BattlePlayerDTO
                 {
-                    Id = z.Id,
+                    UniqueId = z.Id,
                     AttackSpeed = z.AttackSpeed,
                     Health = z.Health,
                     MaxDamage = z.MaxDamage,
@@ -180,7 +194,7 @@ namespace TurnBase.Server.Battle.Core
         private void SendToAllUsers(BattleActions battleAction, object data)
         {
             SocketResponse dataToSend = BattleActionResponseDTO.GetSuccess(
-                ++_idCounter,
+                ++_dataIdCounter,
                 battleAction,
                 data
             );
@@ -196,7 +210,7 @@ namespace TurnBase.Server.Battle.Core
         private void SendToUser(SocketUser user, BattleActions battleAction, object data)
         {
             SocketResponse dataToSend = BattleActionResponseDTO.GetSuccess(
-                ++_idCounter,
+                ++_dataIdCounter,
                 battleAction,
                 data
             );

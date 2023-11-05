@@ -8,9 +8,8 @@
         public int Position { get; private set; }
         public bool IsDeath { get; set; }
 
-        protected BattleUnit(int id, int health, int position)
+        protected BattleUnit(int health, int position)
         {
-            Id = id;
             MaxHealth = health;
             Health = health;
             Position = position;
