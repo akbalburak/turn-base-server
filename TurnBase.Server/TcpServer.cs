@@ -43,9 +43,6 @@ namespace TurnBase.Server
 
         public static void WriteLog(string data, string error)
         {
-            if (!LogUserAction)
-                return;
-
             Console.WriteLine($"{DateTime.Now} - {data} -> {error}");
         }
     }

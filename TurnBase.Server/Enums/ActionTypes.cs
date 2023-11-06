@@ -7,5 +7,6 @@
         UserLevels = 3,
         StartBattle = 4,
         ExecuteBattleAction = 5,
+        Ping = 6,
     }
 }

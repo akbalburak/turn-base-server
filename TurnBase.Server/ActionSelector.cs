@@ -27,6 +27,9 @@ namespace TurnBase.Server
                     case Enums.ActionTypes.ExecuteBattleAction:
                         response = BattleController.ExecuteActionInBattle(smp);
                         break;
+                    case Enums.ActionTypes.Ping:
+                        response = PingController.Ping(smp);
+                        break;
                     default:
                         Console.WriteLine("Methot Bulunamadı");
                         response = null;
