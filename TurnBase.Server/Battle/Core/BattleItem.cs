@@ -8,7 +8,12 @@ namespace TurnBase.Server.Battle.Core
 {
     public class BattleItem : IDisposable
     {
+        public bool IsDisposed => _disposed;
+        public Action<BattleItem> OnDisposed;
+
         private bool _gameStarted;
+        private bool _gameOver;
+        private bool _winnerTeam;
 
         private BattleLevelData _levelData;
 
@@ -22,6 +27,8 @@ namespace TurnBase.Server.Battle.Core
         private BattleWave[] _waves;
         private BattleWave _currentWave;
 
+        private List<BattleUnit> _allUnits;
+
         private int _skillIdCounter;
         private int _unitIdCounter;
         private int _dataIdCounter;
@@ -32,6 +39,8 @@ namespace TurnBase.Server.Battle.Core
             BattleLevelData levelData,
             BattleLevels difficulity)
         {
+            _allUnits = new List<BattleUnit>();
+
             _users = users;
 
             _levelData = levelData;
@@ -58,6 +67,10 @@ namespace TurnBase.Server.Battle.Core
                 user.SetTeam(1);
             }
 
+            // WE COMBINE ALL THE UNITS.
+            _allUnits.AddRange(_currentWave.Units);
+            _allUnits.AddRange(_users);
+
             _turnHandler = new BattleTurnHandler(this, users, _currentWave.Units);
         }
 
@@ -67,10 +80,17 @@ namespace TurnBase.Server.Battle.Core
                 return;
 
             _disposed = true;
+            _gameOver = true;
+
+            OnDisposed?.Invoke(this);
         }
 
         public void ExecuteAction(SocketUser socketUser, BattleActionRequestDTO requestData)
         {
+            // IF THE GAME IS OVER NO LONGER ACTIONS CAN BE EXECUTED.
+            if (_gameOver)
+                return;
+
             switch (requestData.BattleAction)
             {
                 case BattleActions.LoadAll:
@@ -174,7 +194,6 @@ namespace TurnBase.Server.Battle.Core
                 currentTurnUnit = _turnHandler.GetCurrentTurnUnit();
             }
         }
-
         private void SendAllReqDataToClient(SocketUser socketUser, BattleActionRequestDTO requestData)
         {
             BattleLoadAllDTO loadData = new BattleLoadAllDTO()
@@ -267,13 +286,98 @@ namespace TurnBase.Server.Battle.Core
         public BattleUnit GetAliveEnemyUnit(BattleUnit owner)
         {
             return _currentWave.Units.OrderBy(y => Guid.NewGuid())
-                .FirstOrDefault(y => !y.IsDeath && y.Id != owner.Id);
+                .FirstOrDefault(y => !y.IsDeath && y.TeamIndex != owner.TeamIndex);
         }
 
         public void EndTurn()
         {
+            CheckWaveEnd();
+
+            if (_gameOver)
+                return;
+
             _turnHandler.SkipToNextTurn();
             BattleTillAnyPlayerTurn();
+        }
+
+        private void CheckWaveEnd()
+        {
+            int team1AliveUnitCount = _allUnits.Count(x => !x.IsDeath && x.TeamIndex == 1);
+            int team2AliveUnitCount = _allUnits.Count(x => !x.IsDeath && x.TeamIndex == 2);
+
+            // IF THERE IS AN ALIVE UNIT FOR BOTH TEAM..
+            if (team1AliveUnitCount > 0 && team2AliveUnitCount > 0)
+                return;
+
+            // WE WILL CHECK IF THIS IS THE LAST WAVE.
+            int waveIndex = Array.IndexOf(_waves, _currentWave);
+            bool isLastWave = waveIndex >= _waves.Length - 1;
+
+            // WHEN TWO TEAM LOSES ALL THEIR UNITS.
+            if (team1AliveUnitCount == 0 && team2AliveUnitCount == 0)
+            {
+                BattleEndDTO drawData = new BattleEndDTO(BattleEndSates.Lose);
+                SendToAllUsers(BattleActions.BattleEnd, drawData);
+                Dispose();
+                return;
+            }
+
+            // IF NOT THE LAST WAVE WE WE START A NEW WAVE.
+            if (!isLastWave)
+            {
+                // IF ALL PLAYERS DIED FINALIZE THE GAME.
+                if (Array.TrueForAll(_users, x => x.IsDeath))
+                {
+                    BattleEndDTO drawData = new BattleEndDTO(BattleEndSates.Lose);
+                    SendToAllUsers(BattleActions.BattleEnd, drawData);
+                    Dispose();
+                    return;
+                }
+
+                StartWave(waveIndex + 1);
+                return;
+            }
+
+            // MEANS ONE OF THE TEAMS IS DEFEATED.
+            if (team1AliveUnitCount > 0)
+            {
+                // TEAM 1 WON.
+                BattleEndDTO team1EndData = new BattleEndDTO(BattleEndSates.Win);
+                team1EndData.WinnerTeam = 1;
+                SendToAllUsers(BattleActions.BattleEnd, team1EndData);
+                Dispose();
+                return;
+            }
+
+            // MEANS ONE OF THE TEAMS IS DEFEATED.
+            if (team2AliveUnitCount > 0)
+            {
+                // TEAM 2 WON.
+                BattleEndDTO team1EndData = new BattleEndDTO(BattleEndSates.Win);
+                team1EndData.WinnerTeam = 2;
+                SendToAllUsers(BattleActions.BattleEnd, team1EndData);
+                Dispose();
+                return;
+            }
+        }
+
+        private void StartWave(int waveIndex)
+        {
+            // WE REMOVE OLDER WAVE UNITS.
+            if (_currentWave != null)
+            {
+                _allUnits.RemoveAll(y => _currentWave.Units.Contains(y));
+                _turnHandler.RemoveUnits(_currentWave.Units);
+            }
+
+            // WE ASSIGN THE NEW UNITS.
+            _currentWave = _waves[waveIndex];
+            _allUnits.AddRange(_currentWave.Units);
+
+            // WE TELL ALL THE PLAYERS THE NEW WAVE STARTED.
+            SendToAllUsers(BattleActions.NewWaveStarted, new BattleWaveChangeDTO(waveIndex));
+
+            _turnHandler.AddUnits(_currentWave.Units);
         }
     }
 }

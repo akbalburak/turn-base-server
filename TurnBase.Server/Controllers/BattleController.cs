@@ -10,7 +10,7 @@ namespace TurnBase.Server.Controllers
     {
         public static SocketResponse StartABattle(SocketMethodParameter smp)
         {
-            if (smp.SocketUser.CurrentBattle != null)
+            if (smp.SocketUser.CurrentBattle != null && !smp.SocketUser.CurrentBattle.IsDisposed)
                 return SocketResponse.GetError("YOU ARE ALREADY IN A MATCH!");
 
             BattleDTO.BattleRequestDTO requestData = smp

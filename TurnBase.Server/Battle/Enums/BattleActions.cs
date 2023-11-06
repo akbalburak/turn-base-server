@@ -6,6 +6,8 @@
         IamReady = 2,
         TurnUpdated = 3,
         UnitBasicAttack = 4,
-        UnitUseSkill = 5
+        UnitUseSkill = 5,
+        BattleEnd = 6,
+        NewWaveStarted = 7
     }
 }

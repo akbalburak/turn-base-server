@@ -15,6 +15,7 @@ namespace TurnBase.Server.Battle.Services
                 return;
 
             BattleItem battle = new BattleItem(users, levelData, Enums.BattleLevels.Normal);
+            battle.OnDisposed += OnBattleDiposed;
 
             foreach (BattleUser user in users)
                 user.SocketUser.SetBattle(battle);
@@ -24,5 +25,11 @@ namespace TurnBase.Server.Battle.Services
             _rwls.ExitWriteLock();
         }
 
+        private static void OnBattleDiposed(BattleItem battleItem)
+        {
+            _rwls.EnterWriteLock();
+            _battles.Remove(battleItem);
+            _rwls.ExitWriteLock();
+        }
     }
 }

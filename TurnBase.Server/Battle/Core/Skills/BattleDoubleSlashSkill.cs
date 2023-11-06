@@ -17,16 +17,16 @@ namespace TurnBase.Server.Battle.Core.Skills
             base.UseSkill(useData);
 
             // WE ARE LOOKING FOR THE TARGET.
-            BattleUnit unit = Battle.GetUnit(useData.TargetUnitID);
-            if (unit == null || unit.IsDeath)
+            BattleUnit targetUnit = Battle.GetUnit(useData.TargetUnitID);
+            if (targetUnit == null || targetUnit.IsDeath)
             {
                 // WE ARE LOOKING FOR A RANDOM ENEMY TO ATTACK.
-                unit = Battle.GetAliveEnemyUnit(Owner);
-                if (unit == null)
+                targetUnit = Battle.GetAliveEnemyUnit(Owner);
+                if (targetUnit == null)
                     return;
             }
 
-            if (unit is not BattleUnitAttack defender)
+            if (targetUnit is not BattleUnitAttack defender)
                 return;
 
             if (Owner is not BattleUnitAttack attacker)

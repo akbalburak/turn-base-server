@@ -10,11 +10,15 @@
             {
               "Position": 0,
               "UnitId": 1,
-              "Health": 6,
+              "Health": 1,
               "MinDamage": 1,
               "MaxDamage": 3,
               "AttackSpeed": 1
-            },
+            }
+          ]
+        },
+        {
+          "Units": [
             {
               "Position": 1,
               "UnitId": 1,
