@@ -3,7 +3,7 @@ using TurnBase.Server.Battle.Models;
 
 namespace TurnBase.Server.Battle
 {
-    public class BattleNpcUnit : BattleUnitAttack
+    public class BattleNpcUnit : BattleUnit
     {
         public int UnitId { get; }
         public BattleNpcUnit(int unitId, int health,

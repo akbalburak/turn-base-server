@@ -144,13 +144,13 @@ namespace TurnBase.Server.Battle.Core
 
             // WE GET A RANDOM ENEMY.
             BattleAttackUseDTO attackUseData = requestData.GetRequestData<BattleAttackUseDTO>();
-            BattleUnitAttack targetEnemy = (BattleUnitAttack)GetUnit(attackUseData.TargetUniqueId);
+            BattleUnit targetEnemy = GetUnit(attackUseData.TargetUniqueId);
             if (targetEnemy == null)
                 return;
 
             // ATTACK TO PLAYER.
             int damage = currentUser.GetDamage(targetEnemy);
-            targetEnemy.Attack(currentUser, damage);
+            currentUser.AttackTo(targetEnemy, damage);
 
             // WE WILL SEND THE DAMAGE DATA.
             BattleAttackDTO attackData = new BattleAttackDTO();
@@ -167,32 +167,31 @@ namespace TurnBase.Server.Battle.Core
         private void BattleTillAnyPlayerTurn()
         {
             // WE LOOP TILL PLAYER TURN.
-            BattleUnitAttack currentTurnUnit = _turnHandler.GetCurrentTurnUnit();
-            while (currentTurnUnit is not BattleUser)
-            {
-                // WE GET A RANDOM ENEMY.
-                BattleUser firstUserToAttack = _users.FirstOrDefault(x => !x.IsDeath);
-                if (firstUserToAttack == null)
-                    break;
+            BattleUnit attacker = _turnHandler.GetCurrentTurnUnit();
+            if (attacker is BattleUser)
+                return;
 
-                // ATTACK TO PLAYER.
-                int damage = currentTurnUnit.GetDamage(firstUserToAttack);
-                firstUserToAttack.Attack(currentTurnUnit, damage);
+            // WE GET A RANDOM ENEMY.
+            BattleUnit defender = _allUnits.Find(x => x.TeamIndex != attacker.TeamIndex && !x.IsDeath);
+            if (defender == null)
+                return;
 
-                // WE WILL SEND THE DAMAGE DATA.
-                BattleAttackDTO attackData = new BattleAttackDTO();
-                attackData.AddAttack(
-                    new BattleAttackItemDTO(currentTurnUnit.Id,
-                        firstUserToAttack.Id,
-                        damage
-                    )
-                );
-                SendToAllUsers(BattleActions.UnitBasicAttack, attackData);
+            // ATTACK TO PLAYER.
+            int damage = attacker.GetDamage(defender);
+            attacker.AttackTo(defender, damage);
 
-                // FINALIZE UNIT TURN AND SKIP TO NEXT UNIT.
-                _turnHandler.SkipToNextTurn();
-                currentTurnUnit = _turnHandler.GetCurrentTurnUnit();
-            }
+            // WE WILL SEND THE DAMAGE DATA.
+            BattleAttackDTO attackData = new BattleAttackDTO();
+            attackData.AddAttack(
+                new BattleAttackItemDTO(attacker.Id,
+                    defender.Id,
+                    damage
+                )
+            );
+            SendToAllUsers(BattleActions.UnitBasicAttack, attackData);
+
+            // FINALIZE UNIT TURN AND SKIP TO NEXT UNIT.
+            EndTurn();
         }
         private void SendAllReqDataToClient(SocketUser socketUser, BattleActionRequestDTO requestData)
         {
@@ -291,16 +290,19 @@ namespace TurnBase.Server.Battle.Core
 
         public void EndTurn()
         {
-            CheckWaveEnd();
+            // WE FIRST CHECK THE GAME END.
+            CheckGameEnd();
 
+            // WE CHECK IF THE GAME IS OVER.
             if (_gameOver)
                 return;
 
+            // IF NOT OVER WE CAN SKIP TO NEXT TURN.
             _turnHandler.SkipToNextTurn();
             BattleTillAnyPlayerTurn();
         }
 
-        private void CheckWaveEnd()
+        private void CheckGameEnd()
         {
             int team1AliveUnitCount = _allUnits.Count(x => !x.IsDeath && x.TeamIndex == 1);
             int team2AliveUnitCount = _allUnits.Count(x => !x.IsDeath && x.TeamIndex == 2);

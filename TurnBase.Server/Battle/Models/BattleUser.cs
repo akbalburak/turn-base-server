@@ -3,7 +3,7 @@ using TurnBase.Server.ServerModels;
 
 namespace TurnBase.Server.Battle
 {
-    public class BattleUser : BattleUnitAttack
+    public class BattleUser : BattleUnit
     {
         public bool IsReady { get; private set; }
         public SocketUser SocketUser { get; private set; }

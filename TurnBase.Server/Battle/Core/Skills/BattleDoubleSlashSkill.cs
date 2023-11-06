@@ -26,26 +26,20 @@ namespace TurnBase.Server.Battle.Core.Skills
                     return;
             }
 
-            if (targetUnit is not BattleUnitAttack defender)
-                return;
-
-            if (Owner is not BattleUnitAttack attacker)
-                return;
-
             BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(
                 Owner.Id,
                 base.UniqueId,
                 Skill);
 
             // WE DO THE FIRST SLASH.
-            int damage = attacker.GetDamage(defender);
-            defender.Attack(Owner, damage);
-            usageData.AddToDamage(defender.Id, damage);
+            int damage = Owner.GetDamage(targetUnit);
+            Owner.AttackTo(targetUnit, damage);
+            usageData.AddToDamage(targetUnit.Id, damage);
 
             // WE DO THE SECOND SLASH.
-            damage = attacker.GetDamage(defender);
-            defender.Attack(Owner, damage);
-            usageData.AddToDamage(defender.Id, damage);
+            damage = Owner.GetDamage(targetUnit);
+            Owner.AttackTo(targetUnit, damage);
+            usageData.AddToDamage(targetUnit.Id, damage);
 
             // SEND TO USER.
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);

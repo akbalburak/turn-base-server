@@ -9,16 +9,16 @@ namespace TurnBase.Server.Battle.Core
     public class BattleTurnHandler
     {
         private BattleItem _battle;
-        private BattleUnitAttack[] _npcUnits;
-        private BattleUnitAttack[] _playerUnits;
+        private BattleUnit[] _npcUnits;
+        private BattleUnit[] _playerUnits;
         private List<BattleTurnItem> _unitAttackTurns;
         private BattleTurnItem _currentTurn;
         private BattleTurnDTO _lastSentUnitTurnData;
 
         public BattleTurnHandler(
             BattleItem battle,
-            BattleUnitAttack[] players, 
-            BattleUnitAttack[] battleUnits)
+            BattleUnit[] players,
+            BattleUnit[] battleUnits)
         {
             this._battle = battle;
 
@@ -30,11 +30,11 @@ namespace TurnBase.Server.Battle.Core
             AddUnits(battleUnits);
         }
 
-        public bool IsUnitTurn(BattleUnitAttack unit)
+        public bool IsUnitTurn(BattleUnit unit)
         {
             return GetCurrentTurnUnit() == unit;
         }
-        public BattleUnitAttack GetCurrentTurnUnit()
+        public BattleUnit GetCurrentTurnUnit()
         {
             return _currentTurn?.Unit;
         }
@@ -63,18 +63,18 @@ namespace TurnBase.Server.Battle.Core
         {
             _unitAttackTurns.Clear();
 
-            foreach (BattleUnitAttack? battleUnit in _npcUnits.OrderByDescending(y => y.AttackSpeed))
+            foreach (BattleUnit battleUnit in _npcUnits.OrderByDescending(y => y.AttackSpeed))
                 _unitAttackTurns.Add(new BattleTurnItem(battleUnit));
 
-            foreach (BattleUnitAttack? battleUnit in _playerUnits.OrderByDescending(y => y.AttackSpeed))
+            foreach (BattleUnit battleUnit in _playerUnits.OrderByDescending(y => y.AttackSpeed))
                 _unitAttackTurns.Add(new BattleTurnItem(battleUnit));
         }
 
-        public void RemoveUnits(BattleUnitAttack[] units)
+        public void RemoveUnits(BattleUnit[] units)
         {
             _unitAttackTurns.RemoveAll(y => units.Contains(y.Unit));
         }
-        public void AddUnits(BattleUnitAttack[] units)
+        public void AddUnits(BattleUnit[] units)
         {
             _npcUnits = units;
             CalculateAttackOrder();
@@ -84,9 +84,9 @@ namespace TurnBase.Server.Battle.Core
         {
             public float BaseAttackTurn { get; }
             public float NextAttackTurn { get; private set; }
-            public BattleUnitAttack Unit { get; }
+            public BattleUnit Unit { get; }
 
-            public BattleTurnItem(BattleUnitAttack unit)
+            public BattleTurnItem(BattleUnit unit)
             {
                 Unit = unit;
                 NextAttackTurn = unit.AttackSpeed;
