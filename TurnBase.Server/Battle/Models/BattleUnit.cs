@@ -5,8 +5,7 @@ using TurnBase.DTOLayer.Models;
 using TurnBase.Server.Battle.Core.Skills;
 using TurnBase.Server.Battle.DTO;
 using TurnBase.Server.Controllers;
-using TurnBase.Server.Services.Item;
-using TurnBase.Server.Services.Parameter;
+using TurnBase.Server.Services;
 
 namespace TurnBase.Server.Battle.Models
 {

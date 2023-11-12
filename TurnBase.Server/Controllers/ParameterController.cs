@@ -1,5 +1,5 @@
 ﻿using TurnBase.Server.ServerModels;
-using TurnBase.Server.Services.Parameter;
+using TurnBase.Server.Services;
 
 namespace TurnBase.Server.Controllers
 {

@@ -4,7 +4,7 @@ using TurnBase.DBLayer.Repositories;
 using TurnBase.DTOLayer.Enums;
 using TurnBase.DTOLayer.Models;
 
-namespace TurnBase.Server.Services.Parameter
+namespace TurnBase.Server.Services
 {
     internal class ParameterService
     {

@@ -4,7 +4,7 @@ using TurnBase.DBLayer.Repositories;
 using TurnBase.DTOLayer.Enums;
 using TurnBase.DTOLayer.Models;
 
-namespace TurnBase.Server.Services.Item
+namespace TurnBase.Server.Services
 {
     public static class ItemService
     {
@@ -32,7 +32,7 @@ namespace TurnBase.Server.Services.Item
 
         public static ItemDTO GetItem(int itemId)
         {
-            return _items.FirstOrDefault(y=> y.Id == itemId);
+            return _items.FirstOrDefault(y => y.Id == itemId);
         }
     }
 }

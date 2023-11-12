@@ -3,7 +3,7 @@ using TurnBase.DBLayer.Models;
 using TurnBase.DBLayer.Repositories;
 using TurnBase.DTOLayer.Models;
 
-namespace TurnBase.Server.Services.UserLevel
+namespace TurnBase.Server.Services
 {
     public static class UserLevelService
     {

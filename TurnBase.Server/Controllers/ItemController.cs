@@ -1,6 +1,6 @@
 ﻿using TurnBase.DBLayer.Models;
 using TurnBase.Server.ServerModels;
-using TurnBase.Server.Services.Item;
+using TurnBase.Server.Services;
 
 namespace TurnBase.Server.Controllers
 {

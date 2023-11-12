@@ -2,7 +2,7 @@
 using TurnBase.DTOLayer.Models;
 using TurnBase.Server.Extends.Json;
 using TurnBase.Server.ServerModels;
-using TurnBase.Server.Services.Item;
+using TurnBase.Server.Services;
 
 namespace TurnBase.Server.Controllers
 {
