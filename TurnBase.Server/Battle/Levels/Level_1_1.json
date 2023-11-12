@@ -10,10 +10,20 @@
             {
               "Position": 0,
               "UnitId": 1,
-              "Health": 1,
-              "MinDamage": 1,
-              "MaxDamage": 3,
-              "AttackSpeed": 1
+              "Stats": {
+                "MaxHealth": 6,
+                "Damage": 3,
+                "AttackSpeed": 1
+              }
+            },
+            {
+              "Position": 1,
+              "UnitId": 1,
+              "Stats": {
+                "MaxHealth": 6,
+                "Damage": 3,
+                "AttackSpeed": 1
+              }
             }
           ]
         },
@@ -22,10 +32,11 @@
             {
               "Position": 1,
               "UnitId": 1,
-              "Health": 6,
-              "MinDamage": 1,
-              "MaxDamage": 3,
-              "AttackSpeed": 1
+              "Stats": {
+                "MaxHealth": 6,
+                "Damage": 6,
+                "AttackSpeed": 1
+              }
             }
           ]
         }

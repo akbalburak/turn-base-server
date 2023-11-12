@@ -15,6 +15,20 @@ public partial class DbTurnBaseDevContext : DbContext
     {
     }
 
+    public virtual DbSet<TblItem> TblItems { get; set; }
+
+    public virtual DbSet<TblItemProperty> TblItemProperties { get; set; }
+
+    public virtual DbSet<TblItemSkill> TblItemSkills { get; set; }
+
+    public virtual DbSet<TblItemType> TblItemTypes { get; set; }
+
+    public virtual DbSet<TblParameter> TblParameters { get; set; }
+
+    public virtual DbSet<TblProperty> TblProperties { get; set; }
+
+    public virtual DbSet<TblSkill> TblSkills { get; set; }
+
     public virtual DbSet<TblUser> TblUsers { get; set; }
 
     public virtual DbSet<TblUserLevel> TblUserLevels { get; set; }
@@ -25,6 +39,86 @@ public partial class DbTurnBaseDevContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<TblItem>(entity =>
+        {
+            entity.ToTable("tbl_items");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(50);
+
+            entity.HasOne(d => d.Type).WithMany(p => p.TblItems)
+                .HasForeignKey(d => d.TypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_items_tbl_item_types");
+        });
+
+        modelBuilder.Entity<TblItemProperty>(entity =>
+        {
+            entity.HasKey(e => e.ItemPropertyId);
+
+            entity.ToTable("tbl_item_properties");
+
+            entity.HasIndex(e => new { e.ItemId, e.PropertyId }, "IX_tbl_item_properties");
+
+            entity.Property(e => e.ItemPropertyId).HasColumnName("ItemPropertyID");
+            entity.Property(e => e.ItemId).HasColumnName("ItemID");
+            entity.Property(e => e.PropertyId).HasColumnName("PropertyID");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.TblItemProperties)
+                .HasForeignKey(d => d.ItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_item_properties_tbl_items");
+
+            entity.HasOne(d => d.Property).WithMany(p => p.TblItemProperties)
+                .HasForeignKey(d => d.PropertyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_item_properties_tbl_properties");
+        });
+
+        modelBuilder.Entity<TblItemSkill>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("tbl_item_skills");
+
+            entity.HasIndex(e => new { e.ItemId, e.SkillId }, "IX_tbl_item_skills").IsUnique();
+        });
+
+        modelBuilder.Entity<TblItemType>(entity =>
+        {
+            entity.ToTable("tbl_item_types");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<TblParameter>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("tbl_parameters");
+
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .IsFixedLength();
+        });
+
+        modelBuilder.Entity<TblProperty>(entity =>
+        {
+            entity.ToTable("tbl_properties");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<TblSkill>(entity =>
+        {
+            entity.ToTable("tbl_skills");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<TblUser>(entity =>
         {
             entity.ToTable("tbl_users");

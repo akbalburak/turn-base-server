@@ -30,6 +30,18 @@ namespace TurnBase.Server
                     case Enums.ActionTypes.Ping:
                         response = PingController.Ping(smp);
                         break;
+                    case Enums.ActionTypes.LoadItems:
+                        response = ItemController.GetItems(smp);
+                        break;
+                    case Enums.ActionTypes.EquipItem:
+                        response = InventoryController.EquipItem(smp);
+                        break;
+                    case Enums.ActionTypes.UnequipItem:
+                        response = InventoryController.UnequipItem(smp);
+                        break;
+                    case Enums.ActionTypes.Parameters:
+                        response = ParameterController.GetParameters(smp);
+                        break;
                     default:
                         Console.WriteLine("Methot Bulunamadı");
                         response = null;

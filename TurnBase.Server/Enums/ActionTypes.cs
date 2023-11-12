@@ -8,5 +8,9 @@
         StartBattle = 4,
         ExecuteBattleAction = 5,
         Ping = 6,
+        LoadItems = 7,
+        EquipItem = 8,
+        UnequipItem = 9,
+        Parameters = 10
     }
 }

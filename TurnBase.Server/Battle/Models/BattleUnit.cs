@@ -1,5 +1,12 @@
-﻿using TurnBase.Server.Battle.Core.Skills;
+﻿using Newtonsoft.Json;
+using TurnBase.DBLayer.Models;
+using TurnBase.DTOLayer.Enums;
+using TurnBase.DTOLayer.Models;
+using TurnBase.Server.Battle.Core.Skills;
 using TurnBase.Server.Battle.DTO;
+using TurnBase.Server.Controllers;
+using TurnBase.Server.Services.Item;
+using TurnBase.Server.Services.Parameter;
 
 namespace TurnBase.Server.Battle.Models
 {
@@ -9,30 +16,22 @@ namespace TurnBase.Server.Battle.Models
 
         public int TeamIndex { get; set; }
         public int Id { get; private set; }
-        public int MaxHealth { get; }
-        public int Health { get; private set; }
-        public int Position { get; private set; }
-        public bool IsDeath { get; set; }
-        public int MinDamage { get; private set; }
-        public int MaxDamage { get; private set; }
 
-        public float AttackSpeed { get; private set; }
+        public int Position { get; private set; }
+        public int Health { get; private set; }
+        public bool IsDeath { get; set; }
+
+        public UnitStats Stats { get; set; }
 
         public List<BaseBattleSkill> Skills { get; set; }
 
-        protected BattleUnit(int health, 
-            int position,
-            int minDamage, 
-            int maxDamage,
-            float attackSpeed)
+        protected BattleUnit(int position, UnitStats stats)
         {
-            this.MaxHealth = health;
-            this.Health = health;
+            this.Stats = stats;
             this.Position = position;
-            this.MinDamage = minDamage;
-            this.MaxDamage = maxDamage;
-            this.AttackSpeed = attackSpeed;
             this.Skills = new List<BaseBattleSkill>();
+
+            this.Health = this.Stats.MaxHealth;
         }
 
         public void SetTeam(int teamIndex)
@@ -61,10 +60,21 @@ namespace TurnBase.Server.Battle.Models
 
         public int GetDamage(BattleUnit targetUnit)
         {
-            return _random.Next(this.MinDamage, this.MaxDamage + 1);
+            bool isCritical = _random.NextDouble() <= this.Stats.CriticalChance;
+            int damage = this.Stats.Damage;
+
+            if (isCritical)
+            {
+                float bonusPercent = this.Stats.CriticalDamageBonus;
+                damage += (int)Math.Round(damage * bonusPercent);
+            }
+
+            float targetArmor = targetUnit.Stats.PhysicalArmor;
+            float reduction = 1 - targetArmor / (targetArmor + 100);
+            return (int)Math.Round(damage * reduction);
         }
 
-        public void AttackTo(BattleUnit defender,int damage)
+        public void AttackTo(BattleUnit defender, int damage)
         {
             defender.ReduceHealth(damage);
         }
@@ -85,4 +95,67 @@ namespace TurnBase.Server.Battle.Models
             skillToUse.UseSkill(useData);
         }
     }
+
+    public record class UnitStats
+    {
+        public int MaxHealth { get; set; }
+        public int Damage { get; set; }
+        public float AttackSpeed { get; set; }
+        public float CriticalChance { get; set; }
+        public float CriticalDamageBonus { get; set; }
+        public int PhysicalArmor { get; set; }
+
+        public void SetUser(TblUser user)
+        {
+            this.MaxHealth = ParameterService.GetIntValue(Parameters.BaseHealth);
+
+            InventoryDTO inventory = user.GetInventory();
+
+            // WE LOOP ALL THE WORN ITEMS.
+            foreach (UserItemDTO inventoryItem in inventory.Items)
+            {
+                if (!inventoryItem.Equipped)
+                    continue;
+
+                ItemDTO itemData = ItemService.GetItem(inventoryItem.ItemID);
+                foreach (ItemPropertyDTO property in itemData.Properties)
+                {
+                    double value = property.GetValue(inventoryItem.Quality);
+                    switch (property.PropertyId)
+                    {
+                        case ItemProperties.PhysicalDamage:
+                            this.Damage += (int)value;
+                            break;
+                        case ItemProperties.MaxHealth:
+                            this.MaxHealth += (int)value;
+                            break;
+                        case ItemProperties.TurnSpeed:
+                            this.AttackSpeed += (float)value;
+                            break;
+                        case ItemProperties.CriticalChanceBonus:
+                            this.CriticalChance += (float)value;
+                            break;
+                        case ItemProperties.CriticalDamageBonus:
+                            this.CriticalDamageBonus += (float)value;
+                            break;
+                        case ItemProperties.PhysicalArmor:
+                            this.PhysicalArmor += (int)value;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            if (this.AttackSpeed == 0)
+                this.AttackSpeed = 1;
+            else
+                this.AttackSpeed = 1 / this.AttackSpeed;
+
+            if (this.Damage == 0)
+                this.Damage = 1;
+
+        }
+    }
+
 }

@@ -16,4 +16,6 @@ public partial class TblUser
     public int Experience { get; set; }
 
     public long Gold { get; set; }
+
+    public string? Inventory { get; set; }
 }

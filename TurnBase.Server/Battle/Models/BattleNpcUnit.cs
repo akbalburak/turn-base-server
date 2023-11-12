@@ -6,12 +6,8 @@ namespace TurnBase.Server.Battle
     public class BattleNpcUnit : BattleUnit
     {
         public int UnitId { get; }
-        public BattleNpcUnit(int unitId, int health,
-            int position,
-            int minDamage,
-            int maxDamage,
-            float attackSpeed)
-            : base(health, position, minDamage, maxDamage, attackSpeed)
+        public BattleNpcUnit(int unitId, int position, UnitStats stats)
+            : base(position, stats)
         {
             this.UnitId = unitId;
         }

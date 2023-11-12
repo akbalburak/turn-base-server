@@ -63,10 +63,10 @@ namespace TurnBase.Server.Battle.Core
         {
             _unitAttackTurns.Clear();
 
-            foreach (BattleUnit battleUnit in _npcUnits.OrderByDescending(y => y.AttackSpeed))
+            foreach (BattleUnit battleUnit in _npcUnits.OrderByDescending(y => y.Stats.AttackSpeed))
                 _unitAttackTurns.Add(new BattleTurnItem(battleUnit));
 
-            foreach (BattleUnit battleUnit in _playerUnits.OrderByDescending(y => y.AttackSpeed))
+            foreach (BattleUnit battleUnit in _playerUnits.OrderByDescending(y => y.Stats.AttackSpeed))
                 _unitAttackTurns.Add(new BattleTurnItem(battleUnit));
         }
 
@@ -89,13 +89,13 @@ namespace TurnBase.Server.Battle.Core
             public BattleTurnItem(BattleUnit unit)
             {
                 Unit = unit;
-                NextAttackTurn = unit.AttackSpeed;
-                BaseAttackTurn = unit.AttackSpeed;
+                NextAttackTurn = unit.Stats.AttackSpeed;
+                BaseAttackTurn = unit.Stats.AttackSpeed;
             }
 
             public void UpdateNextAttack()
             {
-                NextAttackTurn += Unit.AttackSpeed;
+                NextAttackTurn += Unit.Stats.AttackSpeed;
             }
         }
     }

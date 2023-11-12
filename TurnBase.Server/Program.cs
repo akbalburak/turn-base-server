@@ -2,6 +2,8 @@
 using TurnBase.Server;
 using TurnBase.Server.Battle.Services;
 using TurnBase.Server.Services;
+using TurnBase.Server.Services.Item;
+using TurnBase.Server.Services.Parameter;
 using TurnBase.Server.Services.UserLevel;
 
 internal class Program
@@ -18,6 +20,8 @@ internal class Program
             NullValueHandling = NullValueHandling.Ignore
         };
 
+        ParameterService.Initialize();
+        ItemService.Initialize();
         BattleLevelService.Initialize();
         SocketUserServices.Initialize();
         UserLevelService.Initialize();

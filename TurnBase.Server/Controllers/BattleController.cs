@@ -1,4 +1,5 @@
-﻿using TurnBase.DTOLayer.Models;
+﻿using TurnBase.DBLayer.Models;
+using TurnBase.DTOLayer.Models;
 using TurnBase.Server.Battle;
 using TurnBase.Server.Battle.DTO;
 using TurnBase.Server.Battle.Services;
@@ -13,19 +14,21 @@ namespace TurnBase.Server.Controllers
             if (smp.SocketUser.CurrentBattle != null && !smp.SocketUser.CurrentBattle.IsDisposed)
                 return SocketResponse.GetError("YOU ARE ALREADY IN A MATCH!");
 
+            var user = smp.UOW.GetRepository<TblUser>().Find(y => y.Id == smp.SocketUser.User.Id);
+
             BattleDTO.BattleRequestDTO requestData = smp
                 .GetRequestData<BattleDTO.BattleRequestDTO>();
+
+            Battle.Models.UnitStats userStats = new Battle.Models.UnitStats();
+            userStats.SetUser(user);
 
             BattleService.CreateALevel(new BattleUser[]
                 {
                     new BattleUser(
-                        user: smp.SocketUser,
+                        socketUser: smp.SocketUser,
                         playerName: smp.SocketUser.User.UserName,
-                        health: 50,
                         position: 0,
-                        minDamage: 1,
-                        maxDamage: 3,
-                        attackSpeed: 1
+                        userStats
                     )
                 }, 
                 requestData.StageIndex, 

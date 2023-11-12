@@ -1,4 +1,5 @@
-﻿using TurnBase.Server.Battle.Models;
+﻿using TurnBase.DBLayer.Models;
+using TurnBase.Server.Battle.Models;
 using TurnBase.Server.ServerModels;
 
 namespace TurnBase.Server.Battle
@@ -10,16 +11,13 @@ namespace TurnBase.Server.Battle
         public string PlayerName { get; private set; }
         public bool IsConnected => SocketUser != null;
 
-        public BattleUser(SocketUser user,
-            string playerName,
-            int health,
-            int position,
-            int minDamage,
-            int maxDamage,
-            float attackSpeed)
-            : base(health, position, minDamage, maxDamage, attackSpeed)
+        public BattleUser(SocketUser socketUser, 
+            string playerName, 
+            int position, 
+            UnitStats stats)
+            : base(position, stats)
         {
-            this.SocketUser = user;
+            this.SocketUser = socketUser;
             this.PlayerName = playerName;
         }
 

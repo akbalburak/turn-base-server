@@ -201,13 +201,12 @@ namespace TurnBase.Server.Battle.Core
                 {
                     Units = y.Units.Select(z => new BattleNpcUnitDTO
                     {
-                        AttackSpeed = z.AttackSpeed,
+                        AttackSpeed = z.Stats.AttackSpeed,
                         Health = z.Health,
                         UniqueId = z.Id,
-                        MaxDamage = z.MaxDamage,
-                        MinDamage = z.MinDamage,
+                        Damage = z.Stats.Damage,
                         Position = z.Position,
-                        MaxHealth = z.MaxHealth,
+                        MaxHealth = z.Stats.MaxHealth,
                         IsDead = z.IsDeath,
                         UnitId = z.UnitId,
                         TeamIndex = z.TeamIndex
@@ -216,14 +215,13 @@ namespace TurnBase.Server.Battle.Core
                 Players = _users.Select(z => new BattlePlayerDTO
                 {
                     UniqueId = z.Id,
-                    AttackSpeed = z.AttackSpeed,
+                    AttackSpeed = z.Stats.AttackSpeed,
                     Health = z.Health,
-                    MaxDamage = z.MaxDamage,
-                    MinDamage = z.MinDamage,
+                    Damage = z.Stats.Damage,
                     Position = z.Position,
                     IsRealPlayer = z.SocketUser == socketUser,
                     PlayerName = z.PlayerName,
-                    MaxHealth = z.MaxHealth,
+                    MaxHealth = z.Stats.MaxHealth,
                     IsDead = z.IsDeath,
                     TeamIndex = z.TeamIndex,
                     Skills = z.Skills.Select(v => new BattleSkillDTO

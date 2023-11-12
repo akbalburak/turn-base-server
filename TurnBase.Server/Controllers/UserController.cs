@@ -28,7 +28,8 @@ namespace TurnBase.Server.Controllers
                     Username = user.Username,
                     UserLevel = user.UserLevel,
                     Experience = user.Experience,
-                    Gold = user.Gold
+                    Gold = user.Gold,
+                    Inventory = user.Inventory
                 }
             });
         }
