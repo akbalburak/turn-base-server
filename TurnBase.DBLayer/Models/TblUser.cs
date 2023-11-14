@@ -18,4 +18,6 @@ public partial class TblUser
     public long Gold { get; set; }
 
     public string? Inventory { get; set; }
+
+    public string? Campaign { get; set; }
 }

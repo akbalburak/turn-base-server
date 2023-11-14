@@ -11,10 +11,10 @@ namespace TurnBase.Server.Battle
         public string PlayerName { get; private set; }
         public bool IsConnected => SocketUser != null;
 
-        public BattleUser(SocketUser socketUser, 
-            string playerName, 
-            int position, 
-            UnitStats stats)
+        private int _dataId;
+        public int DataId => ++_dataId;
+
+        public BattleUser(SocketUser socketUser, string playerName, int position, UnitStats stats)
             : base(position, stats)
         {
             this.SocketUser = socketUser;

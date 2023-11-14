@@ -13,7 +13,6 @@ namespace TurnBase.Server.Battle.Core
         private BattleUnit[] _playerUnits;
         private List<BattleTurnItem> _unitAttackTurns;
         private BattleTurnItem _currentTurn;
-        private BattleTurnDTO _lastSentUnitTurnData;
 
         public BattleTurnHandler(
             BattleItem battle,
@@ -23,7 +22,6 @@ namespace TurnBase.Server.Battle.Core
             this._battle = battle;
 
             _unitAttackTurns = new List<BattleTurnItem>();
-            _lastSentUnitTurnData = new BattleTurnDTO();
 
             _playerUnits = players;
 
@@ -50,11 +48,9 @@ namespace TurnBase.Server.Battle.Core
             if (_currentTurn == null)
                 return;
 
-            // WE UPDATE THE LAST SENT DATA.
-            _lastSentUnitTurnData.UnitId = _currentTurn.Unit.Id;
-
             // TURN CHANGED DATA.
-            _battle.SendToAllUsers(BattleActions.TurnUpdated, _lastSentUnitTurnData);
+            BattleTurnDTO unitTurnData = new BattleTurnDTO(_currentTurn.Unit.Id);
+            _battle.SendToAllUsers(BattleActions.TurnUpdated, unitTurnData);
 
             _currentTurn.Unit.CallTurnStart();
         }

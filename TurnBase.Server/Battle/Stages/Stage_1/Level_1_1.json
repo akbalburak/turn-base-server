@@ -1,0 +1,78 @@
+{
+  "Key": "Level_1_1",
+  "LevelName": "Level - 1",
+  "Difficulities": [
+    {
+      "Difficulity": 0,
+      "WaveDrops": [
+        {
+          // IF EMPTY MEANS ANY WAVE.
+          "WavewIndex": [],
+          // ITEM IDS WHICH CAN DROP.
+          "ItemIds": [ 1, 2, 3, 4 ],
+          // MAXIMUM NUMBER CAN DROP ONCE.
+          "MaxQuantity": 1,
+          // DROP CHANCE.
+          "Chance": 0.1
+        }
+      ],
+      "Waves": [
+        // WAVE 1.
+        {
+          "Units": [
+            {
+              "Position": 0,
+              "UnitId": 1,
+              "Stats": {
+                "MaxHealth": 6,
+                "Damage": 3,
+                "AttackSpeed": 1.1
+              }
+            },
+            {
+              "Position": 1,
+              "UnitId": 1,
+              "Stats": {
+                "MaxHealth": 6,
+                "Damage": 3,
+                "AttackSpeed": 1.1
+              }
+            }
+          ]
+        },
+        // WAVE 2.
+        {
+          "Units": [
+            {
+              "Position": 0,
+              "UnitId": 1,
+              "Stats": {
+                "MaxHealth": 6,
+                "Damage": 3,
+                "AttackSpeed": 1.1
+              }
+            },
+            {
+              "Position": 2,
+              "UnitId": 1,
+              "Stats": {
+                "MaxHealth": 6,
+                "Damage": 3,
+                "AttackSpeed": 1.1
+              }
+            },
+            {
+              "Position": 4,
+              "UnitId": 2,
+              "Stats": {
+                "MaxHealth": 18,
+                "Damage": 4,
+                "AttackSpeed": 1.6
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

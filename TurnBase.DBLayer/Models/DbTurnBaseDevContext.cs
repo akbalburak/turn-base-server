@@ -29,6 +29,8 @@ public partial class DbTurnBaseDevContext : DbContext
 
     public virtual DbSet<TblSkill> TblSkills { get; set; }
 
+    public virtual DbSet<TblUnit> TblUnits { get; set; }
+
     public virtual DbSet<TblUser> TblUsers { get; set; }
 
     public virtual DbSet<TblUserLevel> TblUserLevels { get; set; }
@@ -114,6 +116,14 @@ public partial class DbTurnBaseDevContext : DbContext
         modelBuilder.Entity<TblSkill>(entity =>
         {
             entity.ToTable("tbl_skills");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<TblUnit>(entity =>
+        {
+            entity.ToTable("tbl_units");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(50);

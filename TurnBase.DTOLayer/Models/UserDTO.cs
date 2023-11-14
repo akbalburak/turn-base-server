@@ -10,5 +10,6 @@ namespace TurnBase.DTOLayer.Models
         [JsonProperty("D")] public int Experience { get; set; }
         [JsonProperty("E")] public long Gold { get; set; }
         [JsonProperty("F")] public string Inventory { get; set; }
+        [JsonProperty("G")] public string Campaign { get; set; }
     }
 }

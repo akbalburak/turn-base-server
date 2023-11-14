@@ -10,7 +10,7 @@ namespace TurnBase.Server.Battle.Services
 
         public static void Initialize()
         {
-            string[] files = Directory.GetFiles("Battle/Levels");
+            string[] files = Directory.GetFiles("Battle/Stages", string.Empty, SearchOption.AllDirectories);
 
             foreach (string file in files)
             {

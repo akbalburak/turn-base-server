@@ -195,6 +195,8 @@ namespace TurnBase.Server.Battle.Core
         }
         private void SendAllReqDataToClient(SocketUser socketUser, BattleActionRequestDTO requestData)
         {
+            BattleUser? user = _users.FirstOrDefault(y => y.SocketUser == socketUser);
+
             BattleLoadAllDTO loadData = new BattleLoadAllDTO()
             {
                 Waves = _waves.Select(y => new BattleWaveDTO
@@ -234,34 +236,28 @@ namespace TurnBase.Server.Battle.Core
                 }).ToArray()
             };
 
-            SendToUser(socketUser, BattleActions.LoadAll, loadData);
+            SendToUser(user, BattleActions.LoadAll, loadData);
         }
 
         public void SendToAllUsers(BattleActions battleAction, object data)
         {
-            SocketResponse dataToSend = BattleActionResponseDTO.GetSuccess(
-                ++_dataIdCounter,
-                battleAction,
-                data
-            );
-
             foreach (BattleUser user in _users)
             {
-                if (!user.IsConnected)
-                    continue;
-
-                user.SocketUser.AddToUnExpectedAfterSendIt(dataToSend);
+                SendToUser(user, battleAction, data);
             }
         }
-        public void SendToUser(SocketUser user, BattleActions battleAction, object data)
+        public void SendToUser(BattleUser user, BattleActions battleAction, object data)
         {
+            if (!user.IsConnected)
+                return;
+
             SocketResponse dataToSend = BattleActionResponseDTO.GetSuccess(
-                ++_dataIdCounter,
+                user.DataId,
                 battleAction,
                 data
             );
 
-            user.AddToUnExpectedAfterSendIt(dataToSend);
+            user.SocketUser.AddToUnExpectedAfterSendIt(dataToSend);
         }
 
         public BattleUser GetUser(SocketUser socketUser)
