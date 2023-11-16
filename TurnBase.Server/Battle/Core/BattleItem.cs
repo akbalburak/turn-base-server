@@ -1,7 +1,9 @@
-﻿using TurnBase.Server.Battle.Core.Skills;
+﻿using TurnBase.DTOLayer.Enums;
+using TurnBase.Server.Battle.Core.Skills;
 using TurnBase.Server.Battle.DTO;
 using TurnBase.Server.Battle.Enums;
 using TurnBase.Server.Battle.Models;
+using TurnBase.Server.Controllers;
 using TurnBase.Server.ServerModels;
 
 namespace TurnBase.Server.Battle.Core
@@ -18,7 +20,7 @@ namespace TurnBase.Server.Battle.Core
         private BattleLevelData _levelData;
 
         private BattleDifficulityData _difficulityData;
-        private BattleLevels _difficulity;
+        private LevelDifficulities _difficulity;
 
         private BattleTurnHandler _turnHandler;
 
@@ -37,13 +39,14 @@ namespace TurnBase.Server.Battle.Core
 
         public BattleItem(BattleUser[] users,
             BattleLevelData levelData,
-            BattleLevels difficulity)
+            LevelDifficulities difficulity)
         {
             _allUnits = new List<BattleUnit>();
 
             _users = users;
 
             _levelData = levelData;
+            _difficulity = difficulity;
             _difficulityData = levelData.GetDifficulityData(difficulity);
 
             _waves = _difficulityData.Waves.ToArray();
@@ -155,8 +158,8 @@ namespace TurnBase.Server.Battle.Core
             // WE WILL SEND THE DAMAGE DATA.
             BattleAttackDTO attackData = new BattleAttackDTO();
             attackData.AddAttack(
-                new BattleAttackItemDTO(currentUser.Id,
-                    targetEnemy.Id,
+                new BattleAttackItemDTO(currentUser.UniqueId,
+                    targetEnemy.UniqueId,
                     damage
                 )
             );
@@ -183,8 +186,8 @@ namespace TurnBase.Server.Battle.Core
             // WE WILL SEND THE DAMAGE DATA.
             BattleAttackDTO attackData = new BattleAttackDTO();
             attackData.AddAttack(
-                new BattleAttackItemDTO(attacker.Id,
-                    defender.Id,
+                new BattleAttackItemDTO(attacker.UniqueId,
+                    defender.UniqueId,
                     damage
                 )
             );
@@ -199,13 +202,14 @@ namespace TurnBase.Server.Battle.Core
 
             BattleLoadAllDTO loadData = new BattleLoadAllDTO()
             {
+                Difficulity = _difficulity,
                 Waves = _waves.Select(y => new BattleWaveDTO
                 {
                     Units = y.Units.Select(z => new BattleNpcUnitDTO
                     {
                         AttackSpeed = z.Stats.AttackSpeed,
                         Health = z.Health,
-                        UniqueId = z.Id,
+                        UniqueId = z.UniqueId,
                         Damage = z.Stats.Damage,
                         Position = z.Position,
                         MaxHealth = z.Stats.MaxHealth,
@@ -216,7 +220,7 @@ namespace TurnBase.Server.Battle.Core
                 }).ToArray(),
                 Players = _users.Select(z => new BattlePlayerDTO
                 {
-                    UniqueId = z.Id,
+                    UniqueId = z.UniqueId,
                     AttackSpeed = z.Stats.AttackSpeed,
                     Health = z.Health,
                     Damage = z.Stats.Damage,
@@ -266,11 +270,11 @@ namespace TurnBase.Server.Battle.Core
         }
         public BattleUnit GetUnit(int targetUnitID)
         {
-            BattleUser? user = _users.FirstOrDefault(y => y.Id == targetUnitID);
+            BattleUser? user = _users.FirstOrDefault(y => y.UniqueId == targetUnitID);
             if (user != null)
                 return user;
 
-            BattleNpcUnit unit = _currentWave.Units.FirstOrDefault(y => y.Id == targetUnitID);
+            BattleNpcUnit unit = _currentWave.Units.FirstOrDefault(y => y.UniqueId == targetUnitID);
             if (unit != null)
                 return unit;
 
@@ -337,10 +341,28 @@ namespace TurnBase.Server.Battle.Core
             // MEANS ONE OF THE TEAMS IS DEFEATED.
             if (team1AliveUnitCount > 0)
             {
-                // TEAM 1 WON.
-                BattleEndDTO team1EndData = new BattleEndDTO(BattleEndSates.Win);
-                team1EndData.WinnerTeam = 1;
-                SendToAllUsers(BattleActions.BattleEnd, team1EndData);
+
+                foreach (BattleUser user in _users)
+                {
+                    // TEAM 1 WON.
+                    BattleEndDTO team1EndData = new BattleEndDTO(BattleEndSates.Win);
+                    team1EndData.WinnerTeam = 1;
+
+                    if (user.IsFirstCompletion)
+                        team1EndData.FirstCompletionRewards = _difficulityData.FirstCompletionRewards;
+
+                    SendToAllUsers(BattleActions.BattleEnd, team1EndData);
+
+                    Task.Run(() =>
+                    {
+                        CampaignController.CompleteCampaign(user.SocketUser,
+                        userId: user.SocketUser.User.Id,
+                        stageIndex: 1,
+                        levelIndex: 1,
+                        levelData: _difficulityData);
+                    });
+                }
+
                 Dispose();
                 return;
             }
@@ -349,8 +371,10 @@ namespace TurnBase.Server.Battle.Core
             if (team2AliveUnitCount > 0)
             {
                 // TEAM 2 WON.
-                BattleEndDTO team1EndData = new BattleEndDTO(BattleEndSates.Win);
-                team1EndData.WinnerTeam = 2;
+                BattleEndDTO team1EndData = new BattleEndDTO(BattleEndSates.Win)
+                {
+                    WinnerTeam = 2
+                };
                 SendToAllUsers(BattleActions.BattleEnd, team1EndData);
                 Dispose();
                 return;

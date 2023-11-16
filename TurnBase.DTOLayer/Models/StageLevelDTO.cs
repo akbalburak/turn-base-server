@@ -1,5 +1,4 @@
-﻿
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using TurnBase.DTOLayer.Enums;
 
@@ -11,6 +10,7 @@ namespace TurnBase.DTOLayer.Models
         [JsonProperty("B")] public int Level { get; set; }
         [JsonProperty("C")] public LevelDifficulities CompletedDifficulites { get; set; }
         [JsonProperty("D")] public int PlayCount { get; set; }
+        [JsonProperty("E")] public int CompletedCount { get; set; }
 
         public StageLevelDTO(int stage,int level)
         {

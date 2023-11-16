@@ -14,10 +14,17 @@ namespace TurnBase.Server.Controllers
             if (smp.SocketUser.CurrentBattle != null && !smp.SocketUser.CurrentBattle.IsDisposed)
                 return SocketResponse.GetError("YOU ARE ALREADY IN A MATCH!");
 
-            var user = smp.UOW.GetRepository<TblUser>().Find(y => y.Id == smp.SocketUser.User.Id);
-
             BattleDTO.BattleRequestDTO requestData = smp
                 .GetRequestData<BattleDTO.BattleRequestDTO>();
+
+            TblUser user = smp.UOW.GetRepository<TblUser>()
+                .Find(y => y.Id == smp.SocketUser.User.Id);
+
+            CampaignDTO campaign = user.GetCampaign();
+            bool isFirstCompletion = !campaign.IsDifficulityCompleted(
+                requestData.StageIndex,
+                requestData.LevelIndex,
+                requestData.Difficulity);
 
             Battle.Models.UnitStats userStats = new Battle.Models.UnitStats();
             userStats.SetUser(user);
@@ -25,14 +32,17 @@ namespace TurnBase.Server.Controllers
             BattleService.CreateALevel(new BattleUser[]
                 {
                     new BattleUser(
+
                         socketUser: smp.SocketUser,
                         playerName: smp.SocketUser.User.UserName,
                         position: 0,
-                        userStats
+                        stats:userStats,
+                        isFirstCompletion:isFirstCompletion
                     )
-                }, 
-                requestData.StageIndex, 
-                requestData.LevelIndex
+                },
+                requestData.StageIndex,
+                requestData.LevelIndex,
+                requestData.Difficulity
             );
 
             return SocketResponse.GetSuccess();

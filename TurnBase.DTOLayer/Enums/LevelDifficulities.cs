@@ -3,8 +3,9 @@
     [Flags]
     public enum LevelDifficulities
     {
+        None = 0,
         Normal = 1,
         Hard = 2,
-        Extreme = 3
+        Extreme = 4
     }
 }

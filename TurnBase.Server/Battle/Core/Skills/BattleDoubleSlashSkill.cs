@@ -27,19 +27,19 @@ namespace TurnBase.Server.Battle.Core.Skills
             }
 
             BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(
-                Owner.Id,
+                Owner.UniqueId,
                 base.UniqueId,
                 Skill);
 
             // WE DO THE FIRST SLASH.
             int damage = Owner.GetDamage(targetUnit);
             Owner.AttackTo(targetUnit, damage);
-            usageData.AddToDamage(targetUnit.Id, damage);
+            usageData.AddToDamage(targetUnit.UniqueId, damage);
 
             // WE DO THE SECOND SLASH.
             damage = Owner.GetDamage(targetUnit);
             Owner.AttackTo(targetUnit, damage);
-            usageData.AddToDamage(targetUnit.Id, damage);
+            usageData.AddToDamage(targetUnit.UniqueId, damage);
 
             // SEND TO USER.
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);

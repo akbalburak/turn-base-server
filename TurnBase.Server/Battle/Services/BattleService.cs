@@ -1,4 +1,5 @@
-﻿using TurnBase.Server.Battle.Core;
+﻿using TurnBase.DTOLayer.Enums;
+using TurnBase.Server.Battle.Core;
 using TurnBase.Server.Battle.Models;
 
 namespace TurnBase.Server.Battle.Services
@@ -8,13 +9,16 @@ namespace TurnBase.Server.Battle.Services
         private static ReaderWriterLockSlim _rwls = new ReaderWriterLockSlim();
         private static List<BattleItem> _battles = new List<BattleItem>();
 
-        public static void CreateALevel(BattleUser[] users, int stageIndex, int levelIndex)
+        public static void CreateALevel(BattleUser[] users, 
+            int stageIndex, 
+            int levelIndex, 
+            LevelDifficulities difficulity)
         {
             BattleLevelData levelData = BattleLevelService.GetLevelData($"Level_{stageIndex}_{levelIndex}");
             if (levelData == null)
                 return;
 
-            BattleItem battle = new BattleItem(users, levelData, Enums.BattleLevels.Normal);
+            BattleItem battle = new BattleItem(users, levelData, difficulity);
             battle.OnDisposed += OnBattleDiposed;
 
             foreach (BattleUser user in users)

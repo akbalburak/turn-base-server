@@ -1,4 +1,5 @@
-﻿using TurnBase.Server.Battle.Enums;
+﻿using TurnBase.DTOLayer.Enums;
+using TurnBase.DTOLayer.Models;
 
 namespace TurnBase.Server.Battle.Models
 {
@@ -8,14 +9,14 @@ namespace TurnBase.Server.Battle.Models
         public string LevelName { get; private set; }
         public List<BattleDifficulityData> Difficulities { get; private set; }
 
-        public BattleLevelData(string key, string levelName,List<BattleDifficulityData> difficulities)
+        public BattleLevelData(string key, string levelName, List<BattleDifficulityData> difficulities)
         {
             this.Key = key;
             this.LevelName = levelName;
             this.Difficulities = difficulities;
         }
 
-        public BattleDifficulityData GetDifficulityData(BattleLevels difficulity)
+        public BattleDifficulityData GetDifficulityData(LevelDifficulities difficulity)
         {
             if (Difficulities.Count == 0)
                 return null;
@@ -30,11 +31,21 @@ namespace TurnBase.Server.Battle.Models
 
     public class BattleDifficulityData
     {
-        public BattleLevels Difficulity { get; private set; }
+        public LevelDifficulities Difficulity { get; set; }
         public List<BattleWave> Waves { get; private set; }
+        public List<BattleRewardItemData> FirstCompletionRewards { get; set; }
         public BattleDifficulityData()
         {
             Waves = new List<BattleWave>();
+            FirstCompletionRewards = new List<BattleRewardItemData>();
         }
+    }
+
+    public class BattleRewardItemData
+    {
+        public int ItemId { get; set; }
+        public int Quantity { get; set; }
+        public int Level { get; set; }
+        public float Quality { get; set; }
     }
 }

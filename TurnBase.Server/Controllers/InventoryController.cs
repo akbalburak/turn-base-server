@@ -33,10 +33,20 @@ namespace TurnBase.Server.Controllers
 
             // WE GET THE INVENTORY ITEM.
             UserItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
+            int unequippedUserItemId = 0;
             if (inventoryItem != null)
             {
                 // WE MAKE SURE THE SAME TYPE ITEM NOT WORN.
                 ItemDTO itemData = ItemService.GetItem(inventoryItem.ItemID);
+
+                // WE MAKE SURE THE ITEM IS VALID TYPE.
+                switch (itemData.TypeId)
+                {
+                    case DTOLayer.Enums.ItemTypes.Potion:
+                    case DTOLayer.Enums.ItemTypes.Food:
+                    case DTOLayer.Enums.ItemTypes.MoneyBag:
+                        return SocketResponse.GetError("Invalid Item To Wear!");
+                }
 
                 // WE MAKE SURE THE SAME TYPE ITEM DIDN'T NOT WORN.
                 List<UserItemDTO> equippedItems = inventory.Items.FindAll(y => y.Equipped);
@@ -44,7 +54,10 @@ namespace TurnBase.Server.Controllers
                 {
                     ItemDTO eItemData = ItemService.GetItem(e.ItemID);
                     if (eItemData.TypeId == itemData.TypeId)
+                    {
                         e.Equipped = false;
+                        unequippedUserItemId = e.UserItemID;
+                    }
                 });
 
                 inventoryItem.Equipped = true;
@@ -56,7 +69,8 @@ namespace TurnBase.Server.Controllers
 
             return SocketResponse.GetSuccess(new EquipItemResponseDTO
             {
-                UserItemId = requestData.UserItemId
+                EquippedUserItemId = requestData.UserItemId,
+                UnequippedUserItemId = unequippedUserItemId
             });
         }
 
@@ -82,7 +96,7 @@ namespace TurnBase.Server.Controllers
 
             return SocketResponse.GetSuccess(new EquipItemResponseDTO
             {
-                UserItemId = requestData.UserItemId
+                UnequippedUserItemId = requestData.UserItemId
             });
         }
     }

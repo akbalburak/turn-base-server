@@ -21,9 +21,9 @@ namespace TurnBase.DTOLayer.Models
         [JsonProperty("B")] public double MinValue { get; set; }
         [JsonProperty("C")] public double MaxValue { get; set; }
 
-        public double GetValue(int quality)
+        public double GetValue(float quality)
         {
-            double value = MinValue + (MaxValue - MinValue) * (quality / 100f);
+            double value = MinValue + (MaxValue - MinValue) * quality;
             return Math.Round(value, 2);
         }
     }

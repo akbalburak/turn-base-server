@@ -11,6 +11,7 @@
         LoadItems = 7,
         EquipItem = 8,
         UnequipItem = 9,
-        Parameters = 10
+        Parameters = 10,
+        InventoryModified = 11
     }
 }

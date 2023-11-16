@@ -141,12 +141,17 @@ namespace TurnBase.Server.ServerModels
             {
                 Stopwatch sw = Stopwatch.StartNew();
 
-                SocketResponse response = ActionSelector.ExecuteAction(this, request);
-                response.SetRequest(request);
+                SocketResponse response;
+
+                lock (this)
+                {
+                    response = ActionSelector.ExecuteAction(this, request);
+                    response.SetRequest(request);
+                }
 
                 sw.Stop();
 
-                TcpServer.WriteLog("Unknown User", $"{request.Method} -> {sw.ElapsedMilliseconds}ms");
+                TcpServer.WriteLog(User?.UserName, $"{request.Method} -> {sw.ElapsedMilliseconds}ms");
 
                 byte[] responseBytes = response.ToByteArray();
 
@@ -177,7 +182,7 @@ namespace TurnBase.Server.ServerModels
                     SocketResponse response = new SocketResponse(request, false, error);
 
                     byte[] responseBytes = response.ToByteArray();
-                    
+
                     lock (_waitingResponses)
                         _waitingResponses.Add(new Tuple<SocketRequest, byte[]>(request, responseBytes));
 

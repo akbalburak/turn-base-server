@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace TurnBase.DTOLayer.Models
 {
@@ -11,10 +12,47 @@ namespace TurnBase.DTOLayer.Models
             Items = new List<UserItemDTO>();
         }
 
-        public void AddItem(UserItemDTO item)
+        private UserItemDTO AddItem(UserItemDTO item)
         {
             item.UserItemID = ++IdCounter;
             Items.Add(item);
+            return item;
+        }
+        public UserItemDTO AddStackable(ItemDTO item, int quantity)
+        {
+            UserItemDTO inventoryItem = Items.Find(y => y.ItemID == item.Id);
+
+            if (inventoryItem == null)
+            {
+                inventoryItem = new UserItemDTO
+                {
+                    ItemID = item.Id,
+                    Quantity = quantity,
+                    IsNew = true
+                };
+
+                AddItem(inventoryItem);
+            }
+            else
+            {
+                inventoryItem.Quantity += quantity;
+            }
+
+            return inventoryItem;
+        }
+
+        public UserItemDTO AddNonStackableItem(ItemDTO item, int level, float quality)
+        {
+            UserItemDTO inventoryItem = new UserItemDTO
+            {
+                ItemID = item.Id,
+                Quantity = 1,
+                Quality = quality,
+                Level = level,
+                IsNew = true,
+            };
+
+            return AddItem(inventoryItem);
         }
 
         public UserItemDTO GetItem(int userItemId)
@@ -30,7 +68,8 @@ namespace TurnBase.DTOLayer.Models
 
     public class EquipItemResponseDTO
     {
-        [JsonProperty("A")] public int UserItemId { get; set; }
+        [JsonProperty("A")] public int EquippedUserItemId { get; set; }
+        [JsonProperty("B")] public int UnequippedUserItemId { get; set;}
     }
 
 }

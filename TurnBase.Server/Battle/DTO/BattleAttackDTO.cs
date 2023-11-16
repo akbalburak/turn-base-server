@@ -1,8 +1,10 @@
-﻿namespace TurnBase.Server.Battle.DTO
+﻿using Newtonsoft.Json;
+
+namespace TurnBase.Server.Battle.DTO
 {
     public class BattleAttackDTO
     {
-        public List<BattleAttackItemDTO> Attacks { get; private set; }
+        [JsonProperty("A")] public List<BattleAttackItemDTO> Attacks { get; private set; }
         public BattleAttackDTO()
         {
             Attacks = new List<BattleAttackItemDTO>();
@@ -16,9 +18,9 @@
 
     public class BattleAttackItemDTO
     {
-        public int AttackerID { get; set; }
-        public int DefenderID { get; set; }
-        public int Damage { get; set; }
+        [JsonProperty("A")] public int AttackerID { get; set; }
+        [JsonProperty("B")] public int DefenderID { get; set; }
+        [JsonProperty("C")] public int Damage { get; set; }
 
         public BattleAttackItemDTO(int attackerId, int defenderId, int damage)
         {
@@ -26,11 +28,5 @@
             this.DefenderID = defenderId;
             this.Damage = damage;
         }
-    }
-
-    public class BattleAttackRequestDTO
-    {
-        public int TargetID { get; set; }
-        public int SkillID { get; set; }
     }
 }

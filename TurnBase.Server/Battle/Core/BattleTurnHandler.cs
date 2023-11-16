@@ -49,7 +49,7 @@ namespace TurnBase.Server.Battle.Core
                 return;
 
             // TURN CHANGED DATA.
-            BattleTurnDTO unitTurnData = new BattleTurnDTO(_currentTurn.Unit.Id);
+            BattleTurnDTO unitTurnData = new BattleTurnDTO(_currentTurn.Unit.UniqueId);
             _battle.SendToAllUsers(BattleActions.TurnUpdated, unitTurnData);
 
             _currentTurn.Unit.CallTurnStart();

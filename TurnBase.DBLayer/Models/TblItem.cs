@@ -10,7 +10,7 @@ public partial class TblItem
     public string Name { get; set; } = null!;
 
     public int TypeId { get; set; }
-
+    
     public virtual ICollection<TblItemProperty> TblItemProperties { get; set; } = new List<TblItemProperty>();
 
     public virtual TblItemType Type { get; set; } = null!;

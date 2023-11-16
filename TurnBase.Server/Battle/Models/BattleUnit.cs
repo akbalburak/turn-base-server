@@ -14,7 +14,7 @@ namespace TurnBase.Server.Battle.Models
         private static Random _random = new Random();
 
         public int TeamIndex { get; set; }
-        public int Id { get; private set; }
+        public int UniqueId { get; private set; }
 
         public int Position { get; private set; }
         public int Health { get; private set; }
@@ -37,7 +37,7 @@ namespace TurnBase.Server.Battle.Models
         {
             this.TeamIndex = teamIndex;
         }
-        public void SetId(int id) { Id = id; }
+        public void SetId(int id) { UniqueId = id; }
         public void ReduceHealth(int reduction)
         {
             this.Health -= reduction;

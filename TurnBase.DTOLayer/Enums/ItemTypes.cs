@@ -13,6 +13,6 @@ namespace TurnBase.DTOLayer.Enums
         OffHand = 6,
         Potion = 7,
         Food = 8,
-        Ring = 9
+        MoneyBag = 9
     }
 }

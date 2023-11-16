@@ -9,7 +9,7 @@ namespace TurnBase.DTOLayer.Models
         [JsonProperty("C")] public int Quantity { get; set; }
         [JsonProperty("D")] public bool IsNew { get; set; }
         [JsonProperty("E")] public bool Equipped { get; set; }
-        [JsonProperty("F")] public int Quality { get; set; }
+        [JsonProperty("F")] public float Quality { get; set; }
         [JsonProperty("H")] public int Level { get; set; }
     }
 }
