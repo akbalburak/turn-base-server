@@ -16,7 +16,7 @@ namespace TurnBase.Server.Core.Services
 
         public static void Initialize()
         {
-            string[] files = Directory.GetFiles("Battle/Stages", string.Empty, SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles("Data/Stages", string.Empty, SearchOption.AllDirectories);
 
             foreach (string file in files)
             {
@@ -29,12 +29,13 @@ namespace TurnBase.Server.Core.Services
                 if (levelData == null)
                     continue;
 
+                // WE ASSIGN ALL DIFFICULITIES WITH THEIR LEVELS.
                 levelData.Difficulities.ForEach(diffData =>
                 {
                     string levelName = GetLevelKey(levelData.Stage, levelData.Level, diffData.Difficulity);
                     _levelData.Add(levelName, new BattleDataResponseDTO
                     {
-                        FirstTimeRewards = diffData.FirstCompletionRewards.Select(y => new BattleDTO.BattleRewardItemData
+                        FirstTimeRewards = diffData.FirstCompletionRewards.Select(y => new BattleDTO.BattleDataRewardItemDTO
                         {
                             ItemId = y.ItemId,
                             Level = y.Level,

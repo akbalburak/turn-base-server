@@ -22,10 +22,10 @@ namespace TurnBase.DTOLayer.Models
 
         public class BattleDataResponseDTO
         {
-            [JsonProperty("A")] public List<BattleRewardItemData> FirstTimeRewards { get; set; }
+            [JsonProperty("A")] public List<BattleDataRewardItemDTO> FirstTimeRewards { get; set; }
         }
 
-        public class BattleRewardItemData
+        public class BattleDataRewardItemDTO
         {
             [JsonProperty("A")] public int ItemId { get; set; }
             [JsonProperty("B")] public int Quantity { get; set; }

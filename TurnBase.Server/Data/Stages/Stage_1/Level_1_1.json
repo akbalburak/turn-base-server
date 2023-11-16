@@ -1,7 +1,6 @@
 {
   "Stage": 1,
   "Level": 1,
-  "LevelName": "Level - 1",
   "Difficulities": [
     {
       "Difficulity": "Normal",
@@ -52,38 +51,38 @@
             }
           ]
         },
-        //// WAVE 2.
-        //{
-        //  "Units": [
-        //    {
-        //      "Position": 0,
-        //      "UnitId": 1,
-        //      "Stats": {
-        //        "MaxHealth": 6,
-        //        "Damage": 3,
-        //        "AttackSpeed": 1.1
-        //      }
-        //    },
-        //    {
-        //      "Position": 2,
-        //      "UnitId": 1,
-        //      "Stats": {
-        //        "MaxHealth": 6,
-        //        "Damage": 3,
-        //        "AttackSpeed": 1.1
-        //      }
-        //    },
-        //    {
-        //      "Position": 4,
-        //      "UnitId": 2,
-        //      "Stats": {
-        //        "MaxHealth": 18,
-        //        "Damage": 4,
-        //        "AttackSpeed": 1.6
-        //      }
-        //    }
-        //  ]
-        //}
+        // WAVE 2.
+        {
+          "Units": [
+            {
+              "Position": 0,
+              "UnitId": 1,
+              "Stats": {
+                "MaxHealth": 6,
+                "Damage": 3,
+                "AttackSpeed": 1.1
+              }
+            },
+            {
+              "Position": 2,
+              "UnitId": 1,
+              "Stats": {
+                "MaxHealth": 6,
+                "Damage": 3,
+                "AttackSpeed": 1.1
+              }
+            },
+            {
+              "Position": 4,
+              "UnitId": 2,
+              "Stats": {
+                "MaxHealth": 18,
+                "Damage": 4,
+                "AttackSpeed": 1.6
+              }
+            }
+          ]
+        }
       ]
     },
     {
