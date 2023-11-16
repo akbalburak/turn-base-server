@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
+using TurnBase.Server.Server;
 
 namespace TurnBase.Server.Extends.Json
 {

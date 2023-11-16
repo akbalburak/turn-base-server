@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
-using TurnBase.Server;
-using TurnBase.Server.Services;
+using TurnBase.Server.Core.Services;
+using TurnBase.Server.Server;
+using TurnBase.Server.Server.Services;
 
 internal class Program
 {
