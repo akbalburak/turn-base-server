@@ -4,13 +4,15 @@ namespace TurnBase.Server.Battle.Models
 {
     public class BattleLevelData
     {
-        public string Key { get; private set; }
+        public int Stage { get; private set; }
+        public int Level { get; set; }
         public string LevelName { get; private set; }
         public List<BattleDifficulityData> Difficulities { get; private set; }
 
-        public BattleLevelData(string key, string levelName, List<BattleDifficulityData> difficulities)
+        public BattleLevelData(int stage,int level, string levelName, List<BattleDifficulityData> difficulities)
         {
-            this.Key = key;
+            this.Stage = stage;
+            this.Level = level;
             this.LevelName = levelName;
             this.Difficulities = difficulities;
         }

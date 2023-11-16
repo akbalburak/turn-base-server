@@ -13,11 +13,24 @@ namespace TurnBase.DTOLayer.Models
             [JsonProperty("C")] public LevelDifficulities Difficulity { get; set; }
         }
 
-        public class BattleRewardRequestDTO
+        public class BattleDataRequestDTO
         {
             [JsonProperty("A")] public int StageIndex { get; set; }
             [JsonProperty("B")] public int LevelIndex { get; set; }
             [JsonProperty("C")] public LevelDifficulities Difficulity { get; set; }
+        }
+
+        public class BattleDataResponseDTO
+        {
+            [JsonProperty("A")] public List<BattleRewardItemData> FirstTimeRewards { get; set; }
+        }
+
+        public class BattleRewardItemData
+        {
+            [JsonProperty("A")] public int ItemId { get; set; }
+            [JsonProperty("B")] public int Quantity { get; set; }
+            [JsonProperty("C")] public int Level { get; set; }
+            [JsonProperty("D")] public float Quality { get; set; }
         }
     }
 }

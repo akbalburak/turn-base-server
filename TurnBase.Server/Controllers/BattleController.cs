@@ -66,13 +66,19 @@ namespace TurnBase.Server.Controllers
 
         public static SocketResponse GetBattleRewards(SocketMethodParameter smp)
         {
-            BattleDTO.BattleRewardRequestDTO requestData = smp
-                .GetRequestData<BattleDTO.BattleRewardRequestDTO>();
+            BattleDTO.BattleDataRequestDTO requestData = smp
+                .GetRequestData<BattleDTO.BattleDataRequestDTO>();
 
-            BattleLevelData levelData = BattleLevelService.GetLevelMetaData(requestData.StageIndex,requestData.LevelIndex);
-            BattleDifficulityData difficulityData = levelData.GetDifficulityData(requestData.Difficulity);
+            BattleDTO.BattleDataResponseDTO levelData = BattleLevelService.GetLevelMetaData(
+                requestData.StageIndex,
+                requestData.LevelIndex,
+                requestData.Difficulity
+            );
 
-            return SocketResponse.GetSuccess(difficulityData.FirstCompletionRewards);
+            if (levelData == null)
+                return SocketResponse.GetSuccess(new BattleDTO.BattleDataResponseDTO());
+            else
+                return SocketResponse.GetSuccess(levelData);
         }
     }
 }
