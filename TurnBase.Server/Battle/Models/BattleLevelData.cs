@@ -1,5 +1,4 @@
 ﻿using TurnBase.DTOLayer.Enums;
-using TurnBase.DTOLayer.Models;
 
 namespace TurnBase.Server.Battle.Models
 {

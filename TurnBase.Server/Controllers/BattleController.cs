@@ -2,8 +2,9 @@
 using TurnBase.DTOLayer.Models;
 using TurnBase.Server.Battle;
 using TurnBase.Server.Battle.DTO;
-using TurnBase.Server.Battle.Services;
+using TurnBase.Server.Battle.Models;
 using TurnBase.Server.ServerModels;
+using TurnBase.Server.Services;
 
 namespace TurnBase.Server.Controllers
 {
@@ -17,18 +18,22 @@ namespace TurnBase.Server.Controllers
             BattleDTO.BattleRequestDTO requestData = smp
                 .GetRequestData<BattleDTO.BattleRequestDTO>();
 
+            // WE GET USER DATA.
             TblUser user = smp.UOW.GetRepository<TblUser>()
                 .Find(y => y.Id == smp.SocketUser.User.Id);
 
+            // WE CHECK IF WE ARE GOING TO GIVE USER THE LEVEL REWARDS.
             CampaignDTO campaign = user.GetCampaign();
             bool isFirstCompletion = !campaign.IsDifficulityCompleted(
                 requestData.StageIndex,
                 requestData.LevelIndex,
                 requestData.Difficulity);
 
-            Battle.Models.UnitStats userStats = new Battle.Models.UnitStats();
+            // WE LOAD ALL THE STATS OF THE PLAYER.
+            UnitStats userStats = new UnitStats();
             userStats.SetUser(user);
 
+            // WE CREATE A CAMPAIGN LEVEL.
             BattleService.CreateALevel(new BattleUser[]
                 {
                     new BattleUser(
@@ -57,6 +62,17 @@ namespace TurnBase.Server.Controllers
             smp.SocketUser.CurrentBattle.ExecuteAction(smp.SocketUser, actionData);
 
             return SocketResponse.GetSuccess();
+        }
+
+        public static SocketResponse GetBattleRewards(SocketMethodParameter smp)
+        {
+            BattleDTO.BattleRewardRequestDTO requestData = smp
+                .GetRequestData<BattleDTO.BattleRewardRequestDTO>();
+
+            BattleLevelData levelData = BattleLevelService.GetLevelMetaData(requestData.StageIndex,requestData.LevelIndex);
+            BattleDifficulityData difficulityData = levelData.GetDifficulityData(requestData.Difficulity);
+
+            return SocketResponse.GetSuccess(difficulityData.FirstCompletionRewards);
         }
     }
 }

@@ -12,6 +12,7 @@
         EquipItem = 8,
         UnequipItem = 9,
         Parameters = 10,
-        InventoryModified = 11
+        InventoryModified = 11,
+        LevelData = 12
     }
 }

@@ -42,6 +42,9 @@ namespace TurnBase.Server
                     case Enums.ActionTypes.Parameters:
                         response = ParameterController.GetParameters(smp);
                         break;
+                    case Enums.ActionTypes.LevelData:
+                        response = BattleController.GetBattleRewards(smp);
+                        break;
                     default:
                         Console.WriteLine("Methot Bulunamadı");
                         response = null;

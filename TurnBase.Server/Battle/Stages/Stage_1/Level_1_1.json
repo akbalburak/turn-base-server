@@ -99,6 +99,17 @@
           "Chance": 0.1
         }
       ],
+      "FirstCompletionRewards": [
+        {
+          "ItemId": 4,
+          "Level": 1,
+          "Quality": 1
+        },
+        {
+          "ItemId": 5,
+          "Quantity": 1
+        }
+      ],
       "Waves": [
         // WAVE 1.
         {
