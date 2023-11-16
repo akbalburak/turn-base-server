@@ -1,9 +1,6 @@
-﻿using TurnBase.DTOLayer.Enums;
-using TurnBase.Server.Core.Battle.Core.Skills;
-using TurnBase.Server.Core.Battle.DTO;
+﻿using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Core.Battle.Models;
-using TurnBase.Server.Core.Controllers;
 using TurnBase.Server.Server.ServerModels;
 
 namespace TurnBase.Server.Core.Battle.Core

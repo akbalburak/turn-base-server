@@ -15,7 +15,11 @@ public partial class DbTurnBaseDevContext : DbContext
     {
     }
 
+    public virtual DbSet<TblContent> TblContents { get; set; }
+
     public virtual DbSet<TblItem> TblItems { get; set; }
+
+    public virtual DbSet<TblItemContent> TblItemContents { get; set; }
 
     public virtual DbSet<TblItemProperty> TblItemProperties { get; set; }
 
@@ -41,6 +45,14 @@ public partial class DbTurnBaseDevContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<TblContent>(entity =>
+        {
+            entity.ToTable("tbl_contents");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<TblItem>(entity =>
         {
             entity.ToTable("tbl_items");
@@ -52,6 +64,28 @@ public partial class DbTurnBaseDevContext : DbContext
                 .HasForeignKey(d => d.TypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tbl_items_tbl_item_types");
+        });
+
+        modelBuilder.Entity<TblItemContent>(entity =>
+        {
+            entity.HasKey(e => e.ItemContentId);
+
+            entity.ToTable("tbl_item_contents");
+
+            entity.Property(e => e.ItemContentId).HasColumnName("ItemContentID");
+            entity.Property(e => e.ContentId).HasColumnName("ContentID");
+            entity.Property(e => e.IndexId).HasColumnName("IndexID");
+            entity.Property(e => e.ItemId).HasColumnName("ItemID");
+
+            entity.HasOne(d => d.Content).WithMany(p => p.TblItemContents)
+                .HasForeignKey(d => d.ContentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_item_contents_tbl_contents");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.TblItemContents)
+                .HasForeignKey(d => d.ItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_item_contents_tbl_items");
         });
 
         modelBuilder.Entity<TblItemProperty>(entity =>

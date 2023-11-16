@@ -45,6 +45,9 @@ namespace TurnBase.Server
                     case Enums.ActionTypes.LevelData:
                         response = BattleController.GetBattleRewards(smp);
                         break;
+                    case Enums.ActionTypes.UseItem:
+                        response = InventoryController.UseAnItem(smp);
+                        break;
                     default:
                         Console.WriteLine("Methot Bulunamadı");
                         response = null;

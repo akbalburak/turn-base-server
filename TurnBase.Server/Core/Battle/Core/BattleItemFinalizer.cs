@@ -49,48 +49,36 @@ namespace TurnBase.Server.Core.Battle.Core
                             if (itemData == null)
                                 continue;
 
-                            switch (itemData.TypeId)
+                            // IF ITEM CAN STACK WE ADD AS STACKABLE.
+                            if (itemData.CanStack)
                             {
-                                // NON STACKABLE ITEMS.
-                                case ItemTypes.Helmet:
-                                case ItemTypes.Armor:
-                                case ItemTypes.Shoes:
-                                case ItemTypes.Bag:
-                                case ItemTypes.MainHand:
-                                case ItemTypes.OffHand:
-                                default:
-                                    {
-                                        UserItemDTO addedItem = inventory.AddNonStackableItem(
-                                            item: itemData,
-                                            level: reward.Level,
-                                            quality: reward.Quality
-                                        );
+                                UserItemDTO addedItem = inventory.AddStackable(
+                                    item: itemData,
+                                    quantity: reward.Quantity
+                                );
 
-                                        inventoryChanges.Items.Add(new InventoryModifiedItemDTO(
-                                           userItemId: addedItem.UserItemID,
-                                           itemId: reward.ItemId,
-                                           level: reward.Level,
-                                           quality: reward.Quality
-                                       ));
-                                    }
-                                    break;
-                                // STACKABLE ITEMS.
-                                case ItemTypes.Potion:
-                                case ItemTypes.Food:
-                                case ItemTypes.MoneyBag:
-                                    {
-                                        UserItemDTO addedItem = inventory.AddStackable(
-                                            item: itemData,
-                                            quantity: reward.Quantity
-                                        );
+                                inventoryChanges.Items.Add(new InventoryModifiedItemDTO(
+                                    userItemId: addedItem.UserItemID,
+                                    itemId: reward.ItemId,
+                                    quantity: reward.Quantity,
+                                    isAdd: true
+                                ));
+                            }
+                            else
+                            {
+                                UserItemDTO addedItem = inventory.AddNonStackableItem(
+                                    item: itemData,
+                                    level: reward.Level,
+                                    quality: reward.Quality
+                                );
 
-                                        inventoryChanges.Items.Add(new InventoryModifiedItemDTO(
-                                            userItemId: addedItem.UserItemID,
-                                            itemId: reward.ItemId,
-                                            quantity: reward.Quantity
-                                        ));
-                                    }
-                                    break;
+                                inventoryChanges.Items.Add(new InventoryModifiedItemDTO(
+                                   userItemId: addedItem.UserItemID,
+                                   itemId: reward.ItemId,
+                                   level: reward.Level,
+                                   quality: reward.Quality,
+                                   isAdd: true
+                               ));
                             }
 
                         }

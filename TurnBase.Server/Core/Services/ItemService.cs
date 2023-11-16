@@ -25,6 +25,13 @@ namespace TurnBase.Server.Core.Services
                         PropertyId = (ItemProperties)p.PropertyId,
                         MaxValue = p.MaxValue,
                         MinValue = p.MinValue
+                    }).ToArray(),
+                    Contents = y.TblItemContents.Select(c => new ItemContentDTO
+                    {
+                        ContentId = (ItemContents)c.ContentId,
+                        IndexId = c.IndexId,
+                        ItemId = c.ItemId,
+                        Value = c.Value
                     }).ToArray()
                 }).ToArray();
             }

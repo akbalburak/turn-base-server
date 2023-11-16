@@ -27,6 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Data\Stages\Stage_1\Level_1_2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Stages\Stage_1\Level_1_1.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
