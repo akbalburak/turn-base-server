@@ -9,8 +9,6 @@ namespace TurnBase.Server
         {
             using (SocketMethodParameter smp = new SocketMethodParameter(socketUser, request))
             {
-                smp.LoadUserData();
-
                 SocketResponse response = null;
 
                 switch (request.Method)
@@ -56,7 +54,6 @@ namespace TurnBase.Server
 
                 if (response != null && response.IsSuccess)
                 {
-                    smp.SendUsersToUnExpectedQueue();
                     smp.ExecuteOnSuccess();
                 }
 

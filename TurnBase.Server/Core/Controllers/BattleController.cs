@@ -1,8 +1,8 @@
 ﻿using TurnBase.DBLayer.Models;
-using TurnBase.DTOLayer.Models;
 using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Models;
 using TurnBase.Server.Core.Services;
+using TurnBase.Server.Models;
 using TurnBase.Server.Server.ServerModels;
 
 namespace TurnBase.Server.Core.Controllers

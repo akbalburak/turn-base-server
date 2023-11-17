@@ -1,5 +1,5 @@
 ﻿
-namespace TurnBase.DTOLayer.Enums
+namespace TurnBase.Server.Enums
 {
     public enum ItemProperties
     {

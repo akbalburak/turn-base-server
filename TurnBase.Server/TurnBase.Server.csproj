@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TurnBase.DBLayer\TurnBase.DBLayer.csproj" />
-    <ProjectReference Include="..\TurnBase.DTOLayer\TurnBase.DTOLayer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

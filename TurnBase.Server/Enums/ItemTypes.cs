@@ -1,7 +1,4 @@
-﻿using TurnBase;
-using TurnBase.DTOLayer.Enums;
-
-namespace TurnBase.DTOLayer.Enums
+﻿namespace TurnBase.Server.Enums
 {
     public enum ItemTypes
     {

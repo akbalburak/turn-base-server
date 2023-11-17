@@ -1,14 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TurnBase;
-using TurnBase.DTOLayer;
-using TurnBase.DTOLayer.Models;
 
-namespace TurnBase.DTOLayer.Models
+namespace TurnBase.Server.Models
 {
     public class LoginDTO
     {

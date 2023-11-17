@@ -1,8 +1,8 @@
-﻿using TurnBase.DTOLayer.Enums;
-using TurnBase.DTOLayer.Models;
-using TurnBase.Server.Core.Battle.Models;
+﻿using TurnBase.Server.Core.Battle.Models;
+using TurnBase.Server.Enums;
 using TurnBase.Server.Extends.Json;
-using static TurnBase.DTOLayer.Models.BattleDTO;
+using TurnBase.Server.Models;
+using static TurnBase.Server.Models.BattleDTO;
 
 namespace TurnBase.Server.Core.Services
 {

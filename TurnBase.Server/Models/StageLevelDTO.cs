@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
-using System;
-using TurnBase.DTOLayer.Enums;
+using TurnBase.Server.Enums;
 
-namespace TurnBase.DTOLayer.Models
+namespace TurnBase.Server.Models
 {
     public class StageLevelDTO
     {

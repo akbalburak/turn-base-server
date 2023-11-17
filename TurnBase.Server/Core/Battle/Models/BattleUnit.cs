@@ -1,11 +1,10 @@
-﻿using Newtonsoft.Json;
-using TurnBase.DBLayer.Models;
-using TurnBase.DTOLayer.Enums;
-using TurnBase.DTOLayer.Models;
+﻿using TurnBase.DBLayer.Models;
 using TurnBase.Server.Core.Battle.Core.Skills;
 using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Controllers;
 using TurnBase.Server.Core.Services;
+using TurnBase.Server.Enums;
+using TurnBase.Server.Models;
 
 namespace TurnBase.Server.Core.Battle.Models
 {
@@ -108,7 +107,7 @@ namespace TurnBase.Server.Core.Battle.Models
         {
             MaxHealth = ParameterService.GetIntValue(Parameters.BaseHealth);
 
-            InventoryDTO inventory = user.GetInventory();
+            InventoryDTO inventory = user.GetInventory(null);
 
             // WE LOOP ALL THE WORN ITEMS.
             foreach (UserItemDTO inventoryItem in inventory.Items)

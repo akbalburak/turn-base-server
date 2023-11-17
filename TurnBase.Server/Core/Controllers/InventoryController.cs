@@ -1,20 +1,29 @@
-﻿using TurnBase.DBLayer.Models;
-using TurnBase.DTOLayer.Enums;
-using TurnBase.DTOLayer.Models;
+﻿using Newtonsoft.Json;
+using TurnBase.DBLayer.Models;
 using TurnBase.Server.Core.Services;
 using TurnBase.Server.Enums;
 using TurnBase.Server.Extends.Json;
+using TurnBase.Server.Interfaces;
+using TurnBase.Server.Models;
 using TurnBase.Server.Server.ServerModels;
+using TurnBase.Server.Trackables;
 
 namespace TurnBase.Server.Core.Controllers
 {
     public static class InventoryController
     {
-        public static InventoryDTO GetInventory(this TblUser user)
+        public static InventoryDTO GetInventory(this TblUser user, IChangeManager changeHandler)
         {
+            InventoryDTO inventory;
+
             if (string.IsNullOrEmpty(user.Inventory))
-                return new InventoryDTO();
-            return user.Inventory.ToObject<InventoryDTO>();
+                inventory = new InventoryDTO();
+            else
+                inventory = JsonConvert.DeserializeObject<InventoryDTO>(user.Inventory);
+
+            inventory.SetChangeHandler(changeHandler);
+
+            return inventory;
         }
 
         public static void UpdateInventory(this TblUser user, InventoryDTO inventory)
@@ -27,48 +36,43 @@ namespace TurnBase.Server.Core.Controllers
             EquipItemRequestDTO requestData = smp.GetRequestData<EquipItemRequestDTO>();
 
             // USER INFORMATION.
-            TblUser user = smp.UOW.GetRepository<TblUser>()
-                .Find(x => x.Id == smp.SocketUser.User.Id);
+            TrackedUser user = UserService.GetTrackedUser(smp, smp.SocketUser.User.Id);
 
             // LOAD PLAYER INVENTORY.
             InventoryDTO inventory = user.GetInventory();
 
             // WE GET THE INVENTORY ITEM.
             UserItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
-            int unequippedUserItemId = 0;
             if (inventoryItem != null)
             {
                 // WE MAKE SURE THE SAME TYPE ITEM NOT WORN.
                 ItemDTO itemData = ItemService.GetItem(inventoryItem.ItemID);
 
                 // WE MAKE SURE THE ITEM IS VALID TYPE.
-                if (itemData.Action != DTOLayer.Enums.ItemActions.Equipable)
+                if (itemData.Action != ItemActions.Equipable)
                     return SocketResponse.GetError("Invalid Item To Wear!");
 
                 // WE MAKE SURE THE SAME TYPE ITEM DIDN'T NOT WORN.
                 List<UserItemDTO> equippedItems = inventory.Items.FindAll(y => y.Equipped);
-                equippedItems.ForEach(e =>
+                equippedItems.ForEach(equippedItem =>
                 {
-                    ItemDTO eItemData = ItemService.GetItem(e.ItemID);
+                    ItemDTO eItemData = ItemService.GetItem(equippedItem.ItemID);
                     if (eItemData.TypeId == itemData.TypeId)
                     {
-                        e.Equipped = false;
-                        unequippedUserItemId = e.UserItemID;
+                        equippedItem.Equipped = false;
+                        inventory.SetAsChanged(equippedItem);
                     }
                 });
 
                 inventoryItem.Equipped = true;
+                inventory.SetAsChanged(inventoryItem);
             }
 
+            // SAVE CHANGES ON DB SIDE TOO.
             user.UpdateInventory(inventory);
-
             smp.UOW.SaveChanges();
 
-            return SocketResponse.GetSuccess(new EquipItemResponseDTO
-            {
-                EquippedUserItemId = requestData.UserItemId,
-                UnequippedUserItemId = unequippedUserItemId
-            });
+            return SocketResponse.GetSuccess();
         }
 
         public static SocketResponse UnequipItem(SocketMethodParameter smp)
@@ -76,8 +80,7 @@ namespace TurnBase.Server.Core.Controllers
             EquipItemRequestDTO requestData = smp.GetRequestData<EquipItemRequestDTO>();
 
             // USER INFORMATION.
-            TblUser user = smp.UOW.GetRepository<TblUser>()
-                .Find(x => x.Id == smp.SocketUser.User.Id);
+            TrackedUser user = UserService.GetTrackedUser(smp, smp.SocketUser.User.Id);
 
             // LOAD PLAYER INVENTORY.
             InventoryDTO inventory = user.GetInventory();
@@ -85,16 +88,16 @@ namespace TurnBase.Server.Core.Controllers
             // WE GET THE INVENTORY ITEM.
             UserItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
             if (inventoryItem != null)
+            {
                 inventoryItem.Equipped = false;
+                inventory.SetAsChanged(inventoryItem);
+            }
 
+            // SAVE CHANGES IN DB SIDE TOO.
             user.UpdateInventory(inventory);
-
             smp.UOW.SaveChanges();
 
-            return SocketResponse.GetSuccess(new EquipItemResponseDTO
-            {
-                UnequippedUserItemId = requestData.UserItemId
-            });
+            return SocketResponse.GetSuccess();
         }
 
         public static SocketResponse UseAnItem(SocketMethodParameter smp)
@@ -102,8 +105,7 @@ namespace TurnBase.Server.Core.Controllers
             UseItemRequestDTO requestData = smp.GetRequestData<UseItemRequestDTO>();
 
             // USER INFORMATION.
-            TblUser user = smp.UOW.GetRepository<TblUser>()
-                .Find(x => x.Id == smp.SocketUser.User.Id);
+            TrackedUser user = UserService.GetTrackedUser(smp, smp.SocketUser.User.Id);
 
             // LOAD PLAYER INVENTORY.
             InventoryDTO inventory = user.GetInventory();
@@ -122,15 +124,6 @@ namespace TurnBase.Server.Core.Controllers
             if (itemData.Action != ItemActions.Usable)
                 return SocketResponse.GetError("Invalid Item To Wear!");
 
-            // CHANGES TO TELL PLAYER.
-            InventoryModifiedDTO inventoryChanges = new InventoryModifiedDTO();
-            inventoryChanges.Items.Add(new InventoryModifiedItemDTO(
-                userItemId: inventoryItem.UserItemID,
-                itemId: inventoryItem.ItemID,
-                quantity: 1,
-                isAdd: false
-            ));
-
             // WE REMOVE ONE ITEM.
             if (itemData.CanStack)
                 inventory.RemoveStackable(inventoryItem, 1);
@@ -143,20 +136,13 @@ namespace TurnBase.Server.Core.Controllers
                 switch (content.ContentId)
                 {
                     case ItemContents.Coins:
-                        user.Gold += (int)content.Value;
+                        user.AddGolds((int)content.Value);
                         break;
                 }
             }
 
             user.UpdateInventory(inventory);
-
             smp.UOW.SaveChanges();
-
-            // WE TELL USER WE GAVE YOU SOME REWARDS.
-            smp.SocketUser.AddToUnExpectedAfterSendIt(SocketResponse.GetSuccess(
-                ActionTypes.InventoryModified,
-                inventoryChanges
-            ));
 
             return SocketResponse.GetSuccess();
         }

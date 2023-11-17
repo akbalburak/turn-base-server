@@ -1,4 +1,4 @@
-﻿using TurnBase.DTOLayer.Models;
+﻿using TurnBase.Server.Models;
 using TurnBase.Server.Server.ServerModels;
 
 namespace TurnBase.Server.Core.Controllers

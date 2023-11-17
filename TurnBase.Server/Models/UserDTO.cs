@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace TurnBase.DTOLayer.Models
+namespace TurnBase.Server.Models
 {
     public class UserDTO
     {

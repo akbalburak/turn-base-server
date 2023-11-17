@@ -1,6 +1,6 @@
 ﻿using TurnBase.DBLayer.Models;
-using TurnBase.DTOLayer.Models;
 using TurnBase.Server.Extends.Json;
+using TurnBase.Server.Models;
 
 namespace TurnBase.Server.Core.Controllers
 {

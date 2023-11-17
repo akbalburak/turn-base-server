@@ -1,13 +1,13 @@
 ﻿using TurnBase.DBLayer.Interfaces;
 using TurnBase.DBLayer.Models;
 using TurnBase.DBLayer.Repositories;
-using TurnBase.DTOLayer.Enums;
-using TurnBase.DTOLayer.Models;
 using TurnBase.Server.Core.Battle.Models;
 using TurnBase.Server.Core.Controllers;
 using TurnBase.Server.Core.Services;
 using TurnBase.Server.Enums;
+using TurnBase.Server.Models;
 using TurnBase.Server.Server.ServerModels;
+using TurnBase.Server.Trackables;
 
 namespace TurnBase.Server.Core.Battle.Core
 {
@@ -19,10 +19,9 @@ namespace TurnBase.Server.Core.Battle.Core
             {
                 lock (user)
                 {
-                    using IUnitOfWork uow = new UnitOfWork();
+                    using SocketMethodParameter smp = new SocketMethodParameter(user, null);
 
-                    TblUser userData = uow.GetRepository<TblUser>()
-                        .Find(x => x.Id == userId);
+                    TrackedUser userData = UserService.GetTrackedUser(smp, userId);
 
                     // WE GET THE CAMPAIGN DATA.
                     CampaignDTO campaign = userData.GetCampaign();
@@ -37,9 +36,6 @@ namespace TurnBase.Server.Core.Battle.Core
                     // IF THIS IS THE FIRST TIME ITS COMPLETED.
                     if (firstTimeVictory)
                     {
-                        // WE NEED TO SEND ADDED ITEMS TO USER.
-                        InventoryModifiedDTO inventoryChanges = new InventoryModifiedDTO();
-
                         // WE ADD VICTORY REWARD ITEMS INTO INVENTORY. 
                         InventoryDTO inventory = userData.GetInventory();
                         foreach (BattleRewardItemData reward in _difficulityData.FirstCompletionRewards)
@@ -56,13 +52,6 @@ namespace TurnBase.Server.Core.Battle.Core
                                     item: itemData,
                                     quantity: reward.Quantity
                                 );
-
-                                inventoryChanges.Items.Add(new InventoryModifiedItemDTO(
-                                    userItemId: addedItem.UserItemID,
-                                    itemId: reward.ItemId,
-                                    quantity: reward.Quantity,
-                                    isAdd: true
-                                ));
                             }
                             else
                             {
@@ -71,31 +60,15 @@ namespace TurnBase.Server.Core.Battle.Core
                                     level: reward.Level,
                                     quality: reward.Quality
                                 );
-
-                                inventoryChanges.Items.Add(new InventoryModifiedItemDTO(
-                                   userItemId: addedItem.UserItemID,
-                                   itemId: reward.ItemId,
-                                   level: reward.Level,
-                                   quality: reward.Quality,
-                                   isAdd: true
-                               ));
                             }
 
                         }
                         userData.UpdateInventory(inventory);
 
-                        uow.SaveChanges();
+                    }
 
-                        // WE TELL USER WE GAVE YOU SOME REWARDS.
-                        user.AddToUnExpectedAfterSendIt(SocketResponse.GetSuccess(
-                            ActionTypes.InventoryModified,
-                            inventoryChanges
-                        ));
-                    }
-                    else
-                    {
-                        uow.SaveChanges();
-                    }
+                    smp.UOW.SaveChanges();
+                    smp.ExecuteOnSuccess();
                 }
             });
         }

@@ -1,8 +1,7 @@
-﻿
-using Newtonsoft.Json;
-using TurnBase.DTOLayer.Enums;
+﻿using Newtonsoft.Json;
+using TurnBase.Server.Enums;
 
-namespace TurnBase.DTOLayer.Models
+namespace TurnBase.Server.Models
 {
     public class BattleDTO
     {

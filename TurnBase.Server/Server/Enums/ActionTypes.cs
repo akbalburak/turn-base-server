@@ -14,6 +14,7 @@
         Parameters = 10,
         InventoryModified = 11,
         LevelData = 12,
-        UseItem = 13
+        UseItem = 13,
+        UserGoldModified = 14
     }
 }

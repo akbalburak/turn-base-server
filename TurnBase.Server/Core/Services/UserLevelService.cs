@@ -1,7 +1,7 @@
 ﻿using TurnBase.DBLayer.Interfaces;
 using TurnBase.DBLayer.Models;
 using TurnBase.DBLayer.Repositories;
-using TurnBase.DTOLayer.Models;
+using TurnBase.Server.Models;
 
 namespace TurnBase.Server.Core.Services
 {

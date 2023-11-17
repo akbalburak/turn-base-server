@@ -1,4 +1,4 @@
-﻿namespace TurnBase.DTOLayer.Enums
+﻿namespace TurnBase.Server.Enums
 {
     [Flags]
     public enum LevelDifficulities

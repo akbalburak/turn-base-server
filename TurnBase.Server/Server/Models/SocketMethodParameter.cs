@@ -1,13 +1,12 @@
 ﻿using TurnBase.DBLayer.Interfaces;
 using TurnBase.DBLayer.Repositories;
 using TurnBase.Server.Extends.Json;
+using TurnBase.Server.Interfaces;
 
 namespace TurnBase.Server.Server.ServerModels
 {
-    public class SocketMethodParameter : IDisposable
+    public class SocketMethodParameter : IDisposable, IChangeManager
     {
-        #region PROPS
-
         public DateTime RequestDate { get; }
 
         public IUnitOfWork UOW { get; set; }
@@ -18,46 +17,17 @@ namespace TurnBase.Server.Server.ServerModels
 
         public bool IsDisposed { get; private set; }
 
-        public List<Tuple<SocketUser, SocketResponse>> WaitingUnExpectedActions { get; set; }
-
-        #endregion
-
-        #region CONSTRUCTOR
+        private readonly List<IChangeItem> _changes;
 
         public SocketMethodParameter(SocketUser socketUser, SocketRequest request)
         {
+            _changes = new List<IChangeItem>();
             RequestDate = DateTime.UtcNow;
             SocketUser = socketUser;
             Request = request;
             UOW = new UnitOfWork();
-            WaitingUnExpectedActions = new List<Tuple<SocketUser, SocketResponse>>();
         }
 
-        public SocketMethodParameter(IUnitOfWork uow, DateTime actionDate)
-        {
-            UOW = uow;
-            RequestDate = actionDate;
-            WaitingUnExpectedActions = new List<Tuple<SocketUser, SocketResponse>>();
-        }
-
-        public SocketMethodParameter(DateTime actionDate)
-        {
-            UOW = new UnitOfWork();
-            RequestDate = actionDate;
-            WaitingUnExpectedActions = new List<Tuple<SocketUser, SocketResponse>>();
-        }
-
-        #endregion
-
-        #region USER BIND
-
-        public void LoadUserData()
-        {
-        }
-
-        #endregion
-
-        #region DATA CONTROLL
 
         public T GetRequestData<T>()
         {
@@ -66,34 +36,10 @@ namespace TurnBase.Server.Server.ServerModels
             return Request.Data.ToObject<T>();
         }
 
-        #endregion
-
-        #region UNEXPECTED QUEUEU
-
-        public void AddToUnExpectedQueue(int userId, SocketResponse data)
-        {
-            SocketUser socketUser = null;
-            if (socketUser == null)
-                return;
-
-            lock (WaitingUnExpectedActions)
-                WaitingUnExpectedActions.Add(new Tuple<SocketUser, SocketResponse>(socketUser, data));
-        }
-
-        public void SendUsersToUnExpectedQueue()
-        {
-            lock (WaitingUnExpectedActions)
-            {
-                WaitingUnExpectedActions.ForEach(e => e.Item1.AddToUnExpectedAfterSendIt(e.Item2));
-                WaitingUnExpectedActions.Clear();
-            }
-        }
-
         public void ExecuteOnSuccess()
         {
+            SendAllChanges();
         }
-
-        #endregion
 
         public void Dispose()
         {
@@ -104,6 +50,23 @@ namespace TurnBase.Server.Server.ServerModels
 
             if (!UOW.Disposed)
                 UOW.Dispose();
+        }
+
+        
+        public void AddChanges(IChangeItem changeData)
+        {
+            _changes.Add(changeData);
+        }
+        private void SendAllChanges()
+        {
+            if (_changes.Count == 0)
+                return;
+
+            _changes.ForEach(item =>
+            {
+                SocketResponse responseData = item.GetResponse();
+                SocketUser.AddToUnExpectedAfterSendIt(responseData);
+            });
         }
     }
 }
