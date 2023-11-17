@@ -1,23 +1,17 @@
 ﻿using Newtonsoft.Json;
-using TurnBase.Server.Interfaces;
-using TurnBase.Server.Modifies;
+using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Models
 {
     public class InventoryDTO
     {
+
         [JsonProperty("A")] public int IdCounter { get; set; }
         [JsonProperty("B")] public List<UserItemDTO> Items { get; set; }
 
         public InventoryDTO()
         {
             Items = new List<UserItemDTO>();
-        }
-
-        private IChangeManager _changeHandler;
-        public void SetChangeHandler(IChangeManager changeHandler)
-        {
-            this._changeHandler = changeHandler;
         }
 
         public UserItemDTO GetItem(int userItemId)
@@ -39,6 +33,8 @@ namespace TurnBase.Server.Models
                     UserItemID = ++IdCounter,
                 };
 
+                userItem.SetChangeHandler(_changeHandler);
+
                 Items.Add(userItem);
             }
             else
@@ -46,7 +42,7 @@ namespace TurnBase.Server.Models
                 userItem.Quantity += quantity;
             }
 
-            SetAsChanged(userItem);
+            userItem.SetAsChanged();
 
             return userItem;
         }
@@ -62,8 +58,11 @@ namespace TurnBase.Server.Models
                 IsNew = true,
             };
 
+            userItem.SetChangeHandler(_changeHandler);
+
             Items.Add(userItem);
-            SetAsChanged(userItem);
+
+            userItem.SetAsChanged();
 
             return userItem;
         }
@@ -71,21 +70,25 @@ namespace TurnBase.Server.Models
         public void RemoveStackable(UserItemDTO userItem, int quantity)
         {
             userItem.Quantity -= quantity;
+            
             if (userItem.Quantity <= 0)
                 Items.Remove(userItem);
-            SetAsChanged(userItem);
+
+            userItem.SetAsChanged();
         }
         public void RemoveNonStackable(UserItemDTO userItem)
         {
             Items.Remove(userItem);
-            SetAsChanged(userItem);
+            userItem.SetAsChanged();
         }
 
-
-        public void SetAsChanged(UserItemDTO userItem)
+        private IChangeHandler _changeHandler;
+        public void SetChangeHandler(IChangeHandler changeHandler)
         {
-            _changeHandler.AddChanges(userItem);
+            _changeHandler = changeHandler;
+            Items.ForEach(e => e.SetChangeHandler(_changeHandler));
         }
+
     }
 
     public class EquipItemRequestDTO

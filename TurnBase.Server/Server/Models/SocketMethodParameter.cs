@@ -1,11 +1,11 @@
 ﻿using TurnBase.DBLayer.Interfaces;
 using TurnBase.DBLayer.Repositories;
 using TurnBase.Server.Extends.Json;
-using TurnBase.Server.Interfaces;
+using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Server.ServerModels
 {
-    public class SocketMethodParameter : IDisposable, IChangeManager
+    public class SocketMethodParameter : IDisposable, IChangeHandler
     {
         public DateTime RequestDate { get; }
 

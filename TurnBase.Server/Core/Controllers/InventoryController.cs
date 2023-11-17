@@ -1,9 +1,5 @@
-﻿using Newtonsoft.Json;
-using TurnBase.DBLayer.Models;
-using TurnBase.Server.Core.Services;
+﻿using TurnBase.Server.Core.Services;
 using TurnBase.Server.Enums;
-using TurnBase.Server.Extends.Json;
-using TurnBase.Server.Interfaces;
 using TurnBase.Server.Models;
 using TurnBase.Server.Server.ServerModels;
 using TurnBase.Server.Trackables;
@@ -12,25 +8,6 @@ namespace TurnBase.Server.Core.Controllers
 {
     public static class InventoryController
     {
-        public static InventoryDTO GetInventory(this TblUser user, IChangeManager changeHandler)
-        {
-            InventoryDTO inventory;
-
-            if (string.IsNullOrEmpty(user.Inventory))
-                inventory = new InventoryDTO();
-            else
-                inventory = JsonConvert.DeserializeObject<InventoryDTO>(user.Inventory);
-
-            inventory.SetChangeHandler(changeHandler);
-
-            return inventory;
-        }
-
-        public static void UpdateInventory(this TblUser user, InventoryDTO inventory)
-        {
-            user.Inventory = inventory.ToJson();
-        }
-
         public static SocketResponse EquipItem(SocketMethodParameter smp)
         {
             EquipItemRequestDTO requestData = smp.GetRequestData<EquipItemRequestDTO>();
@@ -59,13 +36,11 @@ namespace TurnBase.Server.Core.Controllers
                     ItemDTO eItemData = ItemService.GetItem(equippedItem.ItemID);
                     if (eItemData.TypeId == itemData.TypeId)
                     {
-                        equippedItem.Equipped = false;
-                        inventory.SetAsChanged(equippedItem);
+                        equippedItem.UpdateEquipState(false);
                     }
                 });
 
-                inventoryItem.Equipped = true;
-                inventory.SetAsChanged(inventoryItem);
+                inventoryItem.UpdateEquipState(true);
             }
 
             // SAVE CHANGES ON DB SIDE TOO.
@@ -87,11 +62,7 @@ namespace TurnBase.Server.Core.Controllers
 
             // WE GET THE INVENTORY ITEM.
             UserItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
-            if (inventoryItem != null)
-            {
-                inventoryItem.Equipped = false;
-                inventory.SetAsChanged(inventoryItem);
-            }
+            inventoryItem?.UpdateEquipState(false);
 
             // SAVE CHANGES IN DB SIDE TOO.
             user.UpdateInventory(inventory);

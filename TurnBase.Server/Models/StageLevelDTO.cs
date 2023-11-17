@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using TurnBase.Server.Enums;
+using TurnBase.Server.Server.ServerModels;
+using TurnBase.Server.Trackables;
 
 namespace TurnBase.Server.Models
 {
-    public class StageLevelDTO
+    public class StageLevelDTO : TrackableDTO
     {
         [JsonProperty("A")] public int Stage { get; set; }
         [JsonProperty("B")] public int Level { get; set; }
@@ -11,7 +13,7 @@ namespace TurnBase.Server.Models
         [JsonProperty("D")] public int PlayCount { get; set; }
         [JsonProperty("E")] public int CompletedCount { get; set; }
 
-        public StageLevelDTO(int stage,int level)
+        public StageLevelDTO(int stage, int level)
         {
             this.Stage = stage;
             this.Level = level;
@@ -33,6 +35,11 @@ namespace TurnBase.Server.Models
         public void IncreasePlayCount()
         {
             this.PlayCount++;
+        }
+
+        public override SocketResponse GetResponse()
+        {
+            return SocketResponse.GetSuccess(ActionTypes.CampaignProgressModified, this);
         }
     }
 }

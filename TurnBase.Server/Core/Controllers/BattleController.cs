@@ -1,9 +1,9 @@
-﻿using TurnBase.DBLayer.Models;
-using TurnBase.Server.Core.Battle.DTO;
+﻿using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Models;
 using TurnBase.Server.Core.Services;
 using TurnBase.Server.Models;
 using TurnBase.Server.Server.ServerModels;
+using TurnBase.Server.Trackables;
 
 namespace TurnBase.Server.Core.Controllers
 {
@@ -18,8 +18,7 @@ namespace TurnBase.Server.Core.Controllers
                 .GetRequestData<BattleDTO.BattleRequestDTO>();
 
             // WE GET USER DATA.
-            TblUser user = smp.UOW.GetRepository<TblUser>()
-                .Find(y => y.Id == smp.SocketUser.User.Id);
+            TrackedUser user = UserService.GetTrackedUser(smp, smp.SocketUser.User.Id);
 
             // WE CHECK IF WE ARE GOING TO GIVE USER THE LEVEL REWARDS.
             CampaignDTO campaign = user.GetCampaign();
@@ -30,7 +29,7 @@ namespace TurnBase.Server.Core.Controllers
 
             // WE LOAD ALL THE STATS OF THE PLAYER.
             UnitStats userStats = new UnitStats();
-            userStats.SetUser(user);
+            userStats.SetUser(user.GetInventory());
 
             // WE CREATE A CAMPAIGN LEVEL.
             BattleService.CreateALevel(new BattleUser[]

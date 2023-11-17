@@ -103,11 +103,9 @@ namespace TurnBase.Server.Core.Battle.Models
         public float CriticalDamageBonus { get; set; }
         public int PhysicalArmor { get; set; }
 
-        public void SetUser(TblUser user)
+        public void SetUser(InventoryDTO inventory)
         {
             MaxHealth = ParameterService.GetIntValue(Parameters.BaseHealth);
-
-            InventoryDTO inventory = user.GetInventory(null);
 
             // WE LOOP ALL THE WORN ITEMS.
             foreach (UserItemDTO inventoryItem in inventory.Items)

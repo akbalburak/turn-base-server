@@ -1,44 +1,61 @@
 ﻿using TurnBase.DBLayer.Models;
-using TurnBase.Server.Core.Controllers;
-using TurnBase.Server.Interfaces;
+using TurnBase.Server.Extends.Json;
 using TurnBase.Server.Models;
-using TurnBase.Server.Modifies;
+using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Trackables
 {
     public class TrackedUser
     {
-        private IChangeManager _changeManager;
+        private IChangeHandler _changeHandler;
         private TblUser _user;
 
-        public TrackedUser(TblUser user,IChangeManager changeManager)
+        public TrackedUser(TblUser user, IChangeHandler changeHandler)
         {
-            _changeManager = changeManager;
+            _changeHandler = changeHandler;
             _user = user;
         }
 
         public InventoryDTO GetInventory()
         {
-            return _user.GetInventory(_changeManager);
+            InventoryDTO inventory;
+
+            if (string.IsNullOrEmpty(_user.Inventory))
+                inventory = new InventoryDTO();
+            else
+                inventory = _user.Inventory.ToObject<InventoryDTO>();
+
+            inventory.SetChangeHandler(_changeHandler);
+
+            return inventory;
         }
         public void UpdateInventory(InventoryDTO inventory)
         {
-            _user.UpdateInventory(inventory);
+            _user.Inventory = inventory.ToJson();
         }
 
         public CampaignDTO GetCampaign()
         {
-            return _user.GetCampaign();
+            CampaignDTO campaign;
+
+            if (string.IsNullOrEmpty(_user.Campaign))
+                campaign = new CampaignDTO();
+            else
+                campaign = _user.Campaign.ToObject<CampaignDTO>();
+
+            campaign.SetChangeHandler(_changeHandler);
+
+            return campaign;
         }
         public void UpdateCampaign(CampaignDTO campaign)
         {
-            _user.UpdateCampaign(campaign);
+            _user.Campaign = campaign.ToJson();
         }
 
         public void AddGolds(int coin)
         {
             _user.Gold += coin;
-            _changeManager.AddChanges(new UserGoldModifiedDTO(coin));
+            _changeHandler.AddChanges(new UserGoldDTO(coin));
         }
 
     }

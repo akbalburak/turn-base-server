@@ -15,6 +15,7 @@
         InventoryModified = 11,
         LevelData = 12,
         UseItem = 13,
-        UserGoldModified = 14
+        UserGoldChanged = 14,
+        CampaignProgressModified = 15
     }
 }

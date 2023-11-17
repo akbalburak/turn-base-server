@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 using TurnBase.Server.Enums;
-using TurnBase.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
+using TurnBase.Server.Trackables;
 
 namespace TurnBase.Server.Models
 {
-    public class UserItemDTO : IChangeItem
+    public class UserItemDTO : TrackableDTO
     {
         [JsonProperty("A")] public int UserItemID { get; set; }
         [JsonProperty("B")] public int ItemID { get; set; }
@@ -15,9 +15,15 @@ namespace TurnBase.Server.Models
         [JsonProperty("F")] public float Quality { get; set; }
         [JsonProperty("H")] public int Level { get; set; }
 
-        public SocketResponse GetResponse()
+        public override SocketResponse GetResponse()
         {
             return SocketResponse.GetSuccess(ActionTypes.InventoryModified, this);
+        }
+
+        public void UpdateEquipState(bool isEquipped)
+        {
+            this.Equipped = isEquipped;
+            base.SetAsChanged();
         }
     }
 }
