@@ -1,6 +1,7 @@
 ﻿using TurnBase.Server.Core.Battle.Core.Skills;
 using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Interfaces;
+using TurnBase.Server.Core.Battle.Skills;
 
 namespace TurnBase.Server.Core.Battle.Models
 {
@@ -19,13 +20,13 @@ namespace TurnBase.Server.Core.Battle.Models
         public bool IsDeath { get; private set; }
 
         public BattleUnitStats Stats { get; private set; }
-        public List<BaseBattleSkill> Skills { get; private set; }
+        public List<ISkill> Skills { get; private set; }
 
         public IBattleItem Battle { get; private set; }
 
         protected BattleUnit(int position)
         {
-            Skills = new List<BaseBattleSkill>();
+            Skills = new List<ISkill>();
             Stats = new BattleUnitStats();
             Position = position;
         }
@@ -75,13 +76,13 @@ namespace TurnBase.Server.Core.Battle.Models
                 Kill();
         }
 
-        protected void AddSkill(BaseBattleSkill skill)
+        protected void AddSkill(ISkill skill)
         {
             Skills.Add(skill);
         }
         public void UseSkill(BattleSkillUseDTO useData)
         {
-            BaseBattleSkill? skillToUse = Skills.Find(x => x.UniqueId == useData.UniqueSkillID);
+            ISkill skillToUse = Skills.Find(x => x.UniqueId == useData.UniqueSkillID);
             if (skillToUse == null)
                 return;
 

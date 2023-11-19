@@ -1,6 +1,7 @@
 ﻿using TurnBase.Server.Core.Battle.Core.Skills;
 using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Models;
+using TurnBase.Server.Core.Battle.Skills;
 
 namespace TurnBase.Server.Core.Battle.Interfaces
 {
@@ -17,7 +18,7 @@ namespace TurnBase.Server.Core.Battle.Interfaces
         bool IsDeath { get; }
         
         BattleUnitStats Stats { get; }
-        List<BaseBattleSkill> Skills { get; }
+        List<ISkill> Skills { get; }
 
         int GetBaseDamage(IBattleUnit defender);
 

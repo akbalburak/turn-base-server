@@ -60,7 +60,7 @@ namespace TurnBase.Server.Core.Battle.Models
                         continue;
 
                     // WE CREATE SKILL.
-                    BaseBattleSkill battleSkill = SkillCreator.CreateSkill(
+                    ISkill battleSkill = SkillCreator.CreateSkill(
                         ++uniqueSkillId,
                         (BattleSkills)skill.SkillId,
                         Battle,

@@ -4,17 +4,15 @@ using TurnBase.Server.Core.Battle.Interfaces;
 
 namespace TurnBase.Server.Core.Battle.Core.Skills
 {
-    public class BattleDoubleSlashSkill : BaseBattleSkill
+    public class DoubleSlashSkill : BaseSkill
     {
-        public BattleDoubleSlashSkill(int uniqueId, IBattleItem battle, IBattleUnit unit)
+        public DoubleSlashSkill(int uniqueId, IBattleItem battle, IBattleUnit unit)
             : base(uniqueId, BattleSkills.DoubleSlash, battle, unit)
         {
         }
 
-        public override void UseSkill(BattleSkillUseDTO useData)
+        public override void OnSkillUse(BattleSkillUseDTO useData)
         {
-            base.UseSkill(useData);
-
             // WE ARE LOOKING FOR THE TARGET.
             IBattleUnit targetUnit = Battle.GetUnit(useData.TargetUnitID);
             if (targetUnit == null || targetUnit.IsDeath)
@@ -25,10 +23,7 @@ namespace TurnBase.Server.Core.Battle.Core.Skills
                     return;
             }
 
-            BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(
-                Owner.UniqueId,
-                UniqueId,
-                Skill);
+            BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
 
             // WE DO THE FIRST SLASH.
             int damage = Owner.GetBaseDamage(targetUnit);
@@ -42,8 +37,6 @@ namespace TurnBase.Server.Core.Battle.Core.Skills
 
             // SEND TO USER.
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
-
-            Battle.FinalizeTurn();
         }
     }
 }

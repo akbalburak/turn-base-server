@@ -2,6 +2,7 @@
 {
     public enum BattleSkills
     {
-        DoubleSlash = 1
+        DoubleSlash = 1,
+        BleedingSlash = 2
     }
 }

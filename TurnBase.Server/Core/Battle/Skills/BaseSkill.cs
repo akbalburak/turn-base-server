@@ -1,23 +1,26 @@
 ﻿using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Core.Battle.Interfaces;
+using TurnBase.Server.Core.Battle.Skills;
 using TurnBase.Server.Core.Services;
 using TurnBase.Server.Models;
 
 namespace TurnBase.Server.Core.Battle.Core.Skills
 {
-    public abstract class BaseBattleSkill
+    public abstract class BaseSkill : ISkill
     {
         public int UniqueId { get; private set; }
-        protected IBattleItem Battle { get; private set; }
-        protected IBattleUnit Owner { get; private set; }
+
+        public IBattleItem Battle { get; private set; }
+        public IBattleUnit Owner { get; private set; }
 
         public BattleSkills Skill { get; private set; }
+
         public bool FinalizeTurnInUse { get; private set; }
         public int LeftTurnToUse { get; private set; }
         public int TurnCooldown { get; private set; }
 
-        public BaseBattleSkill(
+        public BaseSkill(
             int uniqueId,
             BattleSkills skill,
             IBattleItem battle,
@@ -37,14 +40,23 @@ namespace TurnBase.Server.Core.Battle.Core.Skills
             Owner.OnUnitTurnStart += OnUnitTurnStarted;
         }
 
-        public bool IsSkillReadyToUse()
+        public virtual bool IsSkillReadyToUse()
         {
             return LeftTurnToUse <= 0;
         }
-        public virtual void UseSkill(BattleSkillUseDTO useData)
+
+        public void UseSkill(BattleSkillUseDTO useData)
         {
             LeftTurnToUse = TurnCooldown;
+            OnSkillUse(useData);
+
+            if (!FinalizeTurnInUse)
+                return;
+
+            Battle.FinalizeTurn();
         }
+
+        public abstract void OnSkillUse(BattleSkillUseDTO useData);
 
         private void OnUnitTurnStarted()
         {
