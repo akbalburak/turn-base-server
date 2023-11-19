@@ -1,45 +1,39 @@
-﻿using TurnBase.Server.Core.Battle.Core;
-using TurnBase.Server.Core.Battle.Core.Skills;
+﻿using TurnBase.Server.Core.Battle.Core.Skills;
 using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Core.Battle.Interfaces;
 using TurnBase.Server.Core.Battle.Skills;
 using TurnBase.Server.Core.Services;
 using TurnBase.Server.Models;
-using TurnBase.Server.Server.ServerModels;
+using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Core.Battle.Models
 {
-    public class BattleUser : BattleUnit
+    public class BattleUser : BattleUnit, IBattleUser
     {
-        public IBattleItem Battle { get; set; }
         public InventoryDTO Inventory { get; set; }
-        public SocketUser SocketUser { get; private set; }
+        public ISocketUser SocketUser { get; private set; }
         public string PlayerName { get; private set; }
         public bool IsFirstCompletion { get; private set; }
 
         public bool IsConnected => SocketUser != null;
 
-        private int _dataId;
-        public int DataId => ++_dataId;
+        private int _lastDataId;
+        public int GetNewDataId => ++_lastDataId;
 
-        public BattleUser(SocketUser socketUser,
+        public BattleUser(ISocketUser socketUser,
             InventoryDTO inventory,
-            UnitStats unitStats,
             int position,
-            bool isFirstCompletion) : base(position, unitStats)
+            bool isFirstCompletion) : base(position)
         {
             Inventory = inventory;
             SocketUser = socketUser;
             PlayerName = socketUser.User.UserName;
             IsFirstCompletion = isFirstCompletion;
+
+            base.LoadStats(new BattleUnitStats(inventory));
         }
 
-        public void SetBattle(IBattleItem battleItem)
-        {
-            this.Battle = battleItem;
-        }
-
-        public void LoadSkills()
+        public override void LoadSkills()
         {
             // WE IMPLEMENT SKILLS.
             int skillId = 0;

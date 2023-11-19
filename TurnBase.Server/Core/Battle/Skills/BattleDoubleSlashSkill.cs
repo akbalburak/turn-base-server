@@ -1,13 +1,12 @@
 ﻿using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Core.Battle.Interfaces;
-using TurnBase.Server.Core.Battle.Models;
 
 namespace TurnBase.Server.Core.Battle.Core.Skills
 {
     public class BattleDoubleSlashSkill : BaseBattleSkill
     {
-        public BattleDoubleSlashSkill(int id, IBattleItem battle, BattleUnit unit)
+        public BattleDoubleSlashSkill(int id, IBattleItem battle, IBattleUnit unit)
             : base(id, BattleSkills.DoubleSlash, battle, unit)
         {
         }
@@ -17,7 +16,7 @@ namespace TurnBase.Server.Core.Battle.Core.Skills
             base.UseSkill(useData);
 
             // WE ARE LOOKING FOR THE TARGET.
-            BattleUnit targetUnit = Battle.GetUnit(useData.TargetUnitID);
+            IBattleUnit targetUnit = Battle.GetUnit(useData.TargetUnitID);
             if (targetUnit == null || targetUnit.IsDeath)
             {
                 // WE ARE LOOKING FOR A RANDOM ENEMY TO ATTACK.
@@ -32,19 +31,19 @@ namespace TurnBase.Server.Core.Battle.Core.Skills
                 Skill);
 
             // WE DO THE FIRST SLASH.
-            int damage = Owner.GetDamage(targetUnit);
-            Owner.AttackTo(targetUnit, damage);
+            int damage = Owner.GetBaseDamage(targetUnit);
+            Owner.AttackToUnit(targetUnit, damage);
             usageData.AddToDamage(targetUnit.UniqueId, damage);
 
             // WE DO THE SECOND SLASH.
-            damage = Owner.GetDamage(targetUnit);
-            Owner.AttackTo(targetUnit, damage);
+            damage = Owner.GetBaseDamage(targetUnit);
+            Owner.AttackToUnit(targetUnit, damage);
             usageData.AddToDamage(targetUnit.UniqueId, damage);
 
             // SEND TO USER.
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
 
-            Battle.EndTurn();
+            Battle.FinalizeTurn();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using TurnBase.Server.Core.Services;
 using TurnBase.Server.Enums;
 using TurnBase.Server.Models;
+using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
 using TurnBase.Server.Trackables;
 
@@ -8,7 +9,7 @@ namespace TurnBase.Server.Core.Controllers
 {
     public static class InventoryController
     {
-        public static SocketResponse EquipItem(SocketMethodParameter smp)
+        public static SocketResponse EquipItem(ISocketMethodParameter smp)
         {
             EquipItemRequestDTO requestData = smp.GetRequestData<EquipItemRequestDTO>();
 
@@ -50,7 +51,7 @@ namespace TurnBase.Server.Core.Controllers
             return SocketResponse.GetSuccess();
         }
 
-        public static SocketResponse UnequipItem(SocketMethodParameter smp)
+        public static SocketResponse UnequipItem(ISocketMethodParameter smp)
         {
             EquipItemRequestDTO requestData = smp.GetRequestData<EquipItemRequestDTO>();
 
@@ -71,7 +72,7 @@ namespace TurnBase.Server.Core.Controllers
             return SocketResponse.GetSuccess();
         }
 
-        public static SocketResponse UseAnItem(SocketMethodParameter smp)
+        public static SocketResponse UseAnItem(ISocketMethodParameter smp)
         {
             UseItemRequestDTO requestData = smp.GetRequestData<UseItemRequestDTO>();
 

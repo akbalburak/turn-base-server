@@ -1,10 +1,11 @@
-﻿using TurnBase.Server.Server.ServerModels;
+﻿using TurnBase.Server.Server.Interfaces;
+using TurnBase.Server.Server.ServerModels;
 
 namespace TurnBase.Server.Server.Services
 {
     public static class SocketUserServices
     {
-        private static List<SocketUser> _socketUsers = new List<SocketUser>();
+        private static List<ISocketUser> _socketUsers = new List<ISocketUser>();
 
         private static ReaderWriterLockSlim _rwls = new ReaderWriterLockSlim();
 
@@ -14,24 +15,24 @@ namespace TurnBase.Server.Server.Services
             SocketUserBusSystem.OnSocketUserDisconnect += OnUserLogout;
         }
 
-        private static void OnUserLogout(SocketUser user)
+        private static void OnUserLogout(ISocketUser user)
         {
             _rwls.EnterWriteLock();
             _socketUsers.Remove(user);
             _rwls.ExitWriteLock();
         }
 
-        private static void OnUserLogin(SocketUser user)
+        private static void OnUserLogin(ISocketUser user)
         {
             _rwls.EnterWriteLock();
             _socketUsers.Insert(0, user);
             _rwls.ExitWriteLock();
         }
 
-        public static SocketUser GetSocketUser(int id)
+        public static ISocketUser GetSocketUser(int id)
         {
             _rwls.EnterReadLock();
-            using SocketUser user = _socketUsers.Find(y => y.User?.Id == id);
+            using ISocketUser user = _socketUsers.Find(y => y.User?.Id == id);
             _rwls.ExitReadLock();
             return user;
         }

@@ -1,8 +1,9 @@
 ﻿using TurnBase.Server.Enums;
+using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Server.ServerModels
 {
-    public class SocketRequest
+    public class SocketRequest : ISocketRequest
     {
         public string RequestID { get; set; }
         public ActionTypes Method { get; set; }

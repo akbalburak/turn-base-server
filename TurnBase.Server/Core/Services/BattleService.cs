@@ -10,7 +10,7 @@ namespace TurnBase.Server.Core.Services
         private static ReaderWriterLockSlim _rwls = new ReaderWriterLockSlim();
         private static List<IBattleItem> _battles = new List<IBattleItem>();
 
-        public static IBattleItem CreateALevel(BattleUser[] users,
+        public static IBattleItem CreateALevel(IBattleUser[] users,
             int stageIndex,
             int levelIndex,
             LevelDifficulities difficulity)
@@ -21,11 +21,11 @@ namespace TurnBase.Server.Core.Services
                 return null;
 
             // WE CREATE A BATTLE.
-            BattleItem battle = new BattleItem(users, levelData, difficulity);
+            IBattleItem battle = new BattleItem(users, levelData, difficulity);
             battle.OnDisposed += OnBattleDiposed;
 
             // WE ASSIGN ALL THE PLAYERS SAME BATTLE.
-            foreach (BattleUser user in users)
+            foreach (IBattleUser user in users)
                 user.SocketUser.SetBattle(battle);
 
             // WE ADD BATTLE INTO LIST.

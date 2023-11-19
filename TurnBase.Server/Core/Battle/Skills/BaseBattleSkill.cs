@@ -11,18 +11,20 @@ namespace TurnBase.Server.Core.Battle.Core.Skills
     public abstract class BaseBattleSkill
     {
         public int UniqueId { get; private set; }
+        protected IBattleItem Battle { get; private set; }
+        protected IBattleUnit Owner { get; private set; }
+
         public BattleSkills Skill { get; private set; }
         public bool FinalizeTurnInUse { get; private set; }
-        protected IBattleItem Battle { get; private set; }
-        protected BattleUnit Owner { get; private set; }
         public int LeftTurnToUse { get; private set; }
         public int TurnCooldown { get; private set; }
 
         public BaseBattleSkill(
-                            int id,
-                            BattleSkills skill,
-                            IBattleItem battle,
-                            BattleUnit unit)
+            int id,
+            BattleSkills skill,
+            IBattleItem battle,
+            IBattleUnit unit
+        )
         {
             UniqueId = id;
             Skill = skill;
@@ -34,7 +36,7 @@ namespace TurnBase.Server.Core.Battle.Core.Skills
             TurnCooldown = skillData.TurnCooldown;
             FinalizeTurnInUse = skillData.FinalizeTurnInUse;
 
-            Owner.OnTurnStart += OnUnitTurnStarted;
+            Owner.OnUnitTurnStart += OnUnitTurnStarted;
         }
 
         public bool IsSkillReadyToUse()

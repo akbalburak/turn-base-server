@@ -15,18 +15,18 @@ namespace TurnBase.Server.Core.Battle.Core
                 SendToUser(user, battleAction, data);
             }
         }
-        public void SendToUser(BattleUser user, BattleActions battleAction, object data)
+        public void SendToUser(IBattleUser user, BattleActions battleAction, object data)
         {
             if (!user.IsConnected)
                 return;
 
             SocketResponse dataToSend = BattleActionResponseDTO.GetSuccess(
-                user.DataId,
+                user.GetNewDataId,
                 battleAction,
                 data
             );
 
-            user.SocketUser.AddToUnExpectedAfterSendIt(dataToSend);
+            user.SocketUser.SendToClient(dataToSend);
         }
 
     }

@@ -1,36 +1,34 @@
 ﻿using System.Diagnostics;
 using System.Net.Sockets;
-using TurnBase.Server.Core.Battle.Core;
 using TurnBase.Server.Core.Battle.Interfaces;
 using TurnBase.Server.Enums;
 using TurnBase.Server.Extends.Json;
+using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.Services;
 
 namespace TurnBase.Server.Server.ServerModels
 {
-    public class SocketUser : BaseSocketUser
+    public class SocketUser : BaseSocketUser, ISocketUser
     {
         public const int ListSize = 25;
         public const int TimeOutSeconds = 45;
 
-        public Guid TempUniqueUserID { get; }
-        public SocketUserData User { get; }
+        public ISocketUserData User { get; }
         public IBattleItem CurrentBattle { get; private set; }
 
         private List<SocketResponse> _unExpectedNotReceivedResponses;
-        private List<Tuple<SocketRequest, byte[]>> _waitingResponses;
+        private List<(ISocketRequest, byte[])> _waitingResponses;
 
-        private List<SocketRequest> _waitingRequests;
+        private List<ISocketRequest> _waitingRequests;
 
         private Timer _unExpectedTimer;
 
         public SocketUser(Socket socket) : base(socket)
         {
-            TempUniqueUserID = Guid.NewGuid();
             User = new SocketUserData();
 
-            _waitingRequests = new List<SocketRequest>();
-            _waitingResponses = new List<Tuple<SocketRequest, byte[]>>();
+            _waitingRequests = new List<ISocketRequest>();
+            _waitingResponses = new List<(ISocketRequest, byte[])>();
 
             _unExpectedNotReceivedResponses = new List<SocketResponse>();
 
@@ -39,13 +37,13 @@ namespace TurnBase.Server.Server.ServerModels
             SocketUserBusSystem.CallSocketUserConnect(this);
         }
 
+
         public void SetBattle(IBattleItem battle)
         {
             CurrentBattle = battle;
             CurrentBattle.OnDisposed += (IBattleItem battle) => CurrentBattle = null;
         }
-
-        public void AddToUnExpectedAfterSendIt(SocketResponse response)
+        public void SendToClient(SocketResponse response)
         {
             if (IsDisposed)
                 return;
@@ -57,7 +55,8 @@ namespace TurnBase.Server.Server.ServerModels
             }
         }
 
-        private void OnUnExpectedTimerElapsed(object state)
+
+        private void OnUnExpectedTimerElapsed(object? state)
         {
             if (IsDisposed)
                 return;
@@ -78,67 +77,7 @@ namespace TurnBase.Server.Server.ServerModels
                     SendToClient(response.ToByteArray());
             }
         }
-
-        protected override void OnAddData(string data)
-        {
-            string[] jsonValues = data.Split(TcpServer.ENDFIX, StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (string json in jsonValues)
-            {
-                try
-                {
-                    SocketRequest request = json.ToObject<SocketRequest>();
-
-                    // IF THIS IS A VERIFICATION WE JUST REMOVE FROM LIST.
-                    if (request.Method == ActionTypes.RA)
-                    {
-                        lock (_unExpectedNotReceivedResponses)
-                        {
-                            SocketResponse unExpectedData = _unExpectedNotReceivedResponses.Find(x => x.RequestID == request.RequestID);
-
-                            if (unExpectedData != null)
-                                _unExpectedNotReceivedResponses.Remove(unExpectedData);
-
-                            continue;
-                        }
-                    }
-
-                    lock (_waitingResponses)
-                    {
-                        // IF THIS REQUEST ALREADY EXECUTED.
-                        Tuple<SocketRequest, byte[]> alreadyExecutedData = _waitingResponses.Find(x => x.Item1.RequestID == request.RequestID);
-                        if (alreadyExecutedData != null)
-                        {
-                            SendToClient(alreadyExecutedData.Item2);
-                            continue;
-                        }
-
-                        // WE EXECUTE THE ACTION.
-                        lock (_waitingRequests)
-                        {
-                            bool isAlreadyAddedToQueue = _waitingRequests.Exists(x => x != null && x.RequestID == request.RequestID);
-
-                            if (!isAlreadyAddedToQueue)
-                            {
-                                _waitingRequests.Add(request);
-
-                                ActionExecuter(request);
-                            }
-                        }
-
-                    }
-                }
-                catch (Exception exc)
-                {
-                    TcpServer.WriteLog(json, exc.ToString());
-                }
-            }
-
-            if (_waitingRequests.Count > ListSize)
-                _waitingRequests.RemoveRange(ListSize, _waitingRequests.Count - ListSize);
-        }
-
-        public void ActionExecuter(SocketRequest request)
+        private void ActionExecuter(ISocketRequest request)
         {
             try
             {
@@ -160,7 +99,7 @@ namespace TurnBase.Server.Server.ServerModels
 
                 lock (_waitingResponses)
                 {
-                    _waitingResponses.Insert(0, new Tuple<SocketRequest, byte[]>(request, responseBytes));
+                    _waitingResponses.Insert(0, (request, responseBytes));
 
                     if (_waitingResponses.Count > ListSize)
                     {
@@ -187,7 +126,7 @@ namespace TurnBase.Server.Server.ServerModels
                     byte[] responseBytes = response.ToByteArray();
 
                     lock (_waitingResponses)
-                        _waitingResponses.Add(new Tuple<SocketRequest, byte[]>(request, responseBytes));
+                        _waitingResponses.Add(new(request, responseBytes));
 
                     Socket.Send(responseBytes);
 
@@ -198,8 +137,7 @@ namespace TurnBase.Server.Server.ServerModels
                 }
             }
         }
-
-        public void SendToClient(byte[] data)
+        private void SendToClient(byte[] data)
         {
             try
             {
@@ -212,6 +150,67 @@ namespace TurnBase.Server.Server.ServerModels
             }
         }
 
+        protected override void OnAddData(string data)
+        {
+            string[] jsonValues = data.Split(TcpServer.ENDFIX, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string json in jsonValues)
+            {
+                try
+                {
+                    ISocketRequest request = json.ToObject<SocketRequest>();
+
+                    // IF THIS IS A VERIFICATION WE JUST REMOVE FROM LIST.
+                    if (request.Method == ActionTypes.RA)
+                    {
+                        lock (_unExpectedNotReceivedResponses)
+                        {
+                            SocketResponse unExpectedData = _unExpectedNotReceivedResponses.Find(x => x.RequestID == request.RequestID);
+
+                            if (unExpectedData != null)
+                                _unExpectedNotReceivedResponses.Remove(unExpectedData);
+
+                            continue;
+                        }
+                    }
+
+                    lock (_waitingResponses)
+                    {
+                        // IF THIS REQUEST ALREADY EXECUTED.
+                        (ISocketRequest, byte[])? alreadyExecutedData = _waitingResponses.Find(x => x.Item1.RequestID == request.RequestID);
+                        if (alreadyExecutedData != (null, null))
+                        {
+                            SendToClient(alreadyExecutedData.Value.Item2);
+                            continue;
+                        }
+
+                        // WE EXECUTE THE ACTION.
+                        lock (_waitingRequests)
+                        {
+                            bool isAlreadyAddedToQueue = _waitingRequests.Exists(x => x != null && x.RequestID == request.RequestID);
+
+                            if (!isAlreadyAddedToQueue)
+                            {
+                                _waitingRequests.Add(request);
+
+                                ActionExecuter(request);
+                            }
+                        }
+
+                    }
+                }
+                catch (Exception exc)
+                {
+                    TcpServer.WriteLog(json, exc.ToString());
+                }
+            }
+
+            if (_waitingRequests.Count > ListSize)
+            {
+                lock (_waitingRequests)
+                    _waitingRequests.RemoveRange(ListSize, _waitingRequests.Count - ListSize);
+            }
+        }
         public override void OnDispose()
         {
             try

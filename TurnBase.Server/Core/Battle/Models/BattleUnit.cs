@@ -1,9 +1,6 @@
 ﻿using TurnBase.Server.Core.Battle.Core.Skills;
 using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Interfaces;
-using TurnBase.Server.Core.Services;
-using TurnBase.Server.Enums;
-using TurnBase.Server.Models;
 
 namespace TurnBase.Server.Core.Battle.Models
 {
@@ -11,51 +8,47 @@ namespace TurnBase.Server.Core.Battle.Models
     {
         private static Random _random = new Random();
 
-        public int TeamIndex { get; set; }
+        public Action OnUnitTurnStart { get; set; }
+
         public int UniqueId { get; private set; }
 
+        public int TeamIndex { get; private set; }
         public int Position { get; private set; }
+
         public int Health { get; private set; }
-        public bool IsDeath { get; set; }
+        public bool IsDeath { get; private set; }
 
-        public UnitStats Stats { get; set; }
+        public BattleUnitStats Stats { get; private set; }
+        public List<BaseBattleSkill> Skills { get; private set; }
 
-        public List<BaseBattleSkill> Skills { get; set; }
+        public IBattleItem Battle { get; private set; }
 
-        protected BattleUnit(int position, UnitStats stats)
+        protected BattleUnit(int position)
         {
             Skills = new List<BaseBattleSkill>();
-            Stats = stats;
+            Stats = new BattleUnitStats();
             Position = position;
-
-            Health = Stats.MaxHealth;
         }
 
         public void SetTeam(int teamIndex)
         {
-            TeamIndex = teamIndex;
+            this.TeamIndex = teamIndex;
         }
-        public void SetId(int id) { UniqueId = id; }
-        public void ReduceHealth(int reduction)
+        public void SetId(int id)
         {
-            Health -= reduction;
-
-            if (Health <= 0)
-                Kill();
+            this.UniqueId = id;
         }
+        public void SetBattle(IBattleItem battleItem)
+        {
+            this.Battle = battleItem;
+        }
+
         public void Kill()
         {
             IsDeath = true;
         }
 
-        public Action OnTurnStart;
-        public void CallTurnStart()
-        {
-            OnTurnStart?.Invoke();
-        }
-
-
-        public int GetDamage(IBattleUnit targetUnit)
+        public int GetBaseDamage(IBattleUnit targetUnit)
         {
             bool isCritical = _random.NextDouble() <= Stats.CriticalChance;
             int damage = Stats.Damage;
@@ -70,13 +63,19 @@ namespace TurnBase.Server.Core.Battle.Models
             float reduction = 1 - targetArmor / (targetArmor + 100);
             return (int)Math.Round(damage * reduction);
         }
-
-        public void AttackTo(IBattleUnit defender, int damage)
+        public void AttackToUnit(IBattleUnit defender, int damage)
         {
             defender.ReduceHealth(damage);
         }
+        public void ReduceHealth(int reduction)
+        {
+            Health -= reduction;
 
-        public void AddSkill(BaseBattleSkill skill)
+            if (Health <= 0)
+                Kill();
+        }
+
+        protected void AddSkill(BaseBattleSkill skill)
         {
             Skills.Add(skill);
         }
@@ -91,66 +90,20 @@ namespace TurnBase.Server.Core.Battle.Models
 
             skillToUse.UseSkill(useData);
         }
-    }
 
-    public class UnitStats
-    {
-        public int MaxHealth { get; set; }
-        public int Damage { get; set; }
-        public float AttackSpeed { get; set; }
-        public float CriticalChance { get; set; }
-        public float CriticalDamageBonus { get; set; }
-        public int PhysicalArmor { get; set; }
-
-        public void SetInventory(InventoryDTO inventory)
+        public void CallUnitTurnStart()
         {
-            MaxHealth = ParameterService.GetIntValue(Parameters.BaseHealth);
+            OnUnitTurnStart?.Invoke();
+        }
 
-            // WE LOOP ALL THE WORN ITEMS.
-            foreach (UserItemDTO inventoryItem in inventory.Items)
-            {
-                if (!inventoryItem.Equipped)
-                    continue;
+        public virtual void LoadSkills()
+        {
+        }
+        public virtual void LoadStats(BattleUnitStats stats)
+        {
+            this.Stats = stats;
 
-                ItemDTO itemData = ItemService.GetItem(inventoryItem.ItemID);
-                foreach (ItemPropertyDTO property in itemData.Properties)
-                {
-                    double value = property.GetValue(inventoryItem.Quality);
-                    switch (property.PropertyId)
-                    {
-                        case ItemProperties.PhysicalDamage:
-                            Damage += (int)value;
-                            break;
-                        case ItemProperties.MaxHealth:
-                            MaxHealth += (int)value;
-                            break;
-                        case ItemProperties.TurnSpeed:
-                            AttackSpeed += (float)value;
-                            break;
-                        case ItemProperties.CriticalChanceBonus:
-                            CriticalChance += (float)value;
-                            break;
-                        case ItemProperties.CriticalDamageBonus:
-                            CriticalDamageBonus += (float)value;
-                            break;
-                        case ItemProperties.PhysicalArmor:
-                            PhysicalArmor += (int)value;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            if (AttackSpeed == 0)
-                AttackSpeed = 1;
-            else
-                AttackSpeed = 1 / AttackSpeed;
-
-            if (Damage == 0)
-                Damage = 1;
-
+            Health = stats.MaxHealth;
         }
     }
-
 }

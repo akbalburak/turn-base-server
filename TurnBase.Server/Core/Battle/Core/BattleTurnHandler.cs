@@ -1,37 +1,37 @@
 ﻿using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Core.Battle.Interfaces;
-using TurnBase.Server.Core.Battle.Models;
 
 namespace TurnBase.Server.Core.Battle.Core
 {
-    public class BattleTurnHandler
+    public class BattleTurnHandler : IBattleTurnHandler
     {
         private IBattleItem _battle;
-        private BattleUnit[] _npcUnits;
-        private BattleUnit[] _playerUnits;
+        private IBattleUnit[] _npcUnits;
+        private IBattleUnit[] _playerUnits;
         private List<BattleTurnItem> _unitAttackTurns;
         private BattleTurnItem _currentTurn;
 
         public BattleTurnHandler(
             IBattleItem battle,
-            BattleUnit[] players,
-            BattleUnit[] battleUnits)
+            IBattleUnit[] players,
+            IBattleUnit[] battleUnits)
         {
             _battle = battle;
 
             _unitAttackTurns = new List<BattleTurnItem>();
 
             _playerUnits = players;
+            _npcUnits = battleUnits;
 
-            AddUnits(battleUnits);
+            CalculateAttackOrder();
         }
 
-        public bool IsUnitTurn(BattleUnit unit)
+        public bool IsUnitTurn(IBattleUnit unit)
         {
             return GetCurrentTurnUnit() == unit;
         }
-        public BattleUnit GetCurrentTurnUnit()
+        public IBattleUnit GetCurrentTurnUnit()
         {
             return _currentTurn?.Unit;
         }
@@ -51,25 +51,25 @@ namespace TurnBase.Server.Core.Battle.Core
             BattleTurnDTO unitTurnData = new BattleTurnDTO(_currentTurn.Unit.UniqueId);
             _battle.SendToAllUsers(BattleActions.TurnUpdated, unitTurnData);
 
-            _currentTurn.Unit.CallTurnStart();
+            _currentTurn.Unit.CallUnitTurnStart();
         }
 
         private void CalculateAttackOrder()
         {
             _unitAttackTurns.Clear();
 
-            foreach (BattleUnit battleUnit in _npcUnits.OrderByDescending(y => y.Stats.AttackSpeed))
+            foreach (IBattleUnit battleUnit in _npcUnits.OrderByDescending(y => y.Stats.AttackSpeed))
                 _unitAttackTurns.Add(new BattleTurnItem(battleUnit));
 
-            foreach (BattleUnit battleUnit in _playerUnits.OrderByDescending(y => y.Stats.AttackSpeed))
+            foreach (IBattleUnit battleUnit in _playerUnits.OrderByDescending(y => y.Stats.AttackSpeed))
                 _unitAttackTurns.Add(new BattleTurnItem(battleUnit));
         }
 
-        public void RemoveUnits(BattleUnit[] units)
+        public void RemoveUnits(IBattleUnit[] units)
         {
             _unitAttackTurns.RemoveAll(y => units.Contains(y.Unit));
         }
-        public void AddUnits(BattleUnit[] units)
+        public void AddUnits(IBattleUnit[] units)
         {
             _npcUnits = units;
             CalculateAttackOrder();
@@ -79,9 +79,9 @@ namespace TurnBase.Server.Core.Battle.Core
         {
             public float BaseAttackTurn { get; }
             public float NextAttackTurn { get; private set; }
-            public BattleUnit Unit { get; }
+            public IBattleUnit Unit { get; }
 
-            public BattleTurnItem(BattleUnit unit)
+            public BattleTurnItem(IBattleUnit unit)
             {
                 Unit = unit;
                 NextAttackTurn = unit.Stats.AttackSpeed;

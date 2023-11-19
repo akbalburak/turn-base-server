@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using TurnBase.Server.Enums;
 using TurnBase.Server.Extends.Json;
+using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Server.ServerModels
 {
@@ -12,7 +13,7 @@ namespace TurnBase.Server.Server.ServerModels
         [JsonProperty("D")] public string? Data { get; private set; }
         [JsonProperty("E")] public string? Message { get; private set; }
 
-        public SocketResponse(SocketRequest request, bool isSuccess, string message)
+        public SocketResponse(ISocketRequest request, bool isSuccess, string message)
         {
             IsSuccess = isSuccess;
             Message = message;
@@ -35,13 +36,11 @@ namespace TurnBase.Server.Server.ServerModels
             RequestID = $"{Guid.NewGuid()}";
         }
 
-        public void SetRequest(SocketRequest request)
+        public void SetRequest(ISocketRequest request)
         {
             RequestID = request.RequestID;
             Method = request.Method;
         }
-
-        #region Başarılı Mesajları
 
         public static SocketResponse GetSuccess()
         {
@@ -57,25 +56,9 @@ namespace TurnBase.Server.Server.ServerModels
             return new SocketResponse(method, data, true);
         }
 
-        #endregion
-
-        #region Hata mesajları
-
-        public static SocketResponse GetError(object data)
-        {
-            return new SocketResponse(data, false, string.Empty);
-        }
-
-        public static SocketResponse GetError(object data, string message)
-        {
-            return new SocketResponse(data, false, message);
-        }
-
         public static SocketResponse GetError(string message)
         {
             return new SocketResponse(string.Empty, false, message);
         }
-
-        #endregion
     }
 }

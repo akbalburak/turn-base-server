@@ -1,14 +1,14 @@
 ﻿using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Core.Battle.Interfaces;
-using TurnBase.Server.Core.Battle.Models;
+using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
 
 namespace TurnBase.Server.Core.Battle.Core
 {
     public partial class BattleItem
     {
-        public void ExecuteAction(SocketUser socketUser, BattleActionRequestDTO requestData)
+        public void ExecuteAction(ISocketUser socketUser, BattleActionRequestDTO requestData)
         {
             // IF THE GAME IS OVER NO LONGER ACTIONS CAN BE EXECUTED.
             if (_gameOver)
@@ -39,12 +39,12 @@ namespace TurnBase.Server.Core.Battle.Core
             _turnHandler.SkipToNextTurn();
             BattleTillAnyPlayerTurn();
         }
-        private void PlayerUseSkill(SocketUser socketUser, BattleActionRequestDTO requestData)
+        private void PlayerUseSkill(ISocketUser socketUser, BattleActionRequestDTO requestData)
         {
             BattleSkillUseDTO useData = requestData.GetRequestData<BattleSkillUseDTO>();
 
             // WE GET THE PLAYER.
-            BattleUser currentUser = GetUser(socketUser);
+            IBattleUser currentUser = GetUser(socketUser);
             if (currentUser == null)
                 return;
 
@@ -54,10 +54,10 @@ namespace TurnBase.Server.Core.Battle.Core
 
             currentUser.UseSkill(useData);
         }
-        private void PlayerBasicAttack(SocketUser socketUser, BattleActionRequestDTO requestData)
+        private void PlayerBasicAttack(ISocketUser socketUser, BattleActionRequestDTO requestData)
         {
             // WE GET THE PLAYER.
-            BattleUser currentUser = GetUser(socketUser);
+            IBattleUser currentUser = GetUser(socketUser);
             if (currentUser == null)
                 return;
 
@@ -67,13 +67,13 @@ namespace TurnBase.Server.Core.Battle.Core
 
             // WE GET A RANDOM ENEMY.
             BattleAttackUseDTO attackUseData = requestData.GetRequestData<BattleAttackUseDTO>();
-            BattleUnit targetEnemy = GetUnit(attackUseData.TargetUniqueId);
+            IBattleUnit targetEnemy = GetUnit(attackUseData.TargetUniqueId);
             if (targetEnemy == null)
                 return;
 
             // ATTACK TO PLAYER.
-            int damage = currentUser.GetDamage(targetEnemy);
-            currentUser.AttackTo(targetEnemy, damage);
+            int damage = currentUser.GetBaseDamage(targetEnemy);
+            currentUser.AttackToUnit(targetEnemy, damage);
 
             // WE WILL SEND THE DAMAGE DATA.
             BattleAttackDTO attackData = new BattleAttackDTO();
@@ -85,13 +85,13 @@ namespace TurnBase.Server.Core.Battle.Core
             );
             SendToAllUsers(BattleActions.UnitBasicAttack, attackData);
 
-            EndTurn();
+            FinalizeTurn();
         }
         private void BattleTillAnyPlayerTurn()
         {
             // WE LOOP TILL PLAYER TURN.
-            BattleUnit attacker = _turnHandler.GetCurrentTurnUnit();
-            if (attacker is BattleUser)
+            IBattleUnit attacker = _turnHandler.GetCurrentTurnUnit();
+            if (attacker is IBattleUser)
                 return;
 
             // WE GET A RANDOM ENEMY.
@@ -100,8 +100,8 @@ namespace TurnBase.Server.Core.Battle.Core
                 return;
 
             // ATTACK TO PLAYER.
-            int damage = attacker.GetDamage(defender);
-            attacker.AttackTo(defender, damage);
+            int damage = attacker.GetBaseDamage(defender);
+            attacker.AttackToUnit(defender, damage);
 
             // WE WILL SEND THE DAMAGE DATA.
             BattleAttackDTO attackData = new BattleAttackDTO();
@@ -114,11 +114,11 @@ namespace TurnBase.Server.Core.Battle.Core
             SendToAllUsers(BattleActions.UnitBasicAttack, attackData);
 
             // FINALIZE UNIT TURN AND SKIP TO NEXT UNIT.
-            EndTurn();
+            FinalizeTurn();
         }
-        private void SendAllReqDataToClient(SocketUser socketUser, BattleActionRequestDTO requestData)
+        private void SendAllReqDataToClient(ISocketUser socketUser, BattleActionRequestDTO requestData)
         {
-            BattleUser? user = _users.FirstOrDefault(y => y.SocketUser == socketUser);
+            IBattleUser user = _users.FirstOrDefault(y => y.SocketUser == socketUser);
 
             BattleLoadAllDTO loadData = new BattleLoadAllDTO()
             {

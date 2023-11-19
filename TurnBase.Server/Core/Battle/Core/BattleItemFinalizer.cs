@@ -2,6 +2,7 @@
 using TurnBase.Server.Core.Battle.Models;
 using TurnBase.Server.Core.Services;
 using TurnBase.Server.Models;
+using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
 using TurnBase.Server.Trackables;
 
@@ -9,13 +10,13 @@ namespace TurnBase.Server.Core.Battle.Core
 {
     public partial class BattleItem
     {
-        public void CompleteCampaign(SocketUser user, long userId)
+        public void CompleteCampaign(ISocketUser user, long userId)
         {
             Task.Run(() =>
             {
                 lock (user)
                 {
-                    using SocketMethodParameter smp = new SocketMethodParameter(user, null);
+                    using ISocketMethodParameter smp = new SocketMethodParameter(user, null);
 
                     TrackedUser userData = UserService.GetTrackedUser(smp, userId);
 

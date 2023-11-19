@@ -1,12 +1,13 @@
 ﻿using TurnBase.DBLayer.Models;
 using TurnBase.Server.Models;
+using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
 
 namespace TurnBase.Server.Core.Controllers
 {
     public static class UserController
     {
-        public static SocketResponse Login(SocketMethodParameter smp)
+        public static SocketResponse Login(ISocketMethodParameter smp)
         {
             LoginDTO.LoginRequestDTO requestData = smp.GetRequestData<LoginDTO.LoginRequestDTO>();
             Guid userAccessToken = Guid.Parse(requestData.Token);

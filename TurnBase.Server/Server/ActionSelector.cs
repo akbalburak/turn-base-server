@@ -1,13 +1,14 @@
 ﻿using TurnBase.Server.Core.Controllers;
+using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
 
 namespace TurnBase.Server
 {
     public static class ActionSelector
     {
-        public static SocketResponse ExecuteAction(SocketUser socketUser, SocketRequest request)
+        public static SocketResponse ExecuteAction(ISocketUser socketUser, ISocketRequest request)
         {
-            using (SocketMethodParameter smp = new SocketMethodParameter(socketUser, request))
+            using (ISocketMethodParameter smp = new SocketMethodParameter(socketUser, request))
             {
                 SocketResponse response = null;
 
