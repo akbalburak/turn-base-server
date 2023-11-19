@@ -17,6 +17,7 @@ internal class Program
             NullValueHandling = NullValueHandling.Ignore
         };
 
+        SkillService.Initialize();
         ParameterService.Initialize();
         ItemService.Initialize();
         BattleLevelService.Initialize();

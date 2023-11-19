@@ -1,7 +1,10 @@
 ﻿using TurnBase.Server.Core.Battle.Core;
 using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Enums;
+using TurnBase.Server.Core.Battle.Interfaces;
 using TurnBase.Server.Core.Battle.Models;
+using TurnBase.Server.Core.Services;
+using TurnBase.Server.Models;
 
 namespace TurnBase.Server.Core.Battle.Core.Skills
 {
@@ -10,7 +13,7 @@ namespace TurnBase.Server.Core.Battle.Core.Skills
         public int UniqueId { get; private set; }
         public BattleSkills Skill { get; private set; }
         public bool FinalizeTurnInUse { get; private set; }
-        protected BattleItem Battle { get; private set; }
+        protected IBattleItem Battle { get; private set; }
         protected BattleUnit Owner { get; private set; }
         public int LeftTurnToUse { get; private set; }
         public int TurnCooldown { get; private set; }
@@ -18,17 +21,18 @@ namespace TurnBase.Server.Core.Battle.Core.Skills
         public BaseBattleSkill(
                             int id,
                             BattleSkills skill,
-                            BattleItem battle,
-                            BattleUnit unit,
-                            bool finalizeTurnInUse,
-                            int turnCooldown)
+                            IBattleItem battle,
+                            BattleUnit unit)
         {
             UniqueId = id;
             Skill = skill;
-            TurnCooldown = turnCooldown;
-            FinalizeTurnInUse = finalizeTurnInUse;
+
             Owner = unit;
             Battle = battle;
+
+            SkillDTO skillData = SkillService.GetSkill(skill);
+            TurnCooldown = skillData.TurnCooldown;
+            FinalizeTurnInUse = skillData.FinalizeTurnInUse;
 
             Owner.OnTurnStart += OnUnitTurnStarted;
         }

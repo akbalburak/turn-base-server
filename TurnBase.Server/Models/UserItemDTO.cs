@@ -14,6 +14,12 @@ namespace TurnBase.Server.Models
         [JsonProperty("E")] public bool Equipped { get; set; }
         [JsonProperty("F")] public float Quality { get; set; }
         [JsonProperty("H")] public int Level { get; set; }
+        [JsonProperty("I")] public int[] SkillSlots { get; set; }
+
+        public UserItemDTO()
+        {
+            SkillSlots = Array.Empty<int>();
+        }
 
         public override SocketResponse GetResponse()
         {

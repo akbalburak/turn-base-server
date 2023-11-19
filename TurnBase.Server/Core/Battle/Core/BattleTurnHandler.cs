@@ -1,19 +1,20 @@
 ﻿using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Enums;
+using TurnBase.Server.Core.Battle.Interfaces;
 using TurnBase.Server.Core.Battle.Models;
 
 namespace TurnBase.Server.Core.Battle.Core
 {
     public class BattleTurnHandler
     {
-        private BattleItem _battle;
+        private IBattleItem _battle;
         private BattleUnit[] _npcUnits;
         private BattleUnit[] _playerUnits;
         private List<BattleTurnItem> _unitAttackTurns;
         private BattleTurnItem _currentTurn;
 
         public BattleTurnHandler(
-            BattleItem battle,
+            IBattleItem battle,
             BattleUnit[] players,
             BattleUnit[] battleUnits)
         {

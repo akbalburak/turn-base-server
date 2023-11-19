@@ -9,6 +9,7 @@ namespace TurnBase.Server.Models
         [JsonProperty("B")] public ItemTypes TypeId { get; set; }
         [JsonProperty("C")] public ItemPropertyDTO[] Properties { get; set; }
         [JsonProperty("D")] public ItemContentDTO[] Contents { get; set; }
+        [JsonProperty("E")] public ItemSkillDTO[] Skills { get; set; }
 
         public ItemActions Action
         {
@@ -76,10 +77,15 @@ namespace TurnBase.Server.Models
 
     public class ItemContentDTO
     {
-        [JsonProperty("A")] public int ItemId { get; set; }
-        [JsonProperty("B")] public ItemContents ContentId { get; set; }
-        [JsonProperty("C")] public int? IndexId { get; set; }
-        [JsonProperty("D")] public double Value { get; set; }
+        [JsonProperty("A")] public ItemContents ContentId { get; set; }
+        [JsonProperty("B")] public int? IndexId { get; set; }
+        [JsonProperty("C")] public double Value { get; set; }
 
+    }
+
+    public class ItemSkillDTO
+    {
+        [JsonProperty("A")] public int SkillId { get; set; }
+        [JsonProperty("B")] public int SlotIndex { get; set; }
     }
 }

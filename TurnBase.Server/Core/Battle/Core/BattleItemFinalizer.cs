@@ -1,10 +1,6 @@
-﻿using TurnBase.DBLayer.Interfaces;
-using TurnBase.DBLayer.Models;
-using TurnBase.DBLayer.Repositories;
+﻿using TurnBase.Server.Core.Battle.Interfaces;
 using TurnBase.Server.Core.Battle.Models;
-using TurnBase.Server.Core.Controllers;
 using TurnBase.Server.Core.Services;
-using TurnBase.Server.Enums;
 using TurnBase.Server.Models;
 using TurnBase.Server.Server.ServerModels;
 using TurnBase.Server.Trackables;

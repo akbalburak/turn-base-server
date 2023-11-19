@@ -1,5 +1,9 @@
-﻿using TurnBase.Server.Core.Battle.DTO;
+﻿using TurnBase.Server.Core.Battle.Core;
+using TurnBase.Server.Core.Battle.Core.Skills;
+using TurnBase.Server.Core.Battle.DTO;
+using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Core.Battle.Models;
+using TurnBase.Server.Core.Battle.Skills;
 using TurnBase.Server.Core.Services;
 using TurnBase.Server.Models;
 using TurnBase.Server.Server.ServerModels;
@@ -11,7 +15,7 @@ namespace TurnBase.Server.Core.Controllers
     {
         public static SocketResponse StartABattle(SocketMethodParameter smp)
         {
-            if (smp.SocketUser.CurrentBattle != null && !smp.SocketUser.CurrentBattle.IsDisposed)
+            if (smp.SocketUser.CurrentBattle != null)
                 return SocketResponse.GetError("YOU ARE ALREADY IN A MATCH!");
 
             BattleDTO.BattleRequestDTO requestData = smp
@@ -22,6 +26,8 @@ namespace TurnBase.Server.Core.Controllers
 
             // WE CHECK IF WE ARE GOING TO GIVE USER THE LEVEL REWARDS.
             CampaignDTO campaign = user.GetCampaign();
+            InventoryDTO inventory = user.GetInventory();
+
             bool isFirstCompletion = !campaign.IsDifficulityCompleted(
                 requestData.StageIndex,
                 requestData.LevelIndex,
@@ -29,20 +35,19 @@ namespace TurnBase.Server.Core.Controllers
 
             // WE LOAD ALL THE STATS OF THE PLAYER.
             UnitStats userStats = new UnitStats();
-            userStats.SetUser(user.GetInventory());
+            userStats.SetInventory(inventory);
+
+            BattleUser battleUser = new BattleUser(
+                socketUser: smp.SocketUser,
+                inventory: inventory,
+                unitStats: userStats,
+                position: 0,
+                isFirstCompletion: isFirstCompletion
+            );
 
             // WE CREATE A CAMPAIGN LEVEL.
             BattleService.CreateALevel(new BattleUser[]
-                {
-                    new BattleUser(
-
-                        socketUser: smp.SocketUser,
-                        playerName: smp.SocketUser.User.UserName,
-                        position: 0,
-                        stats:userStats,
-                        isFirstCompletion:isFirstCompletion
-                    )
-                },
+                { battleUser },
                 requestData.StageIndex,
                 requestData.LevelIndex,
                 requestData.Difficulity

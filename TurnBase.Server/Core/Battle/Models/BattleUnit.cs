@@ -1,14 +1,13 @@
-﻿using TurnBase.DBLayer.Models;
-using TurnBase.Server.Core.Battle.Core.Skills;
+﻿using TurnBase.Server.Core.Battle.Core.Skills;
 using TurnBase.Server.Core.Battle.DTO;
-using TurnBase.Server.Core.Controllers;
+using TurnBase.Server.Core.Battle.Interfaces;
 using TurnBase.Server.Core.Services;
 using TurnBase.Server.Enums;
 using TurnBase.Server.Models;
 
 namespace TurnBase.Server.Core.Battle.Models
 {
-    public abstract class BattleUnit
+    public abstract class BattleUnit : IBattleUnit
     {
         private static Random _random = new Random();
 
@@ -25,9 +24,9 @@ namespace TurnBase.Server.Core.Battle.Models
 
         protected BattleUnit(int position, UnitStats stats)
         {
+            Skills = new List<BaseBattleSkill>();
             Stats = stats;
             Position = position;
-            Skills = new List<BaseBattleSkill>();
 
             Health = Stats.MaxHealth;
         }
@@ -56,7 +55,7 @@ namespace TurnBase.Server.Core.Battle.Models
         }
 
 
-        public int GetDamage(BattleUnit targetUnit)
+        public int GetDamage(IBattleUnit targetUnit)
         {
             bool isCritical = _random.NextDouble() <= Stats.CriticalChance;
             int damage = Stats.Damage;
@@ -72,7 +71,7 @@ namespace TurnBase.Server.Core.Battle.Models
             return (int)Math.Round(damage * reduction);
         }
 
-        public void AttackTo(BattleUnit defender, int damage)
+        public void AttackTo(IBattleUnit defender, int damage)
         {
             defender.ReduceHealth(damage);
         }
@@ -94,7 +93,7 @@ namespace TurnBase.Server.Core.Battle.Models
         }
     }
 
-    public record class UnitStats
+    public class UnitStats
     {
         public int MaxHealth { get; set; }
         public int Damage { get; set; }
@@ -103,7 +102,7 @@ namespace TurnBase.Server.Core.Battle.Models
         public float CriticalDamageBonus { get; set; }
         public int PhysicalArmor { get; set; }
 
-        public void SetUser(InventoryDTO inventory)
+        public void SetInventory(InventoryDTO inventory)
         {
             MaxHealth = ParameterService.GetIntValue(Parameters.BaseHealth);
 

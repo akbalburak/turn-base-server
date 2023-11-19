@@ -1,15 +1,15 @@
-﻿using TurnBase.Server.Core.Battle.Core.Skills;
-using TurnBase.Server.Core.Battle.DTO;
+﻿using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Enums;
+using TurnBase.Server.Core.Battle.Interfaces;
 using TurnBase.Server.Core.Battle.Models;
 using TurnBase.Server.Enums;
 
 namespace TurnBase.Server.Core.Battle.Core
 {
-    public partial class BattleItem : IDisposable
+    public partial class BattleItem : IBattleItem, IDisposable
     {
         public bool IsDisposed => _disposed;
-        public Action<BattleItem> OnDisposed;
+        public Action<IBattleItem> OnDisposed { get; set; }
 
         private bool _gameStarted;
         private bool _gameOver;
@@ -27,7 +27,7 @@ namespace TurnBase.Server.Core.Battle.Core
         private BattleWave[] _waves;
         private BattleWave _currentWave;
 
-        private List<BattleUnit> _allUnits;
+        private List<IBattleUnit> _allUnits;
 
         private int _skillIdCounter;
         private int _unitIdCounter;
@@ -39,7 +39,7 @@ namespace TurnBase.Server.Core.Battle.Core
             BattleLevelData levelData,
             LevelDifficulities difficulity)
         {
-            _allUnits = new List<BattleUnit>();
+            _allUnits = new List<IBattleUnit>();
 
             _users = users;
 
@@ -50,7 +50,7 @@ namespace TurnBase.Server.Core.Battle.Core
             _waves = _difficulityData.Waves.ToArray();
             _currentWave = _waves[0];
 
-            // WE CREATE IDS FOR UNITS.
+            // WE LOAD UNITS DATA.
             foreach (BattleWave wave in _waves)
             {
                 foreach (BattleNpcUnit unit in wave.Units)
@@ -60,12 +60,13 @@ namespace TurnBase.Server.Core.Battle.Core
                 }
             }
 
-            // WE CREATE IDS FOR USERS.
+            // WE LOAD USER DATA.
             foreach (BattleUser user in _users)
             {
+                user.SetBattle(this);
                 user.SetId(++_unitIdCounter);
-                user.AddSkill(new BattleDoubleSlashSkill(++_skillIdCounter, this, user));
                 user.SetTeam(1);
+                user.LoadSkills();
             }
 
             // WE COMBINE ALL THE UNITS.
@@ -74,7 +75,6 @@ namespace TurnBase.Server.Core.Battle.Core
 
             _turnHandler = new BattleTurnHandler(this, users, _currentWave.Units);
         }
-
 
         public void EndTurn()
         {

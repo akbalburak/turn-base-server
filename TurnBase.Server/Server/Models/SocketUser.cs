@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net.Sockets;
 using TurnBase.Server.Core.Battle.Core;
+using TurnBase.Server.Core.Battle.Interfaces;
 using TurnBase.Server.Enums;
 using TurnBase.Server.Extends.Json;
 using TurnBase.Server.Server.Services;
@@ -14,7 +15,7 @@ namespace TurnBase.Server.Server.ServerModels
 
         public Guid TempUniqueUserID { get; }
         public SocketUserData User { get; }
-        public BattleItem CurrentBattle { get; private set; }
+        public IBattleItem CurrentBattle { get; private set; }
 
         private List<SocketResponse> _unExpectedNotReceivedResponses;
         private List<Tuple<SocketRequest, byte[]>> _waitingResponses;
@@ -38,9 +39,10 @@ namespace TurnBase.Server.Server.ServerModels
             SocketUserBusSystem.CallSocketUserConnect(this);
         }
 
-        public void SetBattle(BattleItem battle)
+        public void SetBattle(IBattleItem battle)
         {
             CurrentBattle = battle;
+            CurrentBattle.OnDisposed += (IBattleItem battle) => CurrentBattle = null;
         }
 
         public void AddToUnExpectedAfterSendIt(SocketResponse response)

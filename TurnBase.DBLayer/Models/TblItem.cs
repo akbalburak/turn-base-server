@@ -15,5 +15,7 @@ public partial class TblItem
 
     public virtual ICollection<TblItemProperty> TblItemProperties { get; set; } = new List<TblItemProperty>();
 
+    public virtual ICollection<TblItemSkill> TblItemSkills { get; set; } = new List<TblItemSkill>();
+
     public virtual TblItemType Type { get; set; } = null!;
 }

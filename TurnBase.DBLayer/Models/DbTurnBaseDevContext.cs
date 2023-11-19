@@ -113,11 +113,21 @@ public partial class DbTurnBaseDevContext : DbContext
 
         modelBuilder.Entity<TblItemSkill>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("tbl_item_skills");
+            entity.HasKey(e => e.ItemSkillId);
+
+            entity.ToTable("tbl_item_skills");
 
             entity.HasIndex(e => new { e.ItemId, e.SkillId }, "IX_tbl_item_skills").IsUnique();
+
+            entity.HasOne(d => d.Item).WithMany(p => p.TblItemSkills)
+                .HasForeignKey(d => d.ItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_item_skills_tbl_items");
+
+            entity.HasOne(d => d.Skill).WithMany(p => p.TblItemSkills)
+                .HasForeignKey(d => d.SkillId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_item_skills_tbl_skills");
         });
 
         modelBuilder.Entity<TblItemType>(entity =>

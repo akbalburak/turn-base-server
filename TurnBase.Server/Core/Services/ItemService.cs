@@ -30,8 +30,12 @@ namespace TurnBase.Server.Core.Services
                     {
                         ContentId = (ItemContents)c.ContentId,
                         IndexId = c.IndexId,
-                        ItemId = c.ItemId,
                         Value = c.Value
+                    }).ToArray(),
+                    Skills = y.TblItemSkills.Select(i => new ItemSkillDTO
+                    {
+                        SkillId = i.SkillId,
+                        SlotIndex = i.SlotIndex,
                     }).ToArray()
                 }).ToArray();
             }
