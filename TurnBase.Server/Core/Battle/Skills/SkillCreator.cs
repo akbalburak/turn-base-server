@@ -6,7 +6,7 @@ namespace TurnBase.Server.Core.Battle.Skills
 {
     public static class SkillCreator
     {
-        public static BaseBattleSkill CreateSkill(int id,
+        public static BaseBattleSkill CreateSkill(int uniqueId,
             BattleSkills skill,
             IBattleItem battle,
             IBattleUnit unit
@@ -14,7 +14,7 @@ namespace TurnBase.Server.Core.Battle.Skills
         {
             return skill switch
             {
-                BattleSkills.DoubleSlash => new BattleDoubleSlashSkill(id, battle, unit),
+                BattleSkills.DoubleSlash => new BattleDoubleSlashSkill(uniqueId, battle, unit),
                 _ => null,
             };
         }

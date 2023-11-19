@@ -35,8 +35,8 @@ namespace TurnBase.Server.Core.Battle.Models
 
         public override void LoadSkills()
         {
-            // WE IMPLEMENT SKILLS.
-            int skillId = 0;
+            // UNIQUE ID COUNTER FOR SKILLS.
+            int uniqueSkillId = 0;
 
             // WE LOOP ALL THE EQUIPMENTS.
             List<UserItemDTO> equippedItems = Inventory.Items.FindAll(y => y.Equipped);
@@ -61,7 +61,7 @@ namespace TurnBase.Server.Core.Battle.Models
 
                     // WE CREATE SKILL.
                     BaseBattleSkill battleSkill = SkillCreator.CreateSkill(
-                        ++skillId,
+                        ++uniqueSkillId,
                         (BattleSkills)skill.SkillId,
                         Battle,
                         this

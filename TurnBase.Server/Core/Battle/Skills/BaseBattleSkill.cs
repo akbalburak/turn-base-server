@@ -1,8 +1,6 @@
-﻿using TurnBase.Server.Core.Battle.Core;
-using TurnBase.Server.Core.Battle.DTO;
+﻿using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Core.Battle.Interfaces;
-using TurnBase.Server.Core.Battle.Models;
 using TurnBase.Server.Core.Services;
 using TurnBase.Server.Models;
 
@@ -20,13 +18,13 @@ namespace TurnBase.Server.Core.Battle.Core.Skills
         public int TurnCooldown { get; private set; }
 
         public BaseBattleSkill(
-            int id,
+            int uniqueId,
             BattleSkills skill,
             IBattleItem battle,
             IBattleUnit unit
         )
         {
-            UniqueId = id;
+            UniqueId = uniqueId;
             Skill = skill;
 
             Owner = unit;

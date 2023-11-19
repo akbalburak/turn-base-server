@@ -6,8 +6,8 @@ namespace TurnBase.Server.Core.Battle.Core.Skills
 {
     public class BattleDoubleSlashSkill : BaseBattleSkill
     {
-        public BattleDoubleSlashSkill(int id, IBattleItem battle, IBattleUnit unit)
-            : base(id, BattleSkills.DoubleSlash, battle, unit)
+        public BattleDoubleSlashSkill(int uniqueId, IBattleItem battle, IBattleUnit unit)
+            : base(uniqueId, BattleSkills.DoubleSlash, battle, unit)
         {
         }
 
