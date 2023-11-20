@@ -1,5 +1,6 @@
 ﻿using TurnBase.Server.Core.Services;
 using TurnBase.Server.Enums;
+using TurnBase.Server.Interfaces;
 using TurnBase.Server.Models;
 
 namespace TurnBase.Server.Core.Battle.Models
@@ -28,7 +29,7 @@ namespace TurnBase.Server.Core.Battle.Models
                 if (!inventoryItem.Equipped)
                     continue;
 
-                ItemDTO itemData = ItemService.GetItem(inventoryItem.ItemID);
+                IItemDTO itemData = ItemService.GetItem(inventoryItem.ItemID);
                 foreach (ItemPropertyDTO property in itemData.Properties)
                 {
                     double value = property.GetValue(inventoryItem.Quality);

@@ -3,13 +3,19 @@ using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Effects;
 using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Core.Battle.Interfaces;
+using TurnBase.Server.Interfaces;
 
 namespace TurnBase.Server.Core.Battle.Skills
 {
     public class BleedingSlashSkill : BaseSkill
     {
-        public BleedingSlashSkill(int uniqueId, IBattleItem battle, IBattleUnit unit)
-            : base(uniqueId, BattleSkills.BleedingSlash, battle, unit)
+        public BleedingSlashSkill(int uniqueId, 
+            IItemSkillDTO skill, 
+            IBattleItem battle, 
+            IBattleUnit owner, 
+            IUserItemDTO userItem, 
+            IItemDTO itemData)
+            : base(uniqueId, skill, battle, owner, userItem, itemData)
         {
         }
 
@@ -25,6 +31,7 @@ namespace TurnBase.Server.Core.Battle.Skills
                     return;
             }
 
+            // SKILL USAGE DATA.
             BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
 
             // WE DO THE SLASH.
@@ -32,18 +39,18 @@ namespace TurnBase.Server.Core.Battle.Skills
             Owner.AttackToUnit(targetUnit, damage);
             usageData.AddToDamage(targetUnit.UniqueId, damage);
 
+            // SEND TO USER.
+            Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
+
             // WE WILL CREATE A BLEEDING EFFECT.
-            IEffect effect = EffectCreator.GetEffect(BattleEffects.Bleeding,
+            ISkillEffect effect = EffectCreator.GetEffect(BattleEffects.Bleeding,
                 Battle,
                 Owner,
                 targetUnit,
                 new BaseEffectData(turnDuration: 3)
             );
-
             targetUnit.AddEffect(effect);
 
-            // SEND TO USER.
-            Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
         }
     }
 }

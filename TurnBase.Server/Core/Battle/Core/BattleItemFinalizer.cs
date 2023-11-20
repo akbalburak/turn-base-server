@@ -1,6 +1,7 @@
 ﻿using TurnBase.Server.Core.Battle.Interfaces;
 using TurnBase.Server.Core.Battle.Models;
 using TurnBase.Server.Core.Services;
+using TurnBase.Server.Interfaces;
 using TurnBase.Server.Models;
 using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
@@ -38,7 +39,7 @@ namespace TurnBase.Server.Core.Battle.Core
                         foreach (BattleRewardItemData reward in _difficulityData.FirstCompletionRewards)
                         {
                             // WE MAKE SURE ITEM EXISTS.
-                            ItemDTO itemData = ItemService.GetItem(reward.ItemId);
+                            IItemDTO itemData = ItemService.GetItem(reward.ItemId);
                             if (itemData == null)
                                 continue;
 

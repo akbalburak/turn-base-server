@@ -17,7 +17,7 @@ namespace TurnBase.Server.Core.Battle.DTO
             FinalizeTurn = skill.FinalizeTurnInUse;
             SkillOwnerId = skill.Owner.UniqueId;
             UniqueSkillId = skill.UniqueId;
-            Skill = skill.Skill;
+            Skill = skill.ItemSkill.SkillId;
 
             Damages = new List<BattleSkillUsageAttackItemDTO>();
         }

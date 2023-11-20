@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
+using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Enums;
+using TurnBase.Server.Interfaces;
 
 namespace TurnBase.Server.Models
 {
-    public class ItemDTO
+    public class ItemDTO : IItemDTO
     {
         [JsonProperty("A")] public int Id { get; set; }
         [JsonProperty("B")] public ItemTypes TypeId { get; set; }
@@ -60,6 +62,15 @@ namespace TurnBase.Server.Models
             Properties = Array.Empty<ItemPropertyDTO>();
             Contents = Array.Empty<ItemContentDTO>();
         }
+
+        public IItemSkillDTO GetItemSkill(int slotIndex, int selectedSlot)
+        {
+            return this.Skills
+                .Where(y => y.SlotIndex == slotIndex)
+                .Skip(selectedSlot)
+                .FirstOrDefault();
+        }
+
     }
 
     public class ItemPropertyDTO
@@ -83,9 +94,9 @@ namespace TurnBase.Server.Models
 
     }
 
-    public class ItemSkillDTO
+    public class ItemSkillDTO : IItemSkillDTO
     {
-        [JsonProperty("A")] public int SkillId { get; set; }
+        [JsonProperty("A")] public BattleSkills SkillId { get; set; }
         [JsonProperty("B")] public int SlotIndex { get; set; }
     }
 }

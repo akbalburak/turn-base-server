@@ -1,7 +1,9 @@
 ﻿using TurnBase.DBLayer.Interfaces;
 using TurnBase.DBLayer.Models;
 using TurnBase.DBLayer.Repositories;
+using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Enums;
+using TurnBase.Server.Interfaces;
 using TurnBase.Server.Models;
 
 namespace TurnBase.Server.Core.Services
@@ -34,14 +36,14 @@ namespace TurnBase.Server.Core.Services
                     }).ToArray(),
                     Skills = y.TblItemSkills.Select(i => new ItemSkillDTO
                     {
-                        SkillId = i.SkillId,
+                        SkillId = (BattleSkills)i.SkillId,
                         SlotIndex = i.SlotIndex,
                     }).ToArray()
                 }).ToArray();
             }
         }
 
-        public static ItemDTO GetItem(int itemId)
+        public static IItemDTO GetItem(int itemId)
         {
             return _items.FirstOrDefault(y => y.Id == itemId);
         }

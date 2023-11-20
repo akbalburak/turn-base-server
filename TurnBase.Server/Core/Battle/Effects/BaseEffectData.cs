@@ -2,7 +2,7 @@
 
 namespace TurnBase.Server.Core.Battle.Effects
 {
-    public class BaseEffectData : IEffectData
+    public class BaseEffectData : ISkillEffectData
     {
         public int TurnDuration { get; private set; }
         public BaseEffectData(int turnDuration)

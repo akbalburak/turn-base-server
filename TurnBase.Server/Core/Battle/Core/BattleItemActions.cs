@@ -153,7 +153,7 @@ namespace TurnBase.Server.Core.Battle.Core
                     {
                         LeftTurnToUse = v.LeftTurnToUse,
                         UniqueID = v.UniqueId,
-                        Skill = v.Skill,
+                        Skill = v.ItemSkill.SkillId,
                         TurnCooldown = v.TurnCooldown,
                     }).ToArray()
                 }).ToArray()

@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using TurnBase.Server.Enums;
+using TurnBase.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
 using TurnBase.Server.Trackables;
 
 namespace TurnBase.Server.Models
 {
-    public class UserItemDTO : TrackableDTO
+    public class UserItemDTO : TrackableDTO, IUserItemDTO
     {
         [JsonProperty("A")] public int UserItemID { get; set; }
         [JsonProperty("B")] public int ItemID { get; set; }
@@ -30,6 +31,16 @@ namespace TurnBase.Server.Models
         {
             this.Equipped = isEquipped;
             base.SetAsChanged();
+        }
+
+        public bool TryGetSlotValue(int index, out int slotValue)
+        {
+            slotValue = -1;
+            if (index >= this.SkillSlots.Length)
+                return false;
+
+            slotValue = this.SkillSlots[index];
+            return true;
         }
     }
 }

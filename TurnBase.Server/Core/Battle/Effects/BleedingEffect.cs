@@ -9,7 +9,7 @@ namespace TurnBase.Server.Core.Battle.Effects
         public BleedingEffect(IBattleItem battle,
             IBattleUnit byWhom,
             IBattleUnit toWhom,
-            IEffectData effectData)
+            ISkillEffectData effectData)
             : base(BattleEffects.Bleeding, battle, byWhom, toWhom, effectData)
         {
         }

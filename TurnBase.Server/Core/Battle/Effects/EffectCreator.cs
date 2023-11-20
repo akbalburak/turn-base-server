@@ -5,8 +5,8 @@ namespace TurnBase.Server.Core.Battle.Effects
 {
     public static class EffectCreator
     {
-        public static IEffect GetEffect(BattleEffects effect,
-            IBattleItem battle, IBattleUnit byWhom, IBattleUnit toWhom, IEffectData effectData)
+        public static ISkillEffect GetEffect(BattleEffects effect,
+            IBattleItem battle, IBattleUnit byWhom, IBattleUnit toWhom, ISkillEffectData effectData)
         {
             switch (effect)
             {

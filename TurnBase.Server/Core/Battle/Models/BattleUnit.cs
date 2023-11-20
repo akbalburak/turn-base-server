@@ -21,14 +21,14 @@ namespace TurnBase.Server.Core.Battle.Models
         public BattleUnitStats Stats { get; private set; }
         
         public List<ISkill> Skills { get; private set; }
-        public List<IEffect> Effects { get; private set; }
+        public List<ISkillEffect> Effects { get; private set; }
 
         public IBattleItem Battle { get; private set; }
 
         protected BattleUnit(int position)
         {
             Skills = new List<ISkill>();
-            Effects = new List<IEffect>();
+            Effects = new List<ISkillEffect>();
             Stats = new BattleUnitStats();
             Position = position;
         }
@@ -111,8 +111,11 @@ namespace TurnBase.Server.Core.Battle.Models
             Health = stats.MaxHealth;
         }
 
-        public void AddEffect(IEffect effect)
+        public void AddEffect(ISkillEffect effect)
         {
+            if (effect == null) 
+                return;
+
             Effects.Add(effect);
         }
     }

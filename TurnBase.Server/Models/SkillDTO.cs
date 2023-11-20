@@ -1,8 +1,9 @@
 ﻿using TurnBase.Server.Core.Battle.Enums;
+using TurnBase.Server.Interfaces;
 
 namespace TurnBase.Server.Models
 {
-    public class SkillDTO
+    public class SkillDTO : ISkillDTO
     {
         public BattleSkills Id { get; set; }
         public bool FinalizeTurnInUse { get; internal set; }

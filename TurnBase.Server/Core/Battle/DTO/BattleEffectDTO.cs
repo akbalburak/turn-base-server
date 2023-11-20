@@ -11,7 +11,7 @@ namespace TurnBase.Server.Core.Battle.DTO
         [JsonProperty("C")] public int LeftTurnDuration { get; set; }
         [JsonProperty("D")] public int Damage { get; set; }
 
-        public BattleEffectTurnExecutionDTO(IEffect effect)
+        public BattleEffectTurnExecutionDTO(ISkillEffect effect)
         {
             this.TargetUnitId = effect.ToWhom.UniqueId;
             this.Effect = effect.Effect;
@@ -26,7 +26,7 @@ namespace TurnBase.Server.Core.Battle.DTO
         [JsonProperty("C")] public int OwnerUnitId { get; set; }
         [JsonProperty("D")] public int LeftTurnDuration { get; set; }
 
-        public BattleEffectStartedDTO(IEffect effect)
+        public BattleEffectStartedDTO(ISkillEffect effect)
         {
             this.Effect = effect.Effect;
             this.TargetUnitId = effect.ToWhom.UniqueId;
@@ -40,7 +40,7 @@ namespace TurnBase.Server.Core.Battle.DTO
         [JsonProperty("A")] public BattleEffects Effect { get; set; }
         [JsonProperty("B")] public int TargetUnitId { get; set; }
 
-        public BattleEffectOverDTO(IEffect effect)
+        public BattleEffectOverDTO(ISkillEffect effect)
         {
             this.Effect = effect.Effect;
             this.TargetUnitId = effect.ToWhom.UniqueId;

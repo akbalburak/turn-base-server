@@ -3,6 +3,7 @@ using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Core.Battle.Interfaces;
 using TurnBase.Server.Core.Battle.Skills;
 using TurnBase.Server.Core.Services;
+using TurnBase.Server.Interfaces;
 using TurnBase.Server.Models;
 using TurnBase.Server.Server.Interfaces;
 
@@ -39,11 +40,11 @@ namespace TurnBase.Server.Core.Battle.Models
             int uniqueSkillId = 0;
 
             // WE LOOP ALL THE EQUIPMENTS.
-            List<UserItemDTO> equippedItems = Inventory.Items.FindAll(y => y.Equipped);
-            foreach (UserItemDTO equippedItem in equippedItems)
+            IUserItemDTO[] userItems = Inventory.GetEquippedItems();
+            foreach (IUserItemDTO userItem in userItems)
             {
                 // SOMEHOW IF THE ITEM DOES NOT EXISTS.
-                ItemDTO itemData = ItemService.GetItem(equippedItem.ItemID);
+                IItemDTO itemData = ItemService.GetItem(userItem.ItemID);
                 if (itemData == null)
                     continue;
 
@@ -52,23 +53,24 @@ namespace TurnBase.Server.Core.Battle.Models
                 foreach (int skillSlot in skillSlots)
                 {
                     index++;
-                    int selectedSlot = equippedItem.SkillSlots[index];
+
+                    // WE MAKE SURE SLOT IS VALUD.
+                    if (!userItem.TryGetSlotValue(index, out int selectedSlot))
+                        continue;
 
                     // WE CHECK FOR THE SKILL DATA.
-                    ItemSkillDTO skill = itemData.Skills
-                        .Where(y => y.SlotIndex == skillSlot)
-                        .Skip(selectedSlot)
-                        .FirstOrDefault();
-
+                    IItemSkillDTO skill = itemData.GetItemSkill(skillSlot, selectedSlot);
                     if (skill == null)
                         continue;
 
                     // WE CREATE SKILL.
                     ISkill battleSkill = SkillCreator.CreateSkill(
                         ++uniqueSkillId,
-                        (BattleSkills)skill.SkillId,
+                        skill,
                         Battle,
-                        this
+                        this,
+                        userItem,
+                        itemData
                     );
 
                     // IF SOME HOW SKILL UNDEFINED JUST SKIP.

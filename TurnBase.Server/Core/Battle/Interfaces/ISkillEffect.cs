@@ -2,7 +2,7 @@
 
 namespace TurnBase.Server.Core.Battle.Interfaces
 {
-    public interface IEffect
+    public interface ISkillEffect
     {
         BattleEffects Effect { get; }
         IBattleItem Battle { get; }

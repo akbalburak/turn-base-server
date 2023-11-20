@@ -20,6 +20,7 @@ namespace TurnBase.Server.Core.Battle.Interfaces
 
         BattleUnitStats Stats { get; }
         List<ISkill> Skills { get; }
+        List<ISkillEffect> Effects { get; }
 
         int GetBaseDamage(IBattleUnit defender);
 
@@ -34,6 +35,6 @@ namespace TurnBase.Server.Core.Battle.Interfaces
 
         void LoadSkills();
         void UseSkill(BattleSkillUseDTO useData);
-        void AddEffect(IEffect effect);
+        void AddEffect(ISkillEffect effect);
     }
 }

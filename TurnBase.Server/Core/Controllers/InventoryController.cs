@@ -1,5 +1,6 @@
 ﻿using TurnBase.Server.Core.Services;
 using TurnBase.Server.Enums;
+using TurnBase.Server.Interfaces;
 using TurnBase.Server.Models;
 using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
@@ -24,7 +25,7 @@ namespace TurnBase.Server.Core.Controllers
             if (inventoryItem != null)
             {
                 // WE MAKE SURE THE SAME TYPE ITEM NOT WORN.
-                ItemDTO itemData = ItemService.GetItem(inventoryItem.ItemID);
+                IItemDTO itemData = ItemService.GetItem(inventoryItem.ItemID);
 
                 // WE MAKE SURE THE ITEM IS VALID TYPE.
                 if (itemData.Action != ItemActions.Equipable)
@@ -34,7 +35,7 @@ namespace TurnBase.Server.Core.Controllers
                 List<UserItemDTO> equippedItems = inventory.Items.FindAll(y => y.Equipped);
                 equippedItems.ForEach(equippedItem =>
                 {
-                    ItemDTO eItemData = ItemService.GetItem(equippedItem.ItemID);
+                    IItemDTO eItemData = ItemService.GetItem(equippedItem.ItemID);
                     if (eItemData.TypeId == itemData.TypeId)
                     {
                         equippedItem.UpdateEquipState(false);
@@ -90,7 +91,7 @@ namespace TurnBase.Server.Core.Controllers
                 return SocketResponse.GetError("Not Enough Quantity!");
 
             // WE GET ITEM META DATA.
-            ItemDTO itemData = ItemService.GetItem(inventoryItem.ItemID);
+            IItemDTO itemData = ItemService.GetItem(inventoryItem.ItemID);
 
             // WE MAKE SURE THE ITEM IS USABLE.
             if (itemData.Action != ItemActions.Usable)

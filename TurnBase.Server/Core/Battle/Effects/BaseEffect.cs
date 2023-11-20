@@ -4,7 +4,7 @@ using TurnBase.Server.Core.Battle.Interfaces;
 
 namespace TurnBase.Server.Core.Battle.Effects
 {
-    public abstract class BaseEffect : IEffect
+    public abstract class BaseEffect : ISkillEffect
     {
         public int LeftTurnDuration { get; set; }
 
@@ -18,7 +18,7 @@ namespace TurnBase.Server.Core.Battle.Effects
             IBattleItem battle,
             IBattleUnit byWhom,
             IBattleUnit toWhom,
-            IEffectData effectData
+            ISkillEffectData effectData
         )
         {
             this.Effect = effect;

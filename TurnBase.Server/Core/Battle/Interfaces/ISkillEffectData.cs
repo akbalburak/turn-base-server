@@ -1,6 +1,6 @@
 ﻿namespace TurnBase.Server.Core.Battle.Interfaces
 {
-    public interface IEffectData
+    public interface ISkillEffectData
     {
         public int TurnDuration { get; }
     }

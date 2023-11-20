@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using TurnBase.Server.Interfaces;
 using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Models
@@ -19,7 +20,7 @@ namespace TurnBase.Server.Models
             return Items.FirstOrDefault(y => y.UserItemID == userItemId);
         }
 
-        public UserItemDTO AddStackable(ItemDTO item, int quantity)
+        public UserItemDTO AddStackable(IItemDTO item, int quantity)
         {
             UserItemDTO userItem = Items.Find(y => y.ItemID == item.Id);
 
@@ -46,7 +47,7 @@ namespace TurnBase.Server.Models
 
             return userItem;
         }
-        public UserItemDTO AddNonStackableItem(ItemDTO item, int level, float quality)
+        public UserItemDTO AddNonStackableItem(IItemDTO item, int level, float quality)
         {
             UserItemDTO userItem = new UserItemDTO
             {
@@ -89,6 +90,11 @@ namespace TurnBase.Server.Models
             Items.ForEach(e => e.SetChangeHandler(_changeHandler));
         }
 
+        public IUserItemDTO[] GetEquippedItems()
+        {
+            UserItemDTO[] equippedItems = Items.Where(item => item.Equipped).ToArray();
+            return equippedItems;
+        }
     }
 
     public class EquipItemRequestDTO

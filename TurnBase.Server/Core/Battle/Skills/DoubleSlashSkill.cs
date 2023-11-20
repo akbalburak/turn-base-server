@@ -1,13 +1,15 @@
 ﻿using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Core.Battle.Interfaces;
+using TurnBase.Server.Interfaces;
+using TurnBase.Server.Models;
 
 namespace TurnBase.Server.Core.Battle.Core.Skills
 {
     public class DoubleSlashSkill : BaseSkill
     {
-        public DoubleSlashSkill(int uniqueId, IBattleItem battle, IBattleUnit unit)
-            : base(uniqueId, BattleSkills.DoubleSlash, battle, unit)
+        public DoubleSlashSkill(int uniqueId, IItemSkillDTO skill, IBattleItem battle, IBattleUnit unit, IUserItemDTO userItem, IItemDTO itemData)
+            : base(uniqueId, skill, battle, unit, userItem, itemData)
         {
         }
 

@@ -2,6 +2,7 @@
 using TurnBase.DBLayer.Models;
 using TurnBase.DBLayer.Repositories;
 using TurnBase.Server.Core.Battle.Enums;
+using TurnBase.Server.Interfaces;
 using TurnBase.Server.Models;
 
 namespace TurnBase.Server.Core.Services
@@ -24,7 +25,7 @@ namespace TurnBase.Server.Core.Services
                 }).ToArray();
         }
 
-        public static SkillDTO GetSkill(BattleSkills skill)
+        public static ISkillDTO GetSkill(BattleSkills skill)
         {
             return _skills.FirstOrDefault(x => x.Id == skill);
         }
