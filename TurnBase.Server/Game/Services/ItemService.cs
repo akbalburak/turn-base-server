@@ -37,7 +37,7 @@ namespace TurnBase.Server.Game.Services
                     Skills = y.TblItemSkillMappings.Select(i => new ItemSkillMappingDTO
                     {
                         ItemSkill = (ItemSkills)i.SkillId,
-                        SlotIndex = i.SlotIndex,
+                        SkillIndex = i.SkilIndex,
                     }).ToArray()
                 }).ToArray();
             }

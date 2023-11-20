@@ -1,17 +1,22 @@
 ﻿using TurnBase.Server.Game.Battle.DTO;
+using TurnBase.Server.Game.Battle.ItemSkillEffects;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.ItemSkills.Base;
-using TurnBase.Server.Game.Interfaces;
-using TurnBase.Server.Models;
 
-namespace TurnBase.Server.Game.Battle.Core.Skills
+namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
 {
-    public class DoubleSlashItemSkill : BaseItemSkill
+    public class BleedingSlashSkill : BaseItemSkill
     {
-        public DoubleSlashItemSkill(int uniqueId, IItemSkillDTO skill, IBattleItem battle, IBattleUnit unit, IUserItemDTO userItem, IItemDTO itemData)
-            : base(uniqueId, skill, battle, unit, userItem, itemData)
+        public BleedingSlashSkill(int uniqueId,
+            IItemSkillDTO skill,
+            IBattleItem battle,
+            IBattleUnit owner,
+            IUserItemDTO userItem,
+            IItemDTO itemData)
+            : base(uniqueId, skill, battle, owner, userItem, itemData)
         {
         }
 
@@ -27,20 +32,27 @@ namespace TurnBase.Server.Game.Battle.Core.Skills
                     return;
             }
 
+            // SKILL USAGE DATA.
             BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
 
-            // WE DO THE FIRST SLASH.
+            // WE DO THE SLASH.
             int damage = Owner.GetBaseDamage(targetUnit);
-            Owner.AttackToUnit(targetUnit, damage);
-            usageData.AddToDamage(targetUnit.UniqueId, damage);
-
-            // WE DO THE SECOND SLASH.
-            damage = Owner.GetBaseDamage(targetUnit);
             Owner.AttackToUnit(targetUnit, damage);
             usageData.AddToDamage(targetUnit.UniqueId, damage);
 
             // SEND TO USER.
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
+
+            // WE WILL CREATE A BLEEDING EFFECT.
+            IItemSkillEffect effect = EffectCreator.GetEffect(BattleEffects.Bleeding,
+                Battle,
+                Owner,
+                targetUnit,
+                SkillData,
+                UserItem
+            );
+            targetUnit.AddEffect(effect);
+
         }
     }
 }

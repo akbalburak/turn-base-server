@@ -15,11 +15,11 @@ namespace TurnBase.Server.Game.DTO
         [JsonProperty("E")] public bool Equipped { get; set; }
         [JsonProperty("F")] public float Quality { get; set; }
         [JsonProperty("H")] public int Level { get; set; }
-        [JsonProperty("I")] public int[] SkillSlots { get; set; }
+        [JsonProperty("I")] public int[] SelectedSkills { get; set; }
 
         public UserItemDTO()
         {
-            SkillSlots = Array.Empty<int>();
+            SelectedSkills = Array.Empty<int>();
         }
 
         public override SocketResponse GetResponse()
@@ -33,13 +33,13 @@ namespace TurnBase.Server.Game.DTO
             SetAsChanged();
         }
 
-        public bool TryGetSlotValue(int index, out int slotValue)
+        public bool TryGetSelectedSkillIndex(int slot, out int selectedSkillIndex)
         {
-            slotValue = -1;
-            if (index >= SkillSlots.Length)
+            selectedSkillIndex = -1;
+            if (slot >= SelectedSkills.Length)
                 return false;
 
-            slotValue = SkillSlots[index];
+            selectedSkillIndex = SelectedSkills[slot];
             return true;
         }
     }

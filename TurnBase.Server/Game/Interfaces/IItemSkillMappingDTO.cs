@@ -5,6 +5,6 @@ namespace TurnBase.Server.Game.Interfaces
     public interface IItemSkillMappingDTO
     {
         public ItemSkills ItemSkill { get; }
-        int SlotIndex { get; }
+        int SkillIndex { get; }
     }
 }

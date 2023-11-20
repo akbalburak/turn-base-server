@@ -35,7 +35,7 @@
               "Position": 0,
               "UnitId": 1,
               "Stats": {
-                "MaxHealth": 60,
+                "MaxHealth": 3,
                 "Damage": 3,
                 "AttackSpeed": 1.1
               }
@@ -44,7 +44,7 @@
               "Position": 1,
               "UnitId": 1,
               "Stats": {
-                "MaxHealth": 60,
+                "MaxHealth": 10,
                 "Damage": 3,
                 "AttackSpeed": 1.1
               }

@@ -16,6 +16,6 @@ namespace TurnBase.Server.Game.Interfaces
         ItemSkillMappingDTO[] Skills { get; }
         ItemContentMappingDTO[] Contents { get; }
 
-        IItemSkillMappingDTO GetItemSkill(int skillSlot, int selectedSlot);
+        IItemSkillMappingDTO GetItemActiveSkill(int skillIndex, int selectedSlot);
     }
 }

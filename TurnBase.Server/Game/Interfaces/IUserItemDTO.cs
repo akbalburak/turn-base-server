@@ -6,6 +6,6 @@
         bool Equipped { get; }
         float Quality { get; }
 
-        bool TryGetSlotValue(int index, out int selectedSlot);
+        bool TryGetSelectedSkillIndex(int index, out int selectedSlot);
     }
 }

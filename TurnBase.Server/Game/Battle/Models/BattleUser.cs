@@ -1,6 +1,4 @@
-﻿using TurnBase.Server.Game.Battle.Core.Skills;
-using TurnBase.Server.Game.Battle.Enums;
-using TurnBase.Server.Game.Battle.Interfaces;
+﻿using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.Battle.Skills;
 using TurnBase.Server.Game.Interfaces;
@@ -50,21 +48,26 @@ namespace TurnBase.Server.Game.Battle.Models
                     continue;
 
                 int index = -1;
-                int[] skillSlots = itemData.Skills.Select(y => y.SlotIndex).Distinct().ToArray();
-                foreach (int skillSlot in skillSlots)
+
+                // WE GET ALL THE DISTINCT SKILL INDEXES.
+                int[] skillIndexes = itemData.Skills.Select(y => y.SkillIndex).Distinct().ToArray();
+                foreach (int skillIndex in skillIndexes)
                 {
                     index++;
 
-                    // WE MAKE SURE SLOT IS VALUD.
-                    if (!userItem.TryGetSlotValue(index, out int selectedSlot))
+                    // WE MAKE SURE SLOT IS VALID.
+                    if (!userItem.TryGetSelectedSkillIndex(index, out int selectedSlot))
                         continue;
 
                     // WE CHECK FOR THE SKILL DATA.
-                    IItemSkillMappingDTO skillMap = itemData.GetItemSkill(skillSlot, selectedSlot);
+                    IItemSkillMappingDTO skillMap = itemData.GetItemActiveSkill(skillIndex, selectedSlot);
                     if (skillMap == null)
                         continue;
 
+                    // WE GET SELECT SKILL.
                     IItemSkillDTO skill = ItemSkillService.GetItemSkill(skillMap.ItemSkill);
+                    if (skill == null)
+                        continue;
 
                     // WE CREATE SKILL.
                     IItemSkill battleSkill = ItemSkillCreator.CreateSkill(

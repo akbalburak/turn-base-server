@@ -57,18 +57,18 @@ namespace TurnBase.Server.Game.DTO
             }
         }
 
+
         public ItemDTO()
         {
             Properties = Array.Empty<ItemPropertyMappingDTO>();
             Contents = Array.Empty<ItemContentMappingDTO>();
         }
 
-        public IItemSkillMappingDTO GetItemSkill(int slotIndex, int selectedSlot)
+        public IItemSkillMappingDTO GetItemActiveSkill(int skillIndex, int selectedSlot)
         {
-            return Skills
-                .Where(y => y.SlotIndex == slotIndex)
-                .Skip(selectedSlot)
-                .FirstOrDefault();
+            return Skills.Where(y => y.SkillIndex == skillIndex)
+                        .Skip(selectedSlot)
+                        .FirstOrDefault();
         }
 
     }
@@ -97,6 +97,6 @@ namespace TurnBase.Server.Game.DTO
     public class ItemSkillMappingDTO : IItemSkillMappingDTO
     {
         [JsonProperty("A")] public ItemSkills ItemSkill { get; set; }
-        [JsonProperty("B")] public int SlotIndex { get; set; }
+        [JsonProperty("B")] public int SkillIndex { get; set; }
     }
 }

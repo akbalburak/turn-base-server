@@ -1,21 +1,21 @@
 ﻿using TurnBase.Server.Game.Battle.DTO;
-using TurnBase.Server.Game.Battle.ItemSkillEffects;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
-using TurnBase.Server.Game.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.ItemSkills.Base;
+using TurnBase.Server.Game.Enums;
+using TurnBase.Server.Game.Interfaces;
 
-namespace TurnBase.Server.Game.Battle.Skills
+namespace TurnBase.Server.Game.Battle.ItemSkills
 {
-    public class BleedingSlashItemSkill : BaseItemSkill
+    public class FinishHimSkill : BaseItemSkill
     {
-        public BleedingSlashItemSkill(int uniqueId,
-            IItemSkillDTO skill,
-            IBattleItem battle,
-            IBattleUnit owner,
-            IUserItemDTO userItem,
-            IItemDTO itemData)
+        public FinishHimSkill(int uniqueId,
+                              IItemSkillDTO skill,
+                              IBattleItem battle,
+                              IBattleUnit owner,
+                              IUserItemDTO userItem,
+                              IItemDTO itemData)
             : base(uniqueId, skill, battle, owner, userItem, itemData)
         {
         }
@@ -32,27 +32,25 @@ namespace TurnBase.Server.Game.Battle.Skills
                     return;
             }
 
+            // SKILL DAMAGE TO HIT.
+            int damage = SkillData.GetDataValueAsInt(ItemSkillData.Damage, UserItem);
+
             // SKILL USAGE DATA.
             BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
 
             // WE DO THE SLASH.
-            int damage = Owner.GetBaseDamage(targetUnit);
             Owner.AttackToUnit(targetUnit, damage);
             usageData.AddToDamage(targetUnit.UniqueId, damage);
 
+            // IF TARGET UNIT IS DEATH DONT START COOLDOWN.
+            if (targetUnit.IsDeath)
+            {
+                usageData.DontStartCooldown = true;
+                ResetCooldown();
+            }
+
             // SEND TO USER.
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
-
-            // WE WILL CREATE A BLEEDING EFFECT.
-            IItemSkillEffect effect = EffectCreator.GetEffect(BattleEffects.Bleeding,
-                Battle,
-                Owner,
-                targetUnit,
-                SkillData,
-                UserItem
-            );
-            targetUnit.AddEffect(effect);
-
         }
     }
 }

@@ -11,6 +11,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("C")] public int SkillOwnerId { get; private set; }
         [JsonProperty("D")] public List<BattleSkillUsageAttackItemDTO> Damages { get; private set; }
         [JsonProperty("E")] public bool FinalizeTurn { get; set; }
+        [JsonProperty("F")] public bool DontStartCooldown { get; set; }
 
         public BattleSkillUsageDTO(IItemSkill itemSkill)
         {
