@@ -1,7 +1,7 @@
 ﻿using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
-using TurnBase.Server.Game.Battle.ItemSkills;
+using TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills;
 using TurnBase.Server.Game.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Skills

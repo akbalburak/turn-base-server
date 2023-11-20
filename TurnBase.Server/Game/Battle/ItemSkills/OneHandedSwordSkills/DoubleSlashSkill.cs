@@ -5,7 +5,7 @@ using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.ItemSkills.Base;
 using TurnBase.Server.Game.Interfaces;
 
-namespace TurnBase.Server.Game.Battle.ItemSkills
+namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
 {
     public class DoubleSlashSkill : BaseItemSkill
     {
