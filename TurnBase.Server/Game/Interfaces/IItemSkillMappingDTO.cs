@@ -4,7 +4,7 @@ namespace TurnBase.Server.Game.Interfaces
 {
     public interface IItemSkillMappingDTO
     {
-        public BattleSkills SkillId { get; }
+        public ItemSkills ItemSkill { get; }
         int SlotIndex { get; }
     }
 }

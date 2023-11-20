@@ -1,6 +1,8 @@
 ﻿using TurnBase.Server.Game.Battle.DTO;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
+using TurnBase.Server.Game.Battle.ItemSkills.Base;
 using TurnBase.Server.Game.Interfaces;
 using TurnBase.Server.Models;
 
@@ -8,7 +10,7 @@ namespace TurnBase.Server.Game.Battle.Core.Skills
 {
     public class DoubleSlashItemSkill : BaseItemSkill
     {
-        public DoubleSlashItemSkill(int uniqueId, IItemSkillMappingDTO skill, IBattleItem battle, IBattleUnit unit, IUserItemDTO userItem, IItemDTO itemData)
+        public DoubleSlashItemSkill(int uniqueId, IItemSkillDTO skill, IBattleItem battle, IBattleUnit unit, IUserItemDTO userItem, IItemDTO itemData)
             : base(uniqueId, skill, battle, unit, userItem, itemData)
         {
         }

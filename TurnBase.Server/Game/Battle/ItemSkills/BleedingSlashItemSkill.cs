@@ -1,19 +1,20 @@
-﻿using TurnBase.Server.Game.Battle.Core.Skills;
-using TurnBase.Server.Game.Battle.DTO;
-using TurnBase.Server.Game.Battle.Effects;
+﻿using TurnBase.Server.Game.Battle.DTO;
+using TurnBase.Server.Game.Battle.ItemSkillEffects;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Interfaces;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
+using TurnBase.Server.Game.Battle.ItemSkills.Base;
 
 namespace TurnBase.Server.Game.Battle.Skills
 {
     public class BleedingSlashItemSkill : BaseItemSkill
     {
-        public BleedingSlashItemSkill(int uniqueId, 
-            IItemSkillMappingDTO skill, 
-            IBattleItem battle, 
-            IBattleUnit owner, 
-            IUserItemDTO userItem, 
+        public BleedingSlashItemSkill(int uniqueId,
+            IItemSkillDTO skill,
+            IBattleItem battle,
+            IBattleUnit owner,
+            IUserItemDTO userItem,
             IItemDTO itemData)
             : base(uniqueId, skill, battle, owner, userItem, itemData)
         {
@@ -47,7 +48,8 @@ namespace TurnBase.Server.Game.Battle.Skills
                 Battle,
                 Owner,
                 targetUnit,
-                new BaseEffectData(turnDuration: 3)
+                SkillData,
+                UserItem
             );
             targetUnit.AddEffect(effect);
 

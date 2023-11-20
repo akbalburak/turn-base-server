@@ -1,6 +1,7 @@
 ﻿using TurnBase.Server.Game.Battle.DTO;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
 
 namespace TurnBase.Server.Game.Battle.Core
 {

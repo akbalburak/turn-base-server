@@ -1,4 +1,5 @@
 ﻿using TurnBase.Server.Game.Battle.Enums;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
 
 namespace TurnBase.Server.Game.Battle.Interfaces
 {

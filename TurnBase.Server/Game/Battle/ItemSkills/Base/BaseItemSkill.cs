@@ -1,10 +1,11 @@
 ﻿using TurnBase.Server.Game.Battle.DTO;
 using TurnBase.Server.Game.Battle.Interfaces;
-using TurnBase.Server.Game.Battle.Skills;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
+using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.Interfaces;
 using TurnBase.Server.Game.Services;
 
-namespace TurnBase.Server.Game.Battle.Core.Skills
+namespace TurnBase.Server.Game.Battle.ItemSkills.Base
 {
     public abstract class BaseItemSkill : IItemSkill
     {
@@ -13,10 +14,8 @@ namespace TurnBase.Server.Game.Battle.Core.Skills
         public IItemSkillDTO SkillData { get; private set; }
         public IUserItemDTO UserItem { get; private set; }
         public IItemDTO ItemData { get; private set; }
-        public IItemSkillMappingDTO ItemSkill { get; private set; }
         public IBattleItem Battle { get; private set; }
         public IBattleUnit Owner { get; private set; }
-
 
         public bool FinalizeTurnInUse { get; private set; }
         public int LeftTurnToUse { get; private set; }
@@ -24,27 +23,25 @@ namespace TurnBase.Server.Game.Battle.Core.Skills
 
         public BaseItemSkill(
             int uniqueId,
-            IItemSkillMappingDTO skill,
+            IItemSkillDTO skill,
             IBattleItem battle,
             IBattleUnit owner,
             IUserItemDTO userItem,
             IItemDTO itemData
         )
         {
-            this.UniqueId = uniqueId;
-            this.ItemData = itemData;
-            this.UserItem = userItem;
+            UniqueId = uniqueId;
+            ItemData = itemData;
+            UserItem = userItem;
 
-            this.ItemSkill = skill;
+            Battle = battle;
 
-            this.Battle = battle;
+            SkillData = skill;
+            TurnCooldown = SkillData.TurnCooldown;
+            FinalizeTurnInUse = SkillData.FinalizeTurnInUse;
 
-            SkillData = ItemSkillService.GetSkill(skill.SkillId);
-            this.TurnCooldown = SkillData.TurnCooldown;
-            this.FinalizeTurnInUse = SkillData.FinalizeTurnInUse;
-
-            this.Owner = owner;
-            this.Owner.OnUnitTurnStart += OnUnitTurnStarted;
+            Owner = owner;
+            Owner.OnUnitTurnStart += OnUnitTurnStarted;
         }
 
         public virtual bool IsSkillReadyToUse()

@@ -96,7 +96,7 @@ namespace TurnBase.Server.Game.DTO
 
     public class ItemSkillMappingDTO : IItemSkillMappingDTO
     {
-        [JsonProperty("A")] public BattleSkills SkillId { get; set; }
+        [JsonProperty("A")] public ItemSkills ItemSkill { get; set; }
         [JsonProperty("B")] public int SlotIndex { get; set; }
     }
 }

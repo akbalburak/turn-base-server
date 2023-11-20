@@ -1,6 +1,7 @@
 ﻿using TurnBase.Server.Game.Battle.Core.Skills;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.Battle.Skills;
 using TurnBase.Server.Game.Interfaces;
 using TurnBase.Server.Game.Services;
@@ -59,9 +60,11 @@ namespace TurnBase.Server.Game.Battle.Models
                         continue;
 
                     // WE CHECK FOR THE SKILL DATA.
-                    IItemSkillMappingDTO skill = itemData.GetItemSkill(skillSlot, selectedSlot);
-                    if (skill == null)
+                    IItemSkillMappingDTO skillMap = itemData.GetItemSkill(skillSlot, selectedSlot);
+                    if (skillMap == null)
                         continue;
+
+                    IItemSkillDTO skill = ItemSkillService.GetItemSkill(skillMap.ItemSkill);
 
                     // WE CREATE SKILL.
                     IItemSkill battleSkill = ItemSkillCreator.CreateSkill(

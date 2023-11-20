@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Net.Sockets;
-using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Enums;
 using TurnBase.Server.Extends.Json;
 using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.Services;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
 
 namespace TurnBase.Server.Server.ServerModels
 {

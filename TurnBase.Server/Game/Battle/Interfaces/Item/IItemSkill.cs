@@ -1,17 +1,17 @@
 ﻿using TurnBase.Server.Game.Battle.DTO;
-using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Interfaces;
 
-namespace TurnBase.Server.Game.Battle.Skills
+namespace TurnBase.Server.Game.Battle.Interfaces.Item
 {
     public interface IItemSkill
     {
         int UniqueId { get; }
-        public IItemSkillMappingDTO ItemSkill { get; }
+
+        IItemSkillDTO SkillData { get; }
+        IBattleUnit Owner { get; }
 
         int LeftTurnToUse { get; }
         int TurnCooldown { get; }
-        IBattleUnit Owner { get; }
         bool FinalizeTurnInUse { get; }
 
         bool IsSkillReadyToUse();

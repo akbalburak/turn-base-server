@@ -1,32 +1,40 @@
 ﻿using TurnBase.Server.Game.Battle.DTO;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
+using TurnBase.Server.Game.Enums;
+using TurnBase.Server.Game.Interfaces;
 
-namespace TurnBase.Server.Game.Battle.Effects
+namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
 {
     public abstract class BaseEffect : IItemSkillEffect
     {
         public int LeftTurnDuration { get; set; }
 
-        public BattleEffects Effect { get; set; }
-        public IBattleItem Battle { get; set; }
-        public IBattleUnit ByWhom { get; set; }
-        public IBattleUnit ToWhom { get; set; }
+        public BattleEffects Effect { get; private set; }
+        public IBattleItem Battle { get; private set; }
+        public IBattleUnit ByWhom { get; private set; }
+        public IBattleUnit ToWhom { get; private set; }
+        public IItemSkillDTO Skill { get; private set; }
+        public IUserItemDTO UserItem { get; private set; }
 
         public BaseEffect(
             BattleEffects effect,
             IBattleItem battle,
             IBattleUnit byWhom,
             IBattleUnit toWhom,
-            IItemSkillEffectData effectData
+            IItemSkillDTO skill,
+            IUserItemDTO userItem
         )
         {
-            this.Effect = effect;
-            this.Battle = battle;
-            this.ByWhom = byWhom;
-            this.ToWhom = toWhom;
+            Effect = effect;
+            Battle = battle;
+            ByWhom = byWhom;
+            ToWhom = toWhom;
+            UserItem = userItem;
+            Skill = skill;
 
-            this.LeftTurnDuration = effectData.TurnDuration;
+            LeftTurnDuration = skill.GetDataValueAsInt(ItemSkillData.Duration, userItem);
 
             ByWhom.OnUnitTurnStart += OnUnitTurnStarted;
             ByWhom.OnUnitDie += OnUnitDie;

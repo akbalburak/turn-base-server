@@ -1,5 +1,6 @@
 ﻿using TurnBase.Server.Game.Battle.Core;
 using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Models;
 using TurnBase.Server.Game.Enums;
 

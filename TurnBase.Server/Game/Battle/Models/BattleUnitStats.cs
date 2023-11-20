@@ -25,7 +25,7 @@ namespace TurnBase.Server.Game.Battle.Models
             MaxHealth = ParameterService.GetIntValue(Parameters.BaseHealth);
 
             // WE LOOP ALL THE WORN ITEMS.
-            foreach (UserItemDTO inventoryItem in inventory.Items)
+            foreach (IUserItemDTO inventoryItem in inventory.GetEquippedItems())
             {
                 if (!inventoryItem.Equipped)
                     continue;

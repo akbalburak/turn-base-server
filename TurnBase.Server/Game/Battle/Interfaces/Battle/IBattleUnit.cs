@@ -1,7 +1,8 @@
 ﻿using TurnBase.Server.Game.Battle.Core.Skills;
 using TurnBase.Server.Game.Battle.DTO;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
+using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.Battle.Models;
-using TurnBase.Server.Game.Battle.Skills;
 
 namespace TurnBase.Server.Game.Battle.Interfaces
 {

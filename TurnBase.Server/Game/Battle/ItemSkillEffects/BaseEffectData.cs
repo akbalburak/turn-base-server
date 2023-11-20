@@ -1,6 +1,6 @@
 ﻿using TurnBase.Server.Game.Battle.Interfaces;
 
-namespace TurnBase.Server.Game.Battle.Effects
+namespace TurnBase.Server.Game.Battle.ItemSkillEffects
 {
     public class BaseEffectData : IItemSkillEffectData
     {

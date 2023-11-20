@@ -2,7 +2,7 @@
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Server.Interfaces;
 
-namespace TurnBase.Server.Game.Battle.Interfaces
+namespace TurnBase.Server.Game.Battle.Interfaces.Battle
 {
     public interface IBattleItem
     {
