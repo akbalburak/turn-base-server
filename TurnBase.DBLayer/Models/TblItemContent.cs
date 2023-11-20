@@ -5,17 +5,9 @@ namespace TurnBase.DBLayer.Models;
 
 public partial class TblItemContent
 {
-    public int ItemContentId { get; set; }
+    public int Id { get; set; }
 
-    public int ItemId { get; set; }
+    public string Name { get; set; } = null!;
 
-    public int ContentId { get; set; }
-
-    public int? IndexId { get; set; }
-
-    public double Value { get; set; }
-
-    public virtual TblContent Content { get; set; } = null!;
-
-    public virtual TblItem Item { get; set; } = null!;
+    public virtual ICollection<TblItemContentMapping> TblItemContentMappings { get; set; } = new List<TblItemContentMapping>();
 }

@@ -9,6 +9,8 @@ public partial class TblParameter
 
     public string Name { get; set; } = null!;
 
+    public string? Description { get; set; }
+
     public double? FloatValue { get; set; }
 
     public int? IntValue { get; set; }

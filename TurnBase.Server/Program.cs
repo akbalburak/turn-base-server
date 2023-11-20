@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using TurnBase.Server.Core.Services;
+using TurnBase.Server.Game.Services;
 using TurnBase.Server.Server;
 using TurnBase.Server.Server.Services;
 
@@ -17,7 +17,7 @@ internal class Program
             NullValueHandling = NullValueHandling.Ignore
         };
 
-        SkillService.Initialize();
+        ItemSkillService.Initialize();
         ParameterService.Initialize();
         ItemService.Initialize();
         BattleLevelService.Initialize();

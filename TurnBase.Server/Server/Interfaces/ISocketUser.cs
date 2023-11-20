@@ -1,4 +1,4 @@
-﻿using TurnBase.Server.Core.Battle.Interfaces;
+﻿using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Server.ServerModels;
 
 namespace TurnBase.Server.Server.Interfaces

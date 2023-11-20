@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net.Sockets;
-using TurnBase.Server.Core.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Enums;
 using TurnBase.Server.Extends.Json;
 using TurnBase.Server.Server.Interfaces;

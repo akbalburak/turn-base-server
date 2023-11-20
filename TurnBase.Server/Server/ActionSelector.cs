@@ -1,4 +1,4 @@
-﻿using TurnBase.Server.Core.Controllers;
+﻿using TurnBase.Server.Game.Controllers;
 using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
 

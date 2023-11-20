@@ -5,15 +5,15 @@ namespace TurnBase.DBLayer.Models;
 
 public partial class TblItemSkill
 {
-    public int ItemSkillId { get; set; }
+    public int Id { get; set; }
 
-    public int ItemId { get; set; }
+    public string Name { get; set; } = null!;
 
-    public int SkillId { get; set; }
+    public bool FinalizeTurnInUse { get; set; }
 
-    public int SlotIndex { get; set; }
+    public int TurnCooldown { get; set; }
 
-    public virtual TblItem Item { get; set; } = null!;
+    public virtual ICollection<TblItemSkillDataMapping> TblItemSkillDataMappings { get; set; } = new List<TblItemSkillDataMapping>();
 
-    public virtual TblSkill Skill { get; set; } = null!;
+    public virtual ICollection<TblItemSkillMapping> TblItemSkillMappings { get; set; } = new List<TblItemSkillMapping>();
 }

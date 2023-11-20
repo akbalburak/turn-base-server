@@ -11,11 +11,11 @@ public partial class TblItem
 
     public int TypeId { get; set; }
 
-    public virtual ICollection<TblItemContent> TblItemContents { get; set; } = new List<TblItemContent>();
+    public virtual ICollection<TblItemContentMapping> TblItemContentMappings { get; set; } = new List<TblItemContentMapping>();
 
-    public virtual ICollection<TblItemProperty> TblItemProperties { get; set; } = new List<TblItemProperty>();
+    public virtual ICollection<TblItemPropertyMapping> TblItemPropertyMappings { get; set; } = new List<TblItemPropertyMapping>();
 
-    public virtual ICollection<TblItemSkill> TblItemSkills { get; set; } = new List<TblItemSkill>();
+    public virtual ICollection<TblItemSkillMapping> TblItemSkillMappings { get; set; } = new List<TblItemSkillMapping>();
 
     public virtual TblItemType Type { get; set; } = null!;
 }
