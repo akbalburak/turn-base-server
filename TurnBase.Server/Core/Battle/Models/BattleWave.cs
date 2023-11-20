@@ -2,11 +2,11 @@
 {
     public class BattleWave
     {
-        public BattleNpcUnit[] Units => _units;
+        public List<BattleNpcUnit> Units => _units;
 
-        private BattleNpcUnit[] _units;
+        private List<BattleNpcUnit> _units;
 
-        public BattleWave(BattleNpcUnit[] units)
+        public BattleWave(List<BattleNpcUnit> units)
         {
             _units = units;
         }

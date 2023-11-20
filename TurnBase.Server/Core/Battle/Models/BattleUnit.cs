@@ -7,9 +7,8 @@ namespace TurnBase.Server.Core.Battle.Models
 {
     public abstract class BattleUnit : IBattleUnit
     {
-        private static Random _random = new Random();
-
-        public Action OnUnitTurnStart { get; set; }
+        public Action<IBattleUnit> OnUnitTurnStart { get; set; }
+        public Action<IBattleUnit> OnUnitDie { get; set; }
 
         public int UniqueId { get; private set; }
 
@@ -20,13 +19,16 @@ namespace TurnBase.Server.Core.Battle.Models
         public bool IsDeath { get; private set; }
 
         public BattleUnitStats Stats { get; private set; }
+        
         public List<ISkill> Skills { get; private set; }
+        public List<IEffect> Effects { get; private set; }
 
         public IBattleItem Battle { get; private set; }
 
         protected BattleUnit(int position)
         {
             Skills = new List<ISkill>();
+            Effects = new List<IEffect>();
             Stats = new BattleUnitStats();
             Position = position;
         }
@@ -44,14 +46,10 @@ namespace TurnBase.Server.Core.Battle.Models
             this.Battle = battleItem;
         }
 
-        public void Kill()
-        {
-            IsDeath = true;
-        }
 
         public int GetBaseDamage(IBattleUnit targetUnit)
         {
-            bool isCritical = _random.NextDouble() <= Stats.CriticalChance;
+            bool isCritical = Battle.GetRandomValue <= Stats.CriticalChance;
             int damage = Stats.Damage;
 
             if (isCritical)
@@ -68,6 +66,7 @@ namespace TurnBase.Server.Core.Battle.Models
         {
             defender.ReduceHealth(damage);
         }
+
         public void ReduceHealth(int reduction)
         {
             Health -= reduction;
@@ -75,8 +74,16 @@ namespace TurnBase.Server.Core.Battle.Models
             if (Health <= 0)
                 Kill();
         }
+        public void Kill()
+        {
+            IsDeath = true;
+            OnUnitDie?.Invoke(this);
+        }
 
-        protected void AddSkill(ISkill skill)
+        public virtual void LoadSkills()
+        {
+        }
+        public void AddSkill(ISkill skill)
         {
             Skills.Add(skill);
         }
@@ -94,17 +101,19 @@ namespace TurnBase.Server.Core.Battle.Models
 
         public void CallUnitTurnStart()
         {
-            OnUnitTurnStart?.Invoke();
+            OnUnitTurnStart?.Invoke(this);
         }
 
-        public virtual void LoadSkills()
-        {
-        }
         public virtual void LoadStats(BattleUnitStats stats)
         {
             this.Stats = stats;
 
             Health = stats.MaxHealth;
+        }
+
+        public void AddEffect(IEffect effect)
+        {
+            Effects.Add(effect);
         }
     }
 }

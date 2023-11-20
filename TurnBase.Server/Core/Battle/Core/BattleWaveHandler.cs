@@ -1,5 +1,6 @@
 ﻿using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Enums;
+using TurnBase.Server.Core.Battle.Interfaces;
 using TurnBase.Server.Core.Battle.Models;
 
 namespace TurnBase.Server.Core.Battle.Core
@@ -25,7 +26,7 @@ namespace TurnBase.Server.Core.Battle.Core
             // WE REMOVE OLDER WAVE UNITS.
             if (_currentWave != null)
             {
-                _allUnits.RemoveAll(y => _currentWave.Units.Contains(y));
+                _allUnits.RemoveAll(unit => _currentWave.Units.Contains(unit));
                 _turnHandler.RemoveUnits(_currentWave.Units);
             }
 

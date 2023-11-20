@@ -7,6 +7,7 @@ namespace TurnBase.Server.Core.Battle.Core
     public partial class BattleItem : IBattleItem, IDisposable
     {
         public Action<IBattleItem> OnDisposed { get; set; }
+        public double GetRandomValue => _randomizer.NextDouble();
 
         private BattleLevelData _levelData;
         private IBattleTurnHandler _turnHandler;
@@ -23,9 +24,11 @@ namespace TurnBase.Server.Core.Battle.Core
         private bool _gameStarted;
         private bool _gameOver;
         private bool _disposed;
+        private Random _randomizer;
 
         public BattleItem(IBattleUser[] users, BattleLevelData levelData, LevelDifficulities difficulity)
         {
+            _randomizer = new Random();
             _users = users;
 
             // WE LOAD LEVEL DATA AND DIFFICULITY DATA.
@@ -66,7 +69,8 @@ namespace TurnBase.Server.Core.Battle.Core
             _allUnits.AddRange(_users);
 
             // WE CREATE TURN HANDLER.
-            _turnHandler = new BattleTurnHandler(this, users, _currentWave.Units);
+            _turnHandler = new BattleTurnHandler(this);
+            _turnHandler.AddUnits(_allUnits);
         }
 
 

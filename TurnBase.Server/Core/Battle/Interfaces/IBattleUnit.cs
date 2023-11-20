@@ -7,7 +7,8 @@ namespace TurnBase.Server.Core.Battle.Interfaces
 {
     public interface IBattleUnit
     {
-        Action OnUnitTurnStart { get; set; }
+        Action<IBattleUnit> OnUnitTurnStart { get; set; }
+        Action<IBattleUnit> OnUnitDie { get; set; }
 
         int UniqueId { get; }
 
@@ -16,7 +17,7 @@ namespace TurnBase.Server.Core.Battle.Interfaces
 
         int Health { get; }
         bool IsDeath { get; }
-        
+
         BattleUnitStats Stats { get; }
         List<ISkill> Skills { get; }
 
@@ -33,5 +34,6 @@ namespace TurnBase.Server.Core.Battle.Interfaces
 
         void LoadSkills();
         void UseSkill(BattleSkillUseDTO useData);
+        void AddEffect(IEffect effect);
     }
 }

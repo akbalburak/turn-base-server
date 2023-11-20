@@ -7,24 +7,19 @@ namespace TurnBase.Server.Core.Battle.Core
     public class BattleTurnHandler : IBattleTurnHandler
     {
         private IBattleItem _battle;
-        private IBattleUnit[] _npcUnits;
-        private IBattleUnit[] _playerUnits;
+
+        private List<IBattleUnit> _units;
+
         private List<BattleTurnItem> _unitAttackTurns;
         private BattleTurnItem _currentTurn;
 
-        public BattleTurnHandler(
-            IBattleItem battle,
-            IBattleUnit[] players,
-            IBattleUnit[] battleUnits)
+        public BattleTurnHandler(IBattleItem battle)
         {
             _battle = battle;
 
+            _units = new List<IBattleUnit>();
             _unitAttackTurns = new List<BattleTurnItem>();
 
-            _playerUnits = players;
-            _npcUnits = battleUnits;
-
-            CalculateAttackOrder();
         }
 
         public bool IsUnitTurn(IBattleUnit unit)
@@ -58,21 +53,38 @@ namespace TurnBase.Server.Core.Battle.Core
         {
             _unitAttackTurns.Clear();
 
-            foreach (IBattleUnit battleUnit in _npcUnits.OrderByDescending(y => y.Stats.AttackSpeed))
-                _unitAttackTurns.Add(new BattleTurnItem(battleUnit));
-
-            foreach (IBattleUnit battleUnit in _playerUnits.OrderByDescending(y => y.Stats.AttackSpeed))
+            foreach (IBattleUnit battleUnit in _units.OrderByDescending(y => y.Stats.AttackSpeed))
                 _unitAttackTurns.Add(new BattleTurnItem(battleUnit));
         }
 
-        public void RemoveUnits(IBattleUnit[] units)
+        public void RemoveUnits(IEnumerable<IBattleUnit> units)
         {
-            _unitAttackTurns.RemoveAll(y => units.Contains(y.Unit));
+            foreach (IBattleUnit unit in units)
+            {
+                unit.OnUnitDie -= OnUnitDie;
+                _units.Remove(unit);
+
+                BattleTurnItem unitTurnData = _unitAttackTurns.Find(y => y.Unit == unit);
+                _unitAttackTurns.Remove(unitTurnData);
+            }
         }
-        public void AddUnits(IBattleUnit[] units)
+        public void AddUnits(IEnumerable<IBattleUnit> units)
         {
-            _npcUnits = units;
+            foreach (IBattleUnit unit in units)
+            {
+                unit.OnUnitDie += OnUnitDie;
+                _units.Add(unit);
+            }
+
             CalculateAttackOrder();
+        }
+
+        private void OnUnitDie(IBattleUnit unit)
+        {
+            if (!IsUnitTurn(unit))
+                return;
+
+            SkipToNextTurn();
         }
 
         private class BattleTurnItem

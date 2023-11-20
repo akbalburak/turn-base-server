@@ -58,7 +58,7 @@ namespace TurnBase.Server.Core.Battle.Core.Skills
 
         public abstract void OnSkillUse(BattleSkillUseDTO useData);
 
-        private void OnUnitTurnStarted()
+        private void OnUnitTurnStarted(IBattleUnit unit)
         {
             if (LeftTurnToUse <= 0)
                 return;

@@ -8,6 +8,9 @@
         UnitBasicAttack = 4,
         UnitUseSkill = 5,
         BattleEnd = 6,
-        NewWaveStarted = 7
+        NewWaveStarted = 7,
+        EffectStarted = 8,
+        EffectExecutionTurn = 9,
+        EffectOver = 10
     }
 }

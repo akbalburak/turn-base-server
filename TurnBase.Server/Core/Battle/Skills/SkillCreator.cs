@@ -15,6 +15,7 @@ namespace TurnBase.Server.Core.Battle.Skills
             return skill switch
             {
                 BattleSkills.DoubleSlash => new DoubleSlashSkill(uniqueId, battle, unit),
+                BattleSkills.BleedingSlash => new BleedingSlashSkill(uniqueId, battle, unit),
                 _ => null,
             };
         }

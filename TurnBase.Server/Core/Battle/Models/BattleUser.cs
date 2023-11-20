@@ -47,15 +47,19 @@ namespace TurnBase.Server.Core.Battle.Models
                 if (itemData == null)
                     continue;
 
-                // WE LOOP ALL THE SLOTS.
-                foreach (int slot in equippedItem.SkillSlots)
+                int index = -1;
+                int[] skillSlots = itemData.Skills.Select(y => y.SlotIndex).Distinct().ToArray();
+                foreach (int skillSlot in skillSlots)
                 {
-                    // IF SLOT SKILL NOT SELECTED JUST SKIP IT.
-                    if (slot <= 0)
-                        continue;
+                    index++;
+                    int selectedSlot = equippedItem.SkillSlots[index];
 
                     // WE CHECK FOR THE SKILL DATA.
-                    ItemSkillDTO skill = itemData.Skills.FirstOrDefault(y => y.SlotIndex == slot);
+                    ItemSkillDTO skill = itemData.Skills
+                        .Where(y => y.SlotIndex == skillSlot)
+                        .Skip(selectedSlot)
+                        .FirstOrDefault();
+
                     if (skill == null)
                         continue;
 

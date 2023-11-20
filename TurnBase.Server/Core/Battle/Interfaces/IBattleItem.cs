@@ -1,12 +1,12 @@
 ﻿using TurnBase.Server.Core.Battle.DTO;
 using TurnBase.Server.Core.Battle.Enums;
 using TurnBase.Server.Server.Interfaces;
-using TurnBase.Server.Server.ServerModels;
 
 namespace TurnBase.Server.Core.Battle.Interfaces
 {
     public interface IBattleItem
     {
+        public double GetRandomValue { get; }
         public Action<IBattleItem> OnDisposed { get; set; }
 
         public void ExecuteAction(ISocketUser socketUser, BattleActionRequestDTO requestData);
