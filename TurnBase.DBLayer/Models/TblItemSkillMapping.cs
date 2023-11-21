@@ -11,7 +11,9 @@ public partial class TblItemSkillMapping
 
     public int SkillId { get; set; }
 
-    public int SkillIndex { get; set; }
+    public int RowIndex { get; set; }
+
+    public int ColIndex { get; set; }
 
     public virtual TblItem Item { get; set; } = null!;
 

@@ -16,6 +16,8 @@
         LevelData = 12,
         UseItem = 13,
         UserGoldChanged = 14,
-        CampaignProgressModified = 15
+        CampaignProgressModified = 15,
+        LoadItemSkills = 16,
+        SwitchSkillSlot = 17
     }
 }

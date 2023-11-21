@@ -166,6 +166,8 @@ public partial class DbTurnBaseDevContext : DbContext
 
             entity.HasIndex(e => new { e.ItemId, e.SkillId }, "IX_tbl_item_skill_mapping").IsUnique();
 
+            entity.HasIndex(e => new { e.ItemId, e.RowIndex, e.ColIndex }, "IX_tbl_item_skill_mapping_unique").IsUnique();
+
             entity.HasOne(d => d.Item).WithMany(p => p.TblItemSkillMappings)
                 .HasForeignKey(d => d.ItemId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

@@ -1,4 +1,5 @@
-﻿using TurnBase.Server.Game.Battle.Enums;
+﻿using Newtonsoft.Json;
+using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Enums;
 using TurnBase.Server.Game.Interfaces;
 
@@ -6,11 +7,11 @@ namespace TurnBase.Server.Game.DTO
 {
     public class ItemSkillDTO : IItemSkillDTO
     {
-        public ItemSkills ItemSkill { get; set; }
-        public bool FinalizeTurnInUse { get; set; }
-        public int TurnCooldown { get; set; }
+        [JsonProperty("A")] public ItemSkills ItemSkill { get; set; }
+        [JsonProperty("B")] public bool FinalizeTurnInUse { get; set; }
+        [JsonProperty("C")] public int TurnCooldown { get; set; }
+        [JsonProperty("D")] public ItemSkillDataDTO[] Data { get; set; }
 
-        public ItemSkillDataDTO[] Data { get; set; }
         public ItemSkillDTO()
         {
             Data = Array.Empty<ItemSkillDataDTO>();
@@ -21,7 +22,7 @@ namespace TurnBase.Server.Game.DTO
             var skillData = Data.FirstOrDefault(y => y.DataId == data);
             if (skillData == null)
                 return 0.0;
-            return Math.Round(skillData.GetValue(userItem),2);
+            return Math.Round(skillData.GetValue(userItem), 2);
         }
 
         public int GetDataValueAsInt(ItemSkillData data, IUserItemDTO userItem)
@@ -32,13 +33,20 @@ namespace TurnBase.Server.Game.DTO
 
     public class ItemSkillDataDTO : IItemSkillDataDTO
     {
-        public ItemSkillData DataId { get; set; }
-        public double MinValue { get; set; }
-        public double MaxValue { get; set; }
+        [JsonProperty("A")] public ItemSkillData DataId { get; set; }
+        [JsonProperty("B")] public double MinValue { get; set; }
+        [JsonProperty("C")] public double MaxValue { get; set; }
 
         public double GetValue(IUserItemDTO userItem)
         {
             return MinValue + (MaxValue - MinValue) * userItem.Quality;
         }
+    }
+
+    public class ItemSkillSwitchDTO
+    {
+        [JsonProperty("A")] public int UserItemId { get; set; }
+        [JsonProperty("B")] public int RowIndex { get; set; }
+        [JsonProperty("C")] public int ColIndex { get; set; }
     }
 }

@@ -33,14 +33,25 @@ namespace TurnBase.Server.Game.DTO
             SetAsChanged();
         }
 
-        public bool TryGetSelectedSkillIndex(int slot, out int selectedSkillIndex)
+        public bool TryGetSelectedSkillCol(int row, out int selectedSkillCol)
         {
-            selectedSkillIndex = -1;
-            if (slot >= SelectedSkills.Length)
+            selectedSkillCol = -1;
+            if (row >= SelectedSkills.Length)
                 return false;
 
-            selectedSkillIndex = SelectedSkills[slot];
+            selectedSkillCol = SelectedSkills[row];
             return true;
+        }
+
+        public void ChangeActiveSkill(int row, int col)
+        {
+            // IF ROW IS INVALID RETURN.
+            if (row >= SelectedSkills.Length)
+                return;
+
+            // WE UPDATE THE SELECTED ROW WITH THE NEW COL.
+            SelectedSkills[row] = col;
+            SetAsChanged();
         }
     }
 }

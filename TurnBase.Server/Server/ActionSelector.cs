@@ -47,6 +47,12 @@ namespace TurnBase.Server
                     case Enums.ActionTypes.UseItem:
                         response = InventoryController.UseAnItem(smp);
                         break;
+                    case Enums.ActionTypes.LoadItemSkills:
+                        response = ItemSkillController.GetItemSkills(smp);
+                        break;
+                    case Enums.ActionTypes.SwitchSkillSlot:
+                        response = ItemSkillController.SwitchSkillSlot(smp);
+                        break;
                     default:
                         Console.WriteLine("Methot Bulunamadı");
                         response = null;

@@ -47,20 +47,16 @@ namespace TurnBase.Server.Game.Battle.Models
                 if (itemData == null)
                     continue;
 
-                int index = -1;
-
-                // WE GET ALL THE DISTINCT SKILL INDEXES.
-                int[] skillIndexes = itemData.Skills.Select(y => y.SkillIndex).Distinct().ToArray();
-                foreach (int skillIndex in skillIndexes)
+                // WE GET ALL THE DISTINCT SKILL ROWS.
+                int[] skillRows = itemData.Skills.Select(y => y.RowIndex).Distinct().ToArray();
+                foreach (int row in skillRows)
                 {
-                    index++;
-
-                    // WE MAKE SURE SLOT IS VALID.
-                    if (!userItem.TryGetSelectedSkillIndex(index, out int selectedSlot))
+                    // WE MAKE SURE THERE IS A SKILL IN GIVEN ROW.
+                    if (!userItem.TryGetSelectedSkillCol(row, out int selectedSkillCol))
                         continue;
 
-                    // WE CHECK FOR THE SKILL DATA.
-                    IItemSkillMappingDTO skillMap = itemData.GetItemActiveSkill(skillIndex, selectedSlot);
+                    // WE MAKE SURE SELECTED COL FROM SKILLS IS VALID.
+                    IItemSkillMappingDTO skillMap = itemData.GetItemActiveSkill(row, selectedSkillCol);
                     if (skillMap == null)
                         continue;
 
