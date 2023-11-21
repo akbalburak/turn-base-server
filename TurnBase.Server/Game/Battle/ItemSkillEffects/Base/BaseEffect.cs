@@ -9,6 +9,8 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
 {
     public abstract class BaseEffect : IItemSkillEffect
     {
+        public Action<IItemSkillEffect> OnEffectCompleted { get; set; }
+
         public int LeftTurnDuration { get; set; }
 
         public BattleEffects Effect { get; private set; }
@@ -30,14 +32,16 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
             Effect = effect;
             Battle = battle;
             ByWhom = byWhom;
-            ToWhom = toWhom;
             UserItem = userItem;
             Skill = skill;
 
             LeftTurnDuration = skill.GetDataValueAsInt(ItemSkillData.Duration, userItem);
 
             ByWhom.OnUnitTurnStart += OnUnitTurnStarted;
-            ByWhom.OnUnitDie += OnUnitDie;
+
+            ToWhom = toWhom;
+            ToWhom.OnUnitDie += OnUnitDie;
+            ToWhom.AddEffect(this);
 
             OnEffectStarted();
         }
@@ -47,7 +51,6 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
             LeftTurnDuration = 0;
             OnEffectOver();
         }
-
         private void OnUnitTurnStarted(IBattleUnit unit)
         {
             LeftTurnDuration--;
@@ -77,6 +80,8 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
             ByWhom.OnUnitDie -= OnUnitDie;
 
             Battle.SendToAllUsers(BattleActions.EffectOver, new BattleEffectOverDTO(this));
+
+            OnEffectCompleted?.Invoke(this);
         }
     }
 }

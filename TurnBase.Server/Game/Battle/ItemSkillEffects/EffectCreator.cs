@@ -5,9 +5,9 @@ using TurnBase.Server.Game.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.ItemSkillEffects
 {
-    public static class EffectCreator
+    public static class EffectBuilder
     {
-        public static IItemSkillEffect GetEffect(
+        public static void BuildEffect(
             BattleEffects effect,
             IBattleItem battle,
             IBattleUnit byWhom,
@@ -16,11 +16,16 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects
             IUserItemDTO userItem
         )
         {
-            return effect switch
+            // FOR DEATH ENEMY WE CANNOT CREATE ANY EFFECT.
+            if (toWhom.IsDeath)
+                return;
+
+            switch (effect)
             {
-                BattleEffects.Bleeding => new BleedingEffect(battle, byWhom, toWhom, skill, userItem),
-                _ => null,
-            };
+                case BattleEffects.Bleeding:
+                    _ = new BleedingEffect(battle, byWhom, toWhom, skill, userItem);
+                    break;
+            }
         }
     }
 }

@@ -44,14 +44,13 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
 
             // WE WILL CREATE A BLEEDING EFFECT.
-            IItemSkillEffect effect = EffectCreator.GetEffect(BattleEffects.Bleeding,
+            EffectBuilder.BuildEffect(BattleEffects.Bleeding,
                 Battle,
                 Owner,
                 targetUnit,
                 SkillData,
                 UserItem
             );
-            targetUnit.AddEffect(effect);
 
         }
     }

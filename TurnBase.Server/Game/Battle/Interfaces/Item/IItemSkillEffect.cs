@@ -5,6 +5,8 @@ namespace TurnBase.Server.Game.Battle.Interfaces
 {
     public interface IItemSkillEffect
     {
+        Action<IItemSkillEffect> OnEffectCompleted { get; set; }
+
         BattleEffects Effect { get; }
         IBattleItem Battle { get; }
         IBattleUnit ByWhom { get; }

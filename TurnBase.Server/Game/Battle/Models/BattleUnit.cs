@@ -19,7 +19,7 @@ namespace TurnBase.Server.Game.Battle.Models
         public bool IsDeath { get; private set; }
 
         public BattleUnitStats Stats { get; private set; }
-        
+
         public List<IItemSkill> Skills { get; private set; }
         public List<IItemSkillEffect> Effects { get; private set; }
 
@@ -76,6 +76,9 @@ namespace TurnBase.Server.Game.Battle.Models
         }
         public void Kill()
         {
+            if (IsDeath)
+                return;
+
             IsDeath = true;
             OnUnitDie?.Invoke(this);
         }
@@ -113,10 +116,20 @@ namespace TurnBase.Server.Game.Battle.Models
 
         public void AddEffect(IItemSkillEffect effect)
         {
-            if (effect == null) 
+            if (effect == null)
                 return;
 
+            if (IsDeath)
+                return;
+
+            effect.OnEffectCompleted += OnEffectCompleted;
             Effects.Add(effect);
+        }
+
+        private void OnEffectCompleted(IItemSkillEffect effect)
+        {
+            effect.OnEffectCompleted -= OnEffectCompleted;
+            Effects.Remove(effect);
         }
     }
 }
