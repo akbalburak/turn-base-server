@@ -41,7 +41,7 @@ namespace TurnBase.Server.Game.DTO
 
             progress.IncreasePlayCount();
 
-            progress.SetAsChanged();
+            progress.SetAsModified();
         }
 
         private StageLevelDTO GetStageProgress(int stageIndex, int levelIndex)

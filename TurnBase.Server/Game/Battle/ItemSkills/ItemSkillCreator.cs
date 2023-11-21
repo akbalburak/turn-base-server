@@ -20,6 +20,7 @@ namespace TurnBase.Server.Game.Battle.Skills
                 Enums.ItemSkills.DoubleSlash => new DoubleSlashSkill(uniqueId, skill, battle, owner, userItem, itemData),
                 Enums.ItemSkills.BleedingSlash => new BleedingSlashSkill(uniqueId, skill, battle, owner, userItem, itemData),
                 Enums.ItemSkills.FinishHim => new FinishHimSkill(uniqueId, skill, battle, owner, userItem, itemData),
+                Enums.ItemSkills.SplashSlashSkill => new SplashSlashSkill(uniqueId, skill, battle, owner, userItem, itemData),
                 _ => null,
             };
         }

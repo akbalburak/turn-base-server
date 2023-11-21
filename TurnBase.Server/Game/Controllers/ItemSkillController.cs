@@ -28,7 +28,7 @@ namespace TurnBase.Server.Game.Controllers
             InventoryDTO inventory = trackedUser.GetInventory();
 
             // WE CHECK IF THE USER ITEM EXISTS.
-            UserItemDTO userItem = inventory.GetItem(requestData.UserItemId);
+            IUserItemDTO userItem = inventory.GetItem(requestData.UserItemId);
             if (userItem == null)
                 return SocketResponse.GetError("User item not found!");
 

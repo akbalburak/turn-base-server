@@ -47,14 +47,14 @@ namespace TurnBase.Server.Game.Battle.Core
                             // IF ITEM CAN STACK WE ADD AS STACKABLE.
                             if (itemData.CanStack)
                             {
-                                UserItemDTO addedItem = inventory.AddStackable(
+                                inventory.AddStackable(
                                     item: itemData,
                                     quantity: reward.Quantity
                                 );
                             }
                             else
                             {
-                                UserItemDTO addedItem = inventory.AddNonStackableItem(
+                                inventory.AddNonStackableItem(
                                     item: itemData,
                                     level: reward.Level,
                                     quality: reward.Quality

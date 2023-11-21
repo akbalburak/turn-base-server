@@ -22,7 +22,7 @@ namespace TurnBase.Server.Game.Controllers
             InventoryDTO inventory = user.GetInventory();
 
             // WE GET THE INVENTORY ITEM.
-            UserItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
+            IUserItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
             if (inventoryItem != null)
             {
                 // WE MAKE SURE THE SAME TYPE ITEM NOT WORN.
@@ -33,15 +33,14 @@ namespace TurnBase.Server.Game.Controllers
                     return SocketResponse.GetError("Invalid Item To Wear!");
 
                 // WE MAKE SURE THE SAME TYPE ITEM DIDN'T NOT WORN.
-                List<UserItemDTO> equippedItems = inventory.Items.FindAll(y => y.Equipped);
-                equippedItems.ForEach(equippedItem =>
+                foreach (IUserItemDTO equippedItem in inventory.GetEquippedItems())
                 {
                     IItemDTO eItemData = ItemService.GetItem(equippedItem.ItemID);
-                    if (eItemData.TypeId == itemData.TypeId)
-                    {
-                        equippedItem.UpdateEquipState(false);
-                    }
-                });
+                    if (eItemData.TypeId != itemData.TypeId)
+                        continue;
+
+                    equippedItem.UpdateEquipState(false);
+                }
 
                 inventoryItem.UpdateEquipState(true);
             }
@@ -64,8 +63,12 @@ namespace TurnBase.Server.Game.Controllers
             InventoryDTO inventory = user.GetInventory();
 
             // WE GET THE INVENTORY ITEM.
-            UserItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
-            inventoryItem?.UpdateEquipState(false);
+            IUserItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
+            if (inventoryItem == null)
+                return SocketResponse.GetError("Inventory item not found!");
+
+            // WE CHANGE EQUIP STATE.
+            inventoryItem.UpdateEquipState(false);
 
             // SAVE CHANGES IN DB SIDE TOO.
             user.UpdateInventory(inventory);
@@ -85,7 +88,7 @@ namespace TurnBase.Server.Game.Controllers
             InventoryDTO inventory = user.GetInventory();
 
             // WE GET THE INVENTORY ITEM.
-            UserItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
+            IUserItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
 
             // IF ITEM DOES NOT EXISTS.
             if (inventoryItem == null || inventoryItem.Quantity <= 0)

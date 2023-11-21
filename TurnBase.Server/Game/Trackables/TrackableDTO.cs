@@ -12,7 +12,7 @@ namespace TurnBase.Server.Game.Trackables
             _changeHandler = changeHandler;
         }
 
-        public void SetAsChanged()
+        public void SetAsModified()
         {
             _changeHandler.AddChanges(this);
         }

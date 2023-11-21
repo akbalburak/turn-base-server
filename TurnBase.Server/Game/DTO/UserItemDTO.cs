@@ -27,10 +27,25 @@ namespace TurnBase.Server.Game.DTO
             return SocketResponse.GetSuccess(ActionTypes.InventoryModified, this);
         }
 
+        public void RemoveQuantity(int quantity)
+        {
+            Quantity -= quantity;
+            this.SetAsModified();
+        }
         public void UpdateEquipState(bool isEquipped)
         {
             Equipped = isEquipped;
-            SetAsChanged();
+            SetAsModified();
+        }
+        public void ChangeActiveSkill(int row, int col)
+        {
+            // IF ROW IS INVALID RETURN.
+            if (row >= SelectedSkills.Length)
+                return;
+
+            // WE UPDATE THE SELECTED ROW WITH THE NEW COL.
+            SelectedSkills[row] = col;
+            SetAsModified();
         }
 
         public bool TryGetSelectedSkillCol(int row, out int selectedSkillCol)
@@ -43,15 +58,5 @@ namespace TurnBase.Server.Game.DTO
             return true;
         }
 
-        public void ChangeActiveSkill(int row, int col)
-        {
-            // IF ROW IS INVALID RETURN.
-            if (row >= SelectedSkills.Length)
-                return;
-
-            // WE UPDATE THE SELECTED ROW WITH THE NEW COL.
-            SelectedSkills[row] = col;
-            SetAsChanged();
-        }
     }
 }

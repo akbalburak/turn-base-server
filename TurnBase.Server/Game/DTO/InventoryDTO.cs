@@ -7,21 +7,23 @@ namespace TurnBase.Server.Models
 {
     public class InventoryDTO
     {
-
         [JsonProperty("A")] public int IdCounter { get; set; }
         [JsonProperty("B")] public List<UserItemDTO> Items { get; set; }
+        
+        private IChangeHandler _changeHandler;
 
         public InventoryDTO()
         {
             Items = new List<UserItemDTO>();
         }
 
-        public UserItemDTO GetItem(int userItemId)
+        public void SetChangeHandler(IChangeHandler changeHandler)
         {
-            return Items.FirstOrDefault(y => y.UserItemID == userItemId);
+            _changeHandler = changeHandler;
+            Items.ForEach(e => e.SetChangeHandler(_changeHandler));
         }
 
-        public UserItemDTO AddStackable(IItemDTO item, int quantity)
+        public void AddStackable(IItemDTO item, int quantity)
         {
             UserItemDTO userItem = Items.Find(y => y.ItemID == item.Id);
 
@@ -44,11 +46,9 @@ namespace TurnBase.Server.Models
                 userItem.Quantity += quantity;
             }
 
-            userItem.SetAsChanged();
-
-            return userItem;
+            userItem.SetAsModified();
         }
-        public UserItemDTO AddNonStackableItem(IItemDTO item, int level, float quality)
+        public void AddNonStackableItem(IItemDTO item, int level, float quality)
         {
             UserItemDTO userItem = new UserItemDTO
             {
@@ -64,37 +64,37 @@ namespace TurnBase.Server.Models
 
             Items.Add(userItem);
 
-            userItem.SetAsChanged();
-
-            return userItem;
+            userItem.SetAsModified();
         }
 
-        public void RemoveStackable(UserItemDTO userItem, int quantity)
+        public void RemoveStackable(IUserItemDTO userItem, int quantity)
         {
-            userItem.Quantity -= quantity;
+            if (userItem is not UserItemDTO userItemClass)
+                return;
+
+            userItemClass.Quality -= quantity;
             
             if (userItem.Quantity <= 0)
-                Items.Remove(userItem);
+                Items.Remove(userItemClass);
 
-            userItem.SetAsChanged();
+            userItem.SetAsModified();
         }
-        public void RemoveNonStackable(UserItemDTO userItem)
+        public void RemoveNonStackable(IUserItemDTO userItem)
         {
-            Items.Remove(userItem);
-            userItem.SetAsChanged();
+            if (userItem is not UserItemDTO userItemClass)
+                return;
+
+            Items.Remove(userItemClass);
+            userItem.SetAsModified();
         }
 
-        private IChangeHandler _changeHandler;
-        public void SetChangeHandler(IChangeHandler changeHandler)
+        public IUserItemDTO GetItem(int userItemId)
         {
-            _changeHandler = changeHandler;
-            Items.ForEach(e => e.SetChangeHandler(_changeHandler));
+            return Items.FirstOrDefault(y => y.UserItemID == userItemId);
         }
-
         public IUserItemDTO[] GetEquippedItems()
         {
-            UserItemDTO[] equippedItems = Items.Where(item => item.Equipped).ToArray();
-            return equippedItems;
+            return Items.Where(item => item.Equipped).ToArray();
         }
     }
 

@@ -4,6 +4,7 @@
     {
         DoubleSlash = 1,
         BleedingSlash = 2,
-        FinishHim = 3
+        FinishHim = 3,
+        SplashSlashSkill = 4
     }
 }
