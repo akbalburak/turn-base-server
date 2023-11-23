@@ -11,7 +11,8 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
     {
         public Action<IItemSkillEffect> OnEffectCompleted { get; set; }
 
-        public int LeftTurnDuration { get; set; }
+        public bool IsFriendEffect { get; private set; }
+        public int LeftTurnDuration { get; private set; }
 
         public BattleEffects Effect { get; private set; }
         public IBattleItem Battle { get; private set; }
@@ -36,6 +37,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
             Skill = skill;
 
             LeftTurnDuration = skill.GetDataValueAsInt(ItemSkillData.Duration, userItem);
+            IsFriendEffect = byWhom.TeamIndex == toWhom.TeamIndex;
 
             ByWhom.OnUnitTurnStart += OnUnitTurnStarted;
 

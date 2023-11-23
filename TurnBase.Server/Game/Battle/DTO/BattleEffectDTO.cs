@@ -25,7 +25,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("B")] public int TargetUnitId { get; set; }
         [JsonProperty("C")] public int OwnerUnitId { get; set; }
         [JsonProperty("D")] public int LeftTurnDuration { get; set; }
-
+        [JsonProperty("E")] public bool IsFriendEffect { get; set; }
         public BattleEffectStartedDTO(IItemSkillEffect effect)
         {
             this.Effect = effect.Effect;
