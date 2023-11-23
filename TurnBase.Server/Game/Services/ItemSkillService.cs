@@ -23,6 +23,7 @@ namespace TurnBase.Server.Game.Services
                     ItemSkill = (ItemSkills)y.Id,
                     FinalizeTurnInUse = y.FinalizeTurnInUse,
                     TurnCooldown = y.TurnCooldown,
+                    UsageManaCost = y.UsageManaCost,
                     Data = y.TblItemSkillDataMappings.Select(z=> new ItemSkillDataDTO
                     {
                         DataId = (ItemSkillData)z.ItemSkillDataId,

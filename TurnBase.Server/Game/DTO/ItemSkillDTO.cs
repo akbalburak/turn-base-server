@@ -11,7 +11,7 @@ namespace TurnBase.Server.Game.DTO
         [JsonProperty("B")] public bool FinalizeTurnInUse { get; set; }
         [JsonProperty("C")] public int TurnCooldown { get; set; }
         [JsonProperty("D")] public ItemSkillDataDTO[] Data { get; set; }
-
+        [JsonProperty("E")] public int UsageManaCost { get; set; }
         public ItemSkillDTO()
         {
             Data = Array.Empty<ItemSkillDataDTO>();

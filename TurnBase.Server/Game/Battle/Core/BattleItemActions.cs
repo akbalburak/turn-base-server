@@ -128,13 +128,15 @@ namespace TurnBase.Server.Game.Battle.Core
                     {
                         AttackSpeed = z.Stats.AttackSpeed,
                         Health = z.Health,
+                        Mana = z.Mana,
                         UniqueId = z.UniqueId,
                         Damage = z.Stats.Damage,
                         Position = z.Position,
                         MaxHealth = z.Stats.MaxHealth,
+                        MaxMana = z.Stats.MaxMana,
                         IsDead = z.IsDeath,
                         UnitId = z.UnitId,
-                        TeamIndex = z.TeamIndex
+                        TeamIndex = z.TeamIndex,
                     }).ToArray()
                 }).ToArray(),
                 Players = _users.Select(z => new BattlePlayerDTO
@@ -142,11 +144,13 @@ namespace TurnBase.Server.Game.Battle.Core
                     UniqueId = z.UniqueId,
                     AttackSpeed = z.Stats.AttackSpeed,
                     Health = z.Health,
+                    Mana = z.Mana,
                     Damage = z.Stats.Damage,
                     Position = z.Position,
                     IsRealPlayer = z.SocketUser == socketUser,
                     PlayerName = z.PlayerName,
                     MaxHealth = z.Stats.MaxHealth,
+                    MaxMana = z.Stats.MaxMana,
                     IsDead = z.IsDeath,
                     TeamIndex = z.TeamIndex,
                     Skills = z.Skills.Select(v => new BattleSkillDTO
@@ -155,6 +159,7 @@ namespace TurnBase.Server.Game.Battle.Core
                         UniqueID = v.UniqueId,
                         Skill = v.SkillData.ItemSkill,
                         TurnCooldown = v.TurnCooldown,
+                        UsageManaCost = v.UsageManaCost
                     }).ToArray()
                 }).ToArray()
             };

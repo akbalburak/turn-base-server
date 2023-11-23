@@ -16,6 +16,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         int TeamIndex { get; }
 
         int Health { get; }
+        int Mana { get; }
         bool IsDeath { get; }
 
         BattleUnitStats Stats { get; }
@@ -36,5 +37,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         void LoadSkills();
         void UseSkill(BattleSkillUseDTO useData);
         void AddEffect(IItemSkillEffect effect);
+        bool IsManaEnough(int usageManaCost);
+        void ReduceMana(int usageManaCost);
     }
 }

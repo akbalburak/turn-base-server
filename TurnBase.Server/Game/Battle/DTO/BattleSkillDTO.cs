@@ -8,5 +8,6 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("B")] public Enums.ItemSkills Skill { get; set; }
         [JsonProperty("C")] public int LeftTurnToUse { get; set; }
         [JsonProperty("D")] public int TurnCooldown { get; set; }
+        [JsonProperty("E")] public int UsageManaCost { get; set; }
     }
 }

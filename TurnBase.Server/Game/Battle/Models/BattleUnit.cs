@@ -16,6 +16,7 @@ namespace TurnBase.Server.Game.Battle.Models
         public int Position { get; private set; }
 
         public int Health { get; private set; }
+        public int Mana { get; private set; }
         public bool IsDeath { get; private set; }
 
         public BattleUnitStats Stats { get; private set; }
@@ -66,21 +67,12 @@ namespace TurnBase.Server.Game.Battle.Models
         {
             defender.ReduceHealth(damage);
         }
-
         public void ReduceHealth(int reduction)
         {
             Health -= reduction;
 
             if (Health <= 0)
                 Kill();
-        }
-        public void Kill()
-        {
-            if (IsDeath)
-                return;
-
-            IsDeath = true;
-            OnUnitDie?.Invoke(this);
         }
 
         public virtual void LoadSkills()
@@ -112,6 +104,7 @@ namespace TurnBase.Server.Game.Battle.Models
             this.Stats = stats;
 
             Health = stats.MaxHealth;
+            Mana = stats.MaxMana;
         }
 
         public void AddEffect(IItemSkillEffect effect)
@@ -125,11 +118,33 @@ namespace TurnBase.Server.Game.Battle.Models
             effect.OnEffectCompleted += OnEffectCompleted;
             Effects.Add(effect);
         }
-
         private void OnEffectCompleted(IItemSkillEffect effect)
         {
             effect.OnEffectCompleted -= OnEffectCompleted;
             Effects.Remove(effect);
         }
+
+        public bool IsManaEnough(int manaCost)
+        {
+            return Mana >= manaCost;
+        }
+        public void ReduceMana(int usageManaCost)
+        {
+            Mana = usageManaCost;
+
+            if (Mana < 0) 
+                Mana = 0;
+        }
+
+        
+        public void Kill()
+        {
+            if (IsDeath)
+                return;
+
+            IsDeath = true;
+            OnUnitDie?.Invoke(this);
+        }
+
     }
 }

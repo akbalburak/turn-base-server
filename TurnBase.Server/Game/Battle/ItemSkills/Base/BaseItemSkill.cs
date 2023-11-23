@@ -16,6 +16,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
         public IBattleItem Battle { get; private set; }
         public IBattleUnit Owner { get; private set; }
 
+        public int UsageManaCost { get; private set; }
         public bool FinalizeTurnInUse { get; private set; }
         public int LeftTurnToUse { get; private set; }
         public int TurnCooldown { get; private set; }
@@ -37,6 +38,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
 
             SkillData = skill;
             TurnCooldown = SkillData.TurnCooldown;
+            UsageManaCost = SkillData.UsageManaCost;
             FinalizeTurnInUse = SkillData.FinalizeTurnInUse;
 
             Owner = owner;
@@ -45,11 +47,13 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
 
         public virtual bool IsSkillReadyToUse()
         {
-            return LeftTurnToUse <= 0;
+            return LeftTurnToUse <= 0 && Owner.IsManaEnough(UsageManaCost);
         }
 
         public void UseSkill(BattleSkillUseDTO useData)
         {
+            Owner.ReduceMana(UsageManaCost);
+
             LeftTurnToUse = TurnCooldown;
             OnSkillUse(useData);
 

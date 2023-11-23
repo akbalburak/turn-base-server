@@ -12,6 +12,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Item
 
         int LeftTurnToUse { get; }
         int TurnCooldown { get; }
+        int UsageManaCost { get; }
         bool FinalizeTurnInUse { get; }
 
         bool IsSkillReadyToUse();

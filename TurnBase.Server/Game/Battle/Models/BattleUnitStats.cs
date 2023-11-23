@@ -9,6 +9,7 @@ namespace TurnBase.Server.Game.Battle.Models
     public class BattleUnitStats
     {
         public int MaxHealth { get; set; }
+        public int MaxMana { get; set; }
         public int Damage { get; set; }
         public float AttackSpeed { get; set; }
         public float CriticalChance { get; set; }
@@ -23,6 +24,7 @@ namespace TurnBase.Server.Game.Battle.Models
         public BattleUnitStats(InventoryDTO inventory)
         {
             MaxHealth = ParameterService.GetIntValue(Parameters.BaseHealth);
+            MaxMana = ParameterService.GetIntValue(Parameters.BaseMana);
 
             // WE LOOP ALL THE WORN ITEMS.
             foreach (IUserItemDTO inventoryItem in inventory.GetEquippedItems())

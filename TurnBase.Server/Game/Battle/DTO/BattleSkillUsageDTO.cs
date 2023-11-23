@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
 
 namespace TurnBase.Server.Game.Battle.DTO
@@ -12,13 +11,14 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("D")] public List<BattleSkillUsageAttackItemDTO> Damages { get; private set; }
         [JsonProperty("E")] public bool FinalizeTurn { get; set; }
         [JsonProperty("F")] public bool DontStartCooldown { get; set; }
-
+        [JsonProperty("G")] public int UsageManaCost { get; set; }
         public BattleSkillUsageDTO(IItemSkill itemSkill)
         {
             FinalizeTurn = itemSkill.FinalizeTurnInUse;
             SkillOwnerId = itemSkill.Owner.UniqueId;
             UniqueSkillId = itemSkill.UniqueId;
             ItemSkill = itemSkill.SkillData.ItemSkill;
+            UsageManaCost = itemSkill.UsageManaCost;
 
             Damages = new List<BattleSkillUsageAttackItemDTO>();
         }
