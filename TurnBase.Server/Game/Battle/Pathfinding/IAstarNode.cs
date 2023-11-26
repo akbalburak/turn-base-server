@@ -9,5 +9,8 @@
 
         IAstarNode[] Neighbors { get; }
 
+        int Cost { get; set; }
+        int Heuristic { get; set; }
+        IAstarNode Parent { get; set; }
     }
 }

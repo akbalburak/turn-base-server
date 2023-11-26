@@ -6,7 +6,7 @@
         public float Z { get; set; }
         public int Cost { get; set; }
         public int Heuristic { get; set; }
-        public AStarNode Parent { get; set; }
+        public IAstarNode Parent { get; set; }
 
         public IAstarNode[] Neighbors { get; set; }
 

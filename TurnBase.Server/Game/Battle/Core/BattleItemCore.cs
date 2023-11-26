@@ -49,6 +49,11 @@ namespace TurnBase.Server.Game.Battle.Core
                 .Select(y => new AStarNode(y.Node.X, y.Node.Z))
                 .ToArray();
 
+            foreach (var node in _nodes)
+            {
+                node.FindNeighbors(_nodes, _currentWave.PathData.DistancePerHex);
+            }
+
             int unitIdCounter = 0;
 
             // WE LOAD ALL UNITS REQUIRED DATA.
@@ -71,9 +76,9 @@ namespace TurnBase.Server.Game.Battle.Core
                 user.SetTeam(1);
                 user.LoadSkills();
 
-                float x = _currentWave.PathData.PlayerSpawnPoints[0].Node.X;
-                float z = _currentWave.PathData.PlayerSpawnPoints[0].Node.Z;
-                user.SetPosition(x, z);
+                int initialIndex = _currentWave.PathData.PlayerSpawnPoints[0];
+                IAstarNode node = _nodes[initialIndex];
+                user.SetPosition(node);
             }
 
             // WE COMBINE ALL THE UNITS.

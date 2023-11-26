@@ -21,12 +21,13 @@
     public class MapData
     {
         public MapDataHexNodes[] MapHexNodes { get; private set; }
-        public MapDataHexNodes[] PlayerSpawnPoints { get; set; }
-        public MapData(MapDataHexNodes[] mapHexNodes,
-            MapDataHexNodes[] playerSpawnPoints)
+        public int[] PlayerSpawnPoints { get; set; }
+        public float DistancePerHex { get; set; }
+
+        public MapData(MapDataHexNodes[] mapHexNodes)
         {
             MapHexNodes = mapHexNodes;
-            PlayerSpawnPoints = playerSpawnPoints;
+            PlayerSpawnPoints = Array.Empty<int>();
         }
     }
 

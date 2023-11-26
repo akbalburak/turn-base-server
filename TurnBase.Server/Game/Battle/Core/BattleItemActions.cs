@@ -1,6 +1,8 @@
-﻿using TurnBase.Server.Game.Battle.DTO;
+﻿using TurnBase.Server.Extends;
+using TurnBase.Server.Game.Battle.DTO;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Pathfinding;
 using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Core
@@ -48,13 +50,25 @@ namespace TurnBase.Server.Game.Battle.Core
             if (!_turnHandler.IsUnitTurn(currentUser))
                 return;
 
-            currentUser.SetPosition(moveData.PosX, moveData.PosZ);
+            // WE MAKE SURE MOVE INDEX IS VALID.
+            if (moveData.ToIndex < 0 || moveData.ToIndex >= _nodes.Length)
+                return;
+
+            // WE GET THE POINTS.
+            IAstarNode fromPoint = currentUser.Node;
+            IAstarNode targetPoint = _nodes[moveData.ToIndex];
+
+            // WE LOOK FOR THE PATH.
+            IAstarNode[] path = AStar.FindPath(_nodes, fromPoint, targetPoint);
+            if (path.Length == 0)
+                return;
+
+            currentUser.SetPosition(targetPoint);
 
             SendToAllUsers(BattleActions.MovePlayerUnit, new BattleUnitMoveResponseDTO
             {
                 UnitUniqueId = currentUser.UniqueId,
-                PosX = moveData.PosX,
-                PosZ = moveData.PosZ
+                ToIndex = moveData.ToIndex,
             });
         }
 
@@ -164,8 +178,7 @@ namespace TurnBase.Server.Game.Battle.Core
                         IsDead = z.IsDeath,
                         UnitId = z.UnitId,
                         TeamIndex = z.TeamIndex,
-                        PosX = z.PosX,
-                        PosZ = z.PosZ,
+                        NodeIndex = _nodes.IndexOf(z.Node),
                     }).ToArray()
                 }).ToArray(),
                 Players = _users.Select(z => new BattlePlayerDTO
@@ -190,8 +203,7 @@ namespace TurnBase.Server.Game.Battle.Core
                         TurnCooldown = v.TurnCooldown,
                         UsageManaCost = v.UsageManaCost
                     }).ToArray(),
-                    PosX = z.PosX,
-                    PosZ = z.PosZ,
+                    NodeIndex = _nodes.IndexOf(z.Node),
                 }).ToArray()
             };
 

@@ -2,6 +2,7 @@
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
+using TurnBase.Server.Game.Battle.Pathfinding;
 
 namespace TurnBase.Server.Game.Battle.Models
 {
@@ -15,8 +16,7 @@ namespace TurnBase.Server.Game.Battle.Models
         public int TeamIndex { get; private set; }
         public int Position { get; private set; }
 
-        public float PosX { get; set; }
-        public float PosZ { get; set; }
+        public IAstarNode Node { get; set; }
 
         public int Health { get; private set; }
         public int Mana { get; private set; }
@@ -150,10 +150,9 @@ namespace TurnBase.Server.Game.Battle.Models
         }
 
 
-        public void SetPosition(float x, float z)
+        public void SetPosition(IAstarNode node)
         {
-            PosX = x;
-            PosZ = z;
+            this.Node = node;
         }
 
     }

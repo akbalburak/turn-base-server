@@ -2,6 +2,7 @@
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.Battle.Models;
+using TurnBase.Server.Game.Battle.Pathfinding;
 
 namespace TurnBase.Server.Game.Battle.Interfaces
 {
@@ -15,8 +16,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         int Position { get; }
         int TeamIndex { get; }
 
-        float PosX { get; }
-        float PosZ { get; }
+        IAstarNode Node { get; }
 
         int Health { get; }
         int Mana { get; }
@@ -44,6 +44,6 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         void ReduceMana(int usageManaCost);
 
 
-        void SetPosition(float x, float z);
+        void SetPosition(IAstarNode node);
     }
 }

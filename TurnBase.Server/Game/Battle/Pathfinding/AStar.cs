@@ -2,20 +2,20 @@
 {
     public static class AStar
     {
-        public static AStarNode[] FindPath(AStarNode[] nodes, AStarNode start, AStarNode goal)
+        public static IAstarNode[] FindPath(IAstarNode[] nodes, IAstarNode start, IAstarNode goal)
         {
-            List<AStarNode> openList = new List<AStarNode>();
-            List<AStarNode> closedList = new List<AStarNode>();
+            List<IAstarNode> openList = new List<IAstarNode>();
+            List<IAstarNode> closedList = new List<IAstarNode>();
 
             openList.Add(start);
 
             // WE REMOVE OLD NODE PARENTS.
-            foreach (AStarNode node in nodes)
+            foreach (IAstarNode node in nodes)
                 node.Parent = null;
 
             while (openList.Count > 0)
             {
-                AStarNode current = openList[0];
+                IAstarNode current = openList[0];
 
                 for (int i = 1; i < openList.Count; i++)
                 {
@@ -31,7 +31,7 @@
                 if (current.X == goal.X && current.Z == goal.Z)
                 {
                     // PATH FOUND, RECONSTRUCT AND RETURN IT
-                    List<AStarNode> path = new List<AStarNode>();
+                    List<IAstarNode> path = new List<IAstarNode>();
                     while (current != null)
                     {
                         path.Add(current);
@@ -61,17 +61,18 @@
             }
 
             // NO PATH FOUND
-            return Array.Empty<AStarNode>();
+            return Array.Empty<IAstarNode>();
         }
 
-        private static bool IsValidCell(float x, float y, AStarNode[] grid)
+        private static bool IsValidCell(float x, float y, IAstarNode[] grid)
         {
             return true;//x >= 0 && x < grid.GetLength(0) && y >= 0 && y < grid.GetLength(1);//&& grid[x, y] == 0;
         }
 
-        private static int CalculateHeuristic(AStarNode current, AStarNode goal)
+        private static int CalculateHeuristic(IAstarNode current, IAstarNode goal)
         {
             return (int)(Math.Abs(current.X - goal.X) + Math.Abs(current.Z - goal.Z));
         }
+
     }
 }

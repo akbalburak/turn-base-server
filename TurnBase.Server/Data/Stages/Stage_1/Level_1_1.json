@@ -51,6 +51,7 @@
             }
           ],
           "PathData": {
+            "DistancePerHex": 3.47410154,
             "MapHexNodes": [
               {
                 "Node": {
@@ -2342,15 +2343,7 @@
                 }
               }
             ],
-            "PlayerSpawnPoints": [
-              {
-                "Node": {
-                  "X": 0.4846106,
-                  "Y": 0.0,
-                  "Z": -1.099999
-                }
-              }
-            ]
+            "PlayerSpawnPoints": [ 129 ]
           }
         }
       ]
