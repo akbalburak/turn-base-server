@@ -15,6 +15,8 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("I")] public int TeamIndex { get; set; }
         [JsonProperty("J")] public int Mana { get; set; }
         [JsonProperty("K")] public int MaxMana { get; set; }
+        [JsonProperty("L")] public float PosX { get; set; }
+        [JsonProperty("M")] public float PosZ { get; set; }
 
         public BattleUnitDTO()
         {

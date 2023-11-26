@@ -47,4 +47,12 @@ namespace TurnBase.Server.Game.Battle.Models
         public int Level { get; set; }
         public float Quality { get; set; }
     }
+
+    [Serializable]
+    public class SerializableVector3
+    {
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
+    }
 }

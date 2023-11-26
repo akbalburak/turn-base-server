@@ -1,6 +1,7 @@
 ﻿using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Models;
+using TurnBase.Server.Game.Battle.Pathfinding;
 using TurnBase.Server.Game.Enums;
 
 namespace TurnBase.Server.Game.Battle.Core
@@ -27,6 +28,8 @@ namespace TurnBase.Server.Game.Battle.Core
         private bool _disposed;
         private Random _randomizer;
 
+        private AStarNode[] _nodes;
+
         public BattleItem(IBattleUser[] users, BattleLevelData levelData, LevelDifficulities difficulity)
         {
             _randomizer = new Random();
@@ -40,6 +43,11 @@ namespace TurnBase.Server.Game.Battle.Core
             // WE ACTIVATE THE FIRST WAVE.
             _waves = _difficulityData.Waves.ToArray();
             _currentWave = _waves[0];
+
+            _nodes = _currentWave.PathData
+                .MapHexNodes
+                .Select(y => new AStarNode(y.Node.X, y.Node.Z))
+                .ToArray();
 
             int unitIdCounter = 0;
 
@@ -62,6 +70,10 @@ namespace TurnBase.Server.Game.Battle.Core
                 user.SetId(++unitIdCounter);
                 user.SetTeam(1);
                 user.LoadSkills();
+
+                float x = _currentWave.PathData.PlayerSpawnPoints[0].Node.X;
+                float z = _currentWave.PathData.PlayerSpawnPoints[0].Node.Z;
+                user.SetPosition(x, z);
             }
 
             // WE COMBINE ALL THE UNITS.

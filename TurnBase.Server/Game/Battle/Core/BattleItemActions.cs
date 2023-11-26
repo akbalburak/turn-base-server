@@ -29,8 +29,35 @@ namespace TurnBase.Server.Game.Battle.Core
                 case BattleActions.UnitUseSkill:
                     PlayerUseSkill(socketUser, requestData);
                     break;
+                case BattleActions.MovePlayerUnit:
+                    PlayerUnitMove(socketUser, requestData);
+                    break;
             }
         }
+
+        private void PlayerUnitMove(ISocketUser socketUser, BattleActionRequestDTO requestData)
+        {
+            BattleUnitMoveRequestDTO moveData = requestData.GetRequestData<BattleUnitMoveRequestDTO>();
+
+            // WE GET THE PLAYER.
+            IBattleUser currentUser = GetUser(socketUser);
+            if (currentUser == null)
+                return;
+
+            // MAKE SURE PLAYER TURN.
+            if (!_turnHandler.IsUnitTurn(currentUser))
+                return;
+
+            currentUser.SetPosition(moveData.PosX, moveData.PosZ);
+
+            SendToAllUsers(BattleActions.MovePlayerUnit, new BattleUnitMoveResponseDTO
+            {
+                UnitUniqueId = currentUser.UniqueId,
+                PosX = moveData.PosX,
+                PosZ = moveData.PosZ
+            });
+        }
+
         private void StartGame()
         {
             _gameStarted = true;
@@ -137,6 +164,8 @@ namespace TurnBase.Server.Game.Battle.Core
                         IsDead = z.IsDeath,
                         UnitId = z.UnitId,
                         TeamIndex = z.TeamIndex,
+                        PosX = z.PosX,
+                        PosZ = z.PosZ,
                     }).ToArray()
                 }).ToArray(),
                 Players = _users.Select(z => new BattlePlayerDTO
@@ -160,7 +189,9 @@ namespace TurnBase.Server.Game.Battle.Core
                         Skill = v.SkillData.ItemSkill,
                         TurnCooldown = v.TurnCooldown,
                         UsageManaCost = v.UsageManaCost
-                    }).ToArray()
+                    }).ToArray(),
+                    PosX = z.PosX,
+                    PosZ = z.PosZ,
                 }).ToArray()
             };
 

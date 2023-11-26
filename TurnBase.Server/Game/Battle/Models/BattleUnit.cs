@@ -15,6 +15,9 @@ namespace TurnBase.Server.Game.Battle.Models
         public int TeamIndex { get; private set; }
         public int Position { get; private set; }
 
+        public float PosX { get; set; }
+        public float PosZ { get; set; }
+
         public int Health { get; private set; }
         public int Mana { get; private set; }
         public bool IsDeath { get; private set; }
@@ -144,6 +147,13 @@ namespace TurnBase.Server.Game.Battle.Models
 
             IsDeath = true;
             OnUnitDie?.Invoke(this);
+        }
+
+
+        public void SetPosition(float x, float z)
+        {
+            PosX = x;
+            PosZ = z;
         }
 
     }

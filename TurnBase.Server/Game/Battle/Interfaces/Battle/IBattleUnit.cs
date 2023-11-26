@@ -15,6 +15,9 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         int Position { get; }
         int TeamIndex { get; }
 
+        float PosX { get; }
+        float PosZ { get; }
+
         int Health { get; }
         int Mana { get; }
         bool IsDeath { get; }
@@ -39,5 +42,8 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         void AddEffect(IItemSkillEffect effect);
         bool IsManaEnough(int usageManaCost);
         void ReduceMana(int usageManaCost);
+
+
+        void SetPosition(float x, float z);
     }
 }
