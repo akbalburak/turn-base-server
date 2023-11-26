@@ -2,33 +2,46 @@
 {
     public class BattleWave
     {
-        public List<BattleNpcUnit> Units => _units;
-
-        private List<BattleNpcUnit> _units;
-
         public MapData PathData => _pathData;
 
         public MapData _pathData;
 
-
-        public BattleWave(List<BattleNpcUnit> units, MapData pathData)
+        public BattleWave(MapData pathData)
         {
             _pathData = pathData;
-            _units = units;
         }
     }
 
     public class MapData
     {
-        public MapDataHexNodes[] MapHexNodes { get; private set; }
+        public MapDataHexNodes[] MapHexNodes { get; set; }
         public int[] PlayerSpawnPoints { get; set; }
         public float DistancePerHex { get; set; }
+        public MapDataEnemy[] Enemies { get; set; }
 
-        public MapData(MapDataHexNodes[] mapHexNodes)
+        public MapData()
         {
-            MapHexNodes = mapHexNodes;
-            PlayerSpawnPoints = Array.Empty<int>();
+            MapHexNodes = Array.Empty<MapDataHexNodes>();
+            Enemies = Array.Empty<MapDataEnemy>();
         }
+    }
+
+    public interface IMapDataEnemy
+    {
+        int Enemy { get; }
+        int Health { get; }
+        int Damage { get; }
+        float TurnSpeed { get; }
+        int SpawnIndex { get; set; }
+    }
+
+    public class MapDataEnemy : IMapDataEnemy
+    {
+        public int Enemy { get; set; }
+        public int Health { get; set; }
+        public int Damage { get; set; }
+        public float TurnSpeed { get; set; }
+        public int SpawnIndex { get; set; }
     }
 
     public class MapDataHexNodes

@@ -2,21 +2,18 @@
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.Battle.Models;
-using TurnBase.Server.Game.Battle.Pathfinding;
+using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Interfaces
 {
-    public interface IBattleUnit
+    public interface IBattleUnit : IAStarUnit
     {
         Action<IBattleUnit> OnUnitTurnStart { get; set; }
         Action<IBattleUnit> OnUnitDie { get; set; }
 
         int UniqueId { get; }
 
-        int Position { get; }
         int TeamIndex { get; }
-
-        IAstarNode Node { get; }
 
         int Health { get; }
         int Mana { get; }
@@ -42,8 +39,5 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         void AddEffect(IItemSkillEffect effect);
         bool IsManaEnough(int usageManaCost);
         void ReduceMana(int usageManaCost);
-
-
-        void SetPosition(IAstarNode node);
     }
 }

@@ -2,11 +2,11 @@
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
-using TurnBase.Server.Game.Battle.Pathfinding;
+using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Models
 {
-    public abstract class BattleUnit : IBattleUnit
+    public abstract class BattleUnit : IBattleUnit, IAStarUnit
     {
         public Action<IBattleUnit> OnUnitTurnStart { get; set; }
         public Action<IBattleUnit> OnUnitDie { get; set; }
@@ -14,9 +14,7 @@ namespace TurnBase.Server.Game.Battle.Models
         public int UniqueId { get; private set; }
 
         public int TeamIndex { get; private set; }
-        public int Position { get; private set; }
-
-        public IAstarNode Node { get; set; }
+        public IAStarNode CurrentNode { get; private set; }
 
         public int Health { get; private set; }
         public int Mana { get; private set; }
@@ -29,12 +27,11 @@ namespace TurnBase.Server.Game.Battle.Models
 
         public IBattleItem Battle { get; private set; }
 
-        protected BattleUnit(int position)
+        protected BattleUnit()
         {
             Skills = new List<IItemSkill>();
             Effects = new List<IItemSkillEffect>();
             Stats = new BattleUnitStats();
-            Position = position;
         }
 
         public void SetTeam(int teamIndex)
@@ -78,9 +75,6 @@ namespace TurnBase.Server.Game.Battle.Models
                 Kill();
         }
 
-        public virtual void LoadSkills()
-        {
-        }
         public void AddSkill(IItemSkill skill)
         {
             Skills.Add(skill);
@@ -100,14 +94,6 @@ namespace TurnBase.Server.Game.Battle.Models
         public void CallUnitTurnStart()
         {
             OnUnitTurnStart?.Invoke(this);
-        }
-
-        public virtual void LoadStats(BattleUnitStats stats)
-        {
-            this.Stats = stats;
-
-            Health = stats.MaxHealth;
-            Mana = stats.MaxMana;
         }
 
         public void AddEffect(IItemSkillEffect effect)
@@ -135,25 +121,37 @@ namespace TurnBase.Server.Game.Battle.Models
         {
             Mana = usageManaCost;
 
-            if (Mana < 0) 
+            if (Mana < 0)
                 Mana = 0;
         }
 
-        
         public void Kill()
         {
             if (IsDeath)
                 return;
 
+            ChangeNode(null);
             IsDeath = true;
             OnUnitDie?.Invoke(this);
         }
 
-
-        public void SetPosition(IAstarNode node)
+        public virtual void LoadStats(BattleUnitStats stats)
         {
-            this.Node = node;
+            this.Stats = stats;
+
+            Health = stats.MaxHealth;
+            Mana = stats.MaxMana;
+        }
+        public virtual void LoadSkills()
+        {
+
         }
 
+        public virtual void ChangeNode(IAStarNode node)
+        {
+            this.CurrentNode?.SetOwner(null);
+            this.CurrentNode = node;
+            this.CurrentNode?.SetOwner(this);
+        }
     }
 }

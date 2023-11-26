@@ -1,34 +1,38 @@
-﻿namespace TurnBase.Server.Game.Battle.Pathfinding
+﻿using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
+
+namespace TurnBase.Server.Game.Battle.Pathfinding.Core
 {
-    public class AStarNode : IAstarNode
+    public class AStarNode : IAStarNode
     {
         public float X { get; set; }
         public float Z { get; set; }
         public int Cost { get; set; }
         public int Heuristic { get; set; }
-        public IAstarNode Parent { get; set; }
+        public IAStarNode Parent { get; set; }
 
-        public IAstarNode[] Neighbors { get; set; }
+        public IAStarNode[] Neighbors { get; set; }
+
+        public IAStarUnit OwnedBy { get; set; }
 
         public AStarNode(float x, float z)
         {
-            Neighbors = Array.Empty<IAstarNode>();
+            Neighbors = Array.Empty<IAStarNode>();
             X = x;
             Z = z;
         }
 
-        public float GetDistance(IAstarNode node)
+        public float GetDistance(IAStarNode node)
         {
             float num = X - node.X;
             float num2 = Z - node.Z;
             return (float)Math.Sqrt(num * num + num2 * num2);
         }
 
-        public void FindNeighbors(AStarNode[] nodes, float maxDistance)
+        public void FindNeighbors(IAStarNode[] nodes, float maxDistance)
         {
-            List<AStarNode> neighbors = new List<AStarNode>();
+            List<IAStarNode> neighbors = new List<IAStarNode>();
 
-            foreach (AStarNode node in nodes)
+            foreach (IAStarNode node in nodes)
             {
                 if (node == this)
                     continue;
@@ -41,6 +45,11 @@
             }
 
             Neighbors = neighbors.ToArray();
+        }
+
+        public void SetOwner(IAStarUnit owner)
+        {
+            OwnedBy = owner;
         }
     }
 }

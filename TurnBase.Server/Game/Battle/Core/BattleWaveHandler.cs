@@ -23,21 +23,21 @@ namespace TurnBase.Server.Game.Battle.Core
 
         private void StartWave(int waveIndex)
         {
-            // WE REMOVE OLDER WAVE UNITS.
-            if (_currentWave != null)
-            {
-                _allUnits.RemoveAll(unit => _currentWave.Units.Contains(unit));
-                _turnHandler.RemoveUnits(_currentWave.Units);
-            }
+            //// WE REMOVE OLDER WAVE UNITS.
+            //if (_currentWave != null)
+            //{
+            //    _allUnits.RemoveAll(unit => _currentWave.Units.Contains(unit));
+            //    _turnHandler.RemoveUnits(_currentWave.Units);
+            //}
 
-            // WE ASSIGN THE NEW UNITS.
-            _currentWave = _waves[waveIndex];
-            _allUnits.AddRange(_currentWave.Units);
+            //// WE ASSIGN THE NEW UNITS.
+            //_currentWave = _waves[waveIndex];
+            //_allUnits.AddRange(_currentWave.Units);
 
-            // WE TELL ALL THE PLAYERS THE NEW WAVE STARTED.
-            SendToAllUsers(BattleActions.NewWaveStarted, new BattleWaveChangeDTO(waveIndex));
+            //// WE TELL ALL THE PLAYERS THE NEW WAVE STARTED.
+            //SendToAllUsers(BattleActions.NewWaveStarted, new BattleWaveChangeDTO(waveIndex));
 
-            _turnHandler.AddUnits(_currentWave.Units);
+            //_turnHandler.AddUnits(_currentWave.Units);
         }
         private void CheckWaveEnd()
         {

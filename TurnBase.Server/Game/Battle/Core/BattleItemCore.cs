@@ -1,7 +1,8 @@
 ﻿using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Models;
-using TurnBase.Server.Game.Battle.Pathfinding;
+using TurnBase.Server.Game.Battle.Pathfinding.Core;
+using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 using TurnBase.Server.Game.Enums;
 
 namespace TurnBase.Server.Game.Battle.Core
@@ -16,6 +17,7 @@ namespace TurnBase.Server.Game.Battle.Core
 
         private IBattleUser[] _users;
         private List<IBattleUnit> _allUnits;
+        private List<BattleNpcUnit> _allNpcs;
 
         private BattleDifficulityData _difficulityData;
         private LevelDifficulities _difficulity;
@@ -32,6 +34,9 @@ namespace TurnBase.Server.Game.Battle.Core
 
         public BattleItem(IBattleUser[] users, BattleLevelData levelData, LevelDifficulities difficulity)
         {
+            _allNpcs = new List<BattleNpcUnit>();
+            _allUnits = new List<IBattleUnit>();
+
             _randomizer = new Random();
             _users = users;
 
@@ -49,7 +54,7 @@ namespace TurnBase.Server.Game.Battle.Core
                 .Select(y => new AStarNode(y.Node.X, y.Node.Z))
                 .ToArray();
 
-            foreach (var node in _nodes)
+            foreach (IAStarNode node in _nodes)
             {
                 node.FindNeighbors(_nodes, _currentWave.PathData.DistancePerHex);
             }
@@ -57,15 +62,18 @@ namespace TurnBase.Server.Game.Battle.Core
             int unitIdCounter = 0;
 
             // WE LOAD ALL UNITS REQUIRED DATA.
-            foreach (BattleWave wave in _waves)
+            foreach (IMapDataEnemy unitData in _currentWave.PathData.Enemies)
             {
-                foreach (IBattleUnit unit in wave.Units)
-                {
-                    unit.SetBattle(this);
-                    unit.SetId(++unitIdCounter);
-                    unit.SetTeam(2);
-                    unit.LoadSkills();
-                }
+                IAStarNode spawnNode = _nodes[unitData.SpawnIndex];
+                BattleNpcUnit unit = new BattleNpcUnit(unitData, spawnNode);
+
+                unit.SetBattle(this);
+                unit.SetId(++unitIdCounter);
+                unit.SetTeam(2);
+                unit.LoadSkills();
+
+                _allNpcs.Add(unit);
+                _allUnits.Add(unit);
             }
 
             // WE LOAD ALL USERS REQUIRED DATA.
@@ -77,14 +85,11 @@ namespace TurnBase.Server.Game.Battle.Core
                 user.LoadSkills();
 
                 int initialIndex = _currentWave.PathData.PlayerSpawnPoints[0];
-                IAstarNode node = _nodes[initialIndex];
-                user.SetPosition(node);
-            }
+                IAStarNode node = _nodes[initialIndex];
+                user.ChangeNode(node);
 
-            // WE COMBINE ALL THE UNITS.
-            _allUnits = new List<IBattleUnit>();
-            _allUnits.AddRange(_currentWave.Units);
-            _allUnits.AddRange(_users);
+                _allUnits.Add(user);
+            }
 
             // WE CREATE TURN HANDLER.
             _turnHandler = new BattleTurnHandler(this);

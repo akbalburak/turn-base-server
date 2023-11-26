@@ -1,21 +1,23 @@
-﻿namespace TurnBase.Server.Game.Battle.Pathfinding
+﻿using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
+
+namespace TurnBase.Server.Game.Battle.Pathfinding.Core
 {
     public static class AStar
     {
-        public static IAstarNode[] FindPath(IAstarNode[] nodes, IAstarNode start, IAstarNode goal)
+        public static IAStarNode[] FindPath(IAStarNode[] nodes, IAStarNode start, IAStarNode goal)
         {
-            List<IAstarNode> openList = new List<IAstarNode>();
-            List<IAstarNode> closedList = new List<IAstarNode>();
+            List<IAStarNode> openList = new List<IAStarNode>();
+            List<IAStarNode> closedList = new List<IAStarNode>();
 
             openList.Add(start);
 
             // WE REMOVE OLD NODE PARENTS.
-            foreach (IAstarNode node in nodes)
+            foreach (IAStarNode node in nodes)
                 node.Parent = null;
 
             while (openList.Count > 0)
             {
-                IAstarNode current = openList[0];
+                IAStarNode current = openList[0];
 
                 for (int i = 1; i < openList.Count; i++)
                 {
@@ -31,7 +33,7 @@
                 if (current.X == goal.X && current.Z == goal.Z)
                 {
                     // PATH FOUND, RECONSTRUCT AND RETURN IT
-                    List<IAstarNode> path = new List<IAstarNode>();
+                    List<IAStarNode> path = new List<IAStarNode>();
                     while (current != null)
                     {
                         path.Add(current);
@@ -41,8 +43,11 @@
                     return path.ToArray();
                 }
 
-                foreach (AStarNode neighbor in current.Neighbors)
+                foreach (IAStarNode neighbor in current.Neighbors)
                 {
+                    if (!IsValidCell(neighbor))
+                        continue;
+
                     if (closedList.Contains(neighbor))
                         continue;
 
@@ -61,15 +66,15 @@
             }
 
             // NO PATH FOUND
-            return Array.Empty<IAstarNode>();
+            return Array.Empty<IAStarNode>();
         }
 
-        private static bool IsValidCell(float x, float y, IAstarNode[] grid)
+        private static bool IsValidCell(IAStarNode node)
         {
-            return true;//x >= 0 && x < grid.GetLength(0) && y >= 0 && y < grid.GetLength(1);//&& grid[x, y] == 0;
+            return node.OwnedBy == null;
         }
 
-        private static int CalculateHeuristic(IAstarNode current, IAstarNode goal)
+        private static int CalculateHeuristic(IAStarNode current, IAStarNode goal)
         {
             return (int)(Math.Abs(current.X - goal.X) + Math.Abs(current.Z - goal.Z));
         }

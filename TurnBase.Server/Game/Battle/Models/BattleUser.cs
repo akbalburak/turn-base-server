@@ -22,8 +22,7 @@ namespace TurnBase.Server.Game.Battle.Models
 
         public BattleUser(ISocketUser socketUser,
             InventoryDTO inventory,
-            int position,
-            bool isFirstCompletion) : base(position)
+            bool isFirstCompletion)
         {
             Inventory = inventory;
             SocketUser = socketUser;

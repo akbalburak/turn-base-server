@@ -2,7 +2,8 @@
 using TurnBase.Server.Game.Battle.DTO;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
-using TurnBase.Server.Game.Battle.Pathfinding;
+using TurnBase.Server.Game.Battle.Pathfinding.Core;
+using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Core
@@ -55,15 +56,15 @@ namespace TurnBase.Server.Game.Battle.Core
                 return;
 
             // WE GET THE POINTS.
-            IAstarNode fromPoint = currentUser.Node;
-            IAstarNode targetPoint = _nodes[moveData.ToIndex];
+            IAStarNode fromPoint = currentUser.CurrentNode;
+            IAStarNode targetPoint = _nodes[moveData.ToIndex];
 
             // WE LOOK FOR THE PATH.
-            IAstarNode[] path = AStar.FindPath(_nodes, fromPoint, targetPoint);
+            IAStarNode[] path = AStar.FindPath(_nodes, fromPoint, targetPoint);
             if (path.Length == 0)
                 return;
 
-            currentUser.SetPosition(targetPoint);
+            currentUser.ChangeNode(targetPoint);
 
             SendToAllUsers(BattleActions.MovePlayerUnit, new BattleUnitMoveResponseDTO
             {
@@ -165,20 +166,19 @@ namespace TurnBase.Server.Game.Battle.Core
                 Difficulity = _difficulity,
                 Waves = _waves.Select(y => new BattleWaveDTO
                 {
-                    Units = y.Units.Select(z => new BattleNpcUnitDTO
+                    Units = _allNpcs.Select(z => new BattleNpcUnitDTO
                     {
                         AttackSpeed = z.Stats.AttackSpeed,
                         Health = z.Health,
                         Mana = z.Mana,
                         UniqueId = z.UniqueId,
                         Damage = z.Stats.Damage,
-                        Position = z.Position,
                         MaxHealth = z.Stats.MaxHealth,
                         MaxMana = z.Stats.MaxMana,
                         IsDead = z.IsDeath,
                         UnitId = z.UnitId,
                         TeamIndex = z.TeamIndex,
-                        NodeIndex = _nodes.IndexOf(z.Node),
+                        NodeIndex = _nodes.IndexOf(z.CurrentNode),
                     }).ToArray()
                 }).ToArray(),
                 Players = _users.Select(z => new BattlePlayerDTO
@@ -188,7 +188,6 @@ namespace TurnBase.Server.Game.Battle.Core
                     Health = z.Health,
                     Mana = z.Mana,
                     Damage = z.Stats.Damage,
-                    Position = z.Position,
                     IsRealPlayer = z.SocketUser == socketUser,
                     PlayerName = z.PlayerName,
                     MaxHealth = z.Stats.MaxHealth,
@@ -203,7 +202,7 @@ namespace TurnBase.Server.Game.Battle.Core
                         TurnCooldown = v.TurnCooldown,
                         UsageManaCost = v.UsageManaCost
                     }).ToArray(),
-                    NodeIndex = _nodes.IndexOf(z.Node),
+                    NodeIndex = _nodes.IndexOf(z.CurrentNode),
                 }).ToArray()
             };
 

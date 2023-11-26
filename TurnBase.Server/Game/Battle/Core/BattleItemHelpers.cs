@@ -16,7 +16,7 @@ namespace TurnBase.Server.Game.Battle.Core
             if (user != null)
                 return user;
 
-            BattleNpcUnit unit = _currentWave.Units.FirstOrDefault(y => y.UniqueId == targetUnitID);
+            IBattleUnit unit = _allUnits.FirstOrDefault(y => y.UniqueId == targetUnitID);
             if (unit != null)
                 return unit;
 
@@ -24,7 +24,7 @@ namespace TurnBase.Server.Game.Battle.Core
         }
         public IBattleUnit GetAliveEnemyUnit(IBattleUnit owner)
         {
-            return _currentWave.Units.OrderBy(y => Guid.NewGuid())
+            return _allUnits.OrderBy(y => Guid.NewGuid())
                 .FirstOrDefault(y => !y.IsDeath && y.TeamIndex != owner.TeamIndex);
         }
 
