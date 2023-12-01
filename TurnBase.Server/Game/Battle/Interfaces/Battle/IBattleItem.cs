@@ -4,7 +4,7 @@ using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Interfaces.Battle
 {
-    public interface IBattleItem
+    public interface IBattleItem : IBattlePath
     {
         public double GetRandomValue { get; }
         public Action<IBattleItem> OnDisposed { get; set; }
@@ -17,6 +17,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Battle
         public IBattleUser GetUser(ISocketUser socketUser);
         public IBattleUnit GetUnit(int targetUnitID);
         public IBattleUnit GetAliveEnemyUnit(IBattleUnit owner);
+        IBattleUnit GetUnitInNode(int nodeIndex);
 
         public void FinalizeTurn();
     }

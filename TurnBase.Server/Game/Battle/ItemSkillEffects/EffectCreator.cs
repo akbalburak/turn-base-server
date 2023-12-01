@@ -13,7 +13,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects
             IBattleUnit byWhom,
             IBattleUnit toWhom,
             IItemSkillDTO skill,
-            IUserItemDTO userItem
+            float itemQuality
         )
         {
             // FOR DEATH ENEMY WE CANNOT CREATE ANY EFFECT.
@@ -23,7 +23,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects
             switch (effect)
             {
                 case BattleEffects.Bleeding:
-                    _ = new BleedingEffect(battle, byWhom, toWhom, skill, userItem);
+                    _ = new BleedingEffect(battle, byWhom, toWhom, skill, itemQuality);
                     break;
             }
         }

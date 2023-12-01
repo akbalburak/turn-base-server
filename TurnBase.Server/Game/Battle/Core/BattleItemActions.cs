@@ -2,8 +2,6 @@
 using TurnBase.Server.Game.Battle.DTO;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
-using TurnBase.Server.Game.Battle.Pathfinding.Core;
-using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Core
@@ -26,51 +24,10 @@ namespace TurnBase.Server.Game.Battle.Core
                     break;
                 case BattleActions.TurnUpdated:
                     break;
-                case BattleActions.UnitBasicAttack:
-                    PlayerBasicAttack(socketUser, requestData);
-                    break;
                 case BattleActions.UnitUseSkill:
                     PlayerUseSkill(socketUser, requestData);
                     break;
-                case BattleActions.MovePlayerUnit:
-                    PlayerUnitMove(socketUser, requestData);
-                    break;
             }
-        }
-
-        private void PlayerUnitMove(ISocketUser socketUser, BattleActionRequestDTO requestData)
-        {
-            BattleUnitMoveRequestDTO moveData = requestData.GetRequestData<BattleUnitMoveRequestDTO>();
-
-            // WE GET THE PLAYER.
-            IBattleUser currentUser = GetUser(socketUser);
-            if (currentUser == null)
-                return;
-
-            // MAKE SURE PLAYER TURN.
-            if (!_turnHandler.IsUnitTurn(currentUser))
-                return;
-
-            // WE MAKE SURE MOVE INDEX IS VALID.
-            if (moveData.ToIndex < 0 || moveData.ToIndex >= _nodes.Length)
-                return;
-
-            // WE GET THE POINTS.
-            IAStarNode fromPoint = currentUser.CurrentNode;
-            IAStarNode targetPoint = _nodes[moveData.ToIndex];
-
-            // WE LOOK FOR THE PATH.
-            IAStarNode[] path = AStar.FindPath(_nodes, fromPoint, targetPoint);
-            if (path.Length == 0)
-                return;
-
-            currentUser.ChangeNode(targetPoint);
-
-            SendToAllUsers(BattleActions.MovePlayerUnit, new BattleUnitMoveResponseDTO
-            {
-                UnitUniqueId = currentUser.UniqueId,
-                ToIndex = moveData.ToIndex,
-            });
         }
 
         private void StartGame()
@@ -95,39 +52,6 @@ namespace TurnBase.Server.Game.Battle.Core
 
             currentUser.UseSkill(useData);
         }
-        private void PlayerBasicAttack(ISocketUser socketUser, BattleActionRequestDTO requestData)
-        {
-            // WE GET THE PLAYER.
-            IBattleUser currentUser = GetUser(socketUser);
-            if (currentUser == null)
-                return;
-
-            // MAKE SURE PLAYER TURN.
-            if (!_turnHandler.IsUnitTurn(currentUser))
-                return;
-
-            // WE GET A RANDOM ENEMY.
-            BattleAttackUseDTO attackUseData = requestData.GetRequestData<BattleAttackUseDTO>();
-            IBattleUnit targetEnemy = GetUnit(attackUseData.TargetUniqueId);
-            if (targetEnemy == null)
-                return;
-
-            // ATTACK TO PLAYER.
-            int damage = currentUser.GetBaseDamage(targetEnemy);
-            currentUser.AttackToUnit(targetEnemy, damage);
-
-            // WE WILL SEND THE DAMAGE DATA.
-            BattleAttackDTO attackData = new BattleAttackDTO();
-            attackData.AddAttack(
-                new BattleAttackItemDTO(currentUser.UniqueId,
-                    targetEnemy.UniqueId,
-                    damage
-                )
-            );
-            SendToAllUsers(BattleActions.UnitBasicAttack, attackData);
-
-            FinalizeTurn();
-        }
         private void BattleTillAnyPlayerTurn()
         {
             // WE LOOP TILL PLAYER TURN.
@@ -140,22 +64,13 @@ namespace TurnBase.Server.Game.Battle.Core
             if (defender == null)
                 return;
 
-            // ATTACK TO PLAYER.
-            int damage = attacker.GetBaseDamage(defender);
-            attacker.AttackToUnit(defender, damage);
+            int nodeIndex = GetNodeIndex(defender.CurrentNode);
 
-            // WE WILL SEND THE DAMAGE DATA.
-            BattleAttackDTO attackData = new BattleAttackDTO();
-            attackData.AddAttack(
-                new BattleAttackItemDTO(attacker.UniqueId,
-                    defender.UniqueId,
-                    damage
-                )
-            );
-            SendToAllUsers(BattleActions.UnitBasicAttack, attackData);
-
-            // FINALIZE UNIT TURN AND SKIP TO NEXT UNIT.
-            FinalizeTurn();
+            attacker.UseSkill(new BattleSkillUseDTO
+            {
+                TargetNodeIndex = nodeIndex,
+                UniqueSkillID = 1
+            });
         }
         private void SendAllReqDataToClient(ISocketUser socketUser, BattleActionRequestDTO requestData)
         {
@@ -194,14 +109,7 @@ namespace TurnBase.Server.Game.Battle.Core
                     MaxMana = z.Stats.MaxMana,
                     IsDead = z.IsDeath,
                     TeamIndex = z.TeamIndex,
-                    Skills = z.Skills.Select(v => new BattleSkillDTO
-                    {
-                        LeftTurnToUse = v.LeftTurnToUse,
-                        UniqueID = v.UniqueId,
-                        Skill = v.SkillData.ItemSkill,
-                        TurnCooldown = v.TurnCooldown,
-                        UsageManaCost = v.UsageManaCost
-                    }).ToArray(),
+                    Skills = z.Skills.Select(v => v.GetSkillDataDTO()).ToArray(),
                     NodeIndex = _nodes.IndexOf(z.CurrentNode),
                 }).ToArray()
             };

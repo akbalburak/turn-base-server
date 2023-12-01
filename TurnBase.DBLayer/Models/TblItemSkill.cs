@@ -11,9 +11,13 @@ public partial class TblItemSkill
 
     public bool FinalizeTurnInUse { get; set; }
 
-    public int TurnCooldown { get; set; }
+    public int ShapeId { get; set; }
 
-    public int UsageManaCost { get; set; }
+    public int TargetId { get; set; }
+
+    public virtual TblItemSkillShape Shape { get; set; } = null!;
+
+    public virtual TblItemSkillTarget Target { get; set; } = null!;
 
     public virtual ICollection<TblItemSkillDataMapping> TblItemSkillDataMappings { get; set; } = new List<TblItemSkillDataMapping>();
 

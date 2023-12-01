@@ -3,7 +3,6 @@ using TurnBase.DBLayer.Models;
 using TurnBase.DBLayer.Repositories;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.DTO;
-using TurnBase.Server.Game.Enums;
 using TurnBase.Server.Game.Interfaces;
 
 namespace TurnBase.Server.Game.Services
@@ -18,19 +17,9 @@ namespace TurnBase.Server.Game.Services
             using IUnitOfWork uow = new UnitOfWork();
 
             _itemSkills = uow.GetRepository<TblItemSkill>()
-                .Select(y => new ItemSkillDTO
-                {
-                    ItemSkill = (ItemSkills)y.Id,
-                    FinalizeTurnInUse = y.FinalizeTurnInUse,
-                    TurnCooldown = y.TurnCooldown,
-                    UsageManaCost = y.UsageManaCost,
-                    Data = y.TblItemSkillDataMappings.Select(z=> new ItemSkillDataDTO
-                    {
-                        DataId = (ItemSkillData)z.ItemSkillDataId,
-                        MinValue = z.MinValue,
-                        MaxValue = z.MaxValue
-                    }).ToArray()
-                }).ToArray();
+                .Include(x=> x.TblItemSkillDataMappings)
+                .Select(y => new ItemSkillDTO(y))
+                .ToArray();
         }
 
         public static IItemSkillDTO GetItemSkill(ItemSkills skill)

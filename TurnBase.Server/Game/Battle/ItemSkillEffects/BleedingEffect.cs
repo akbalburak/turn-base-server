@@ -14,20 +14,20 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects
             IBattleUnit byWhom,
             IBattleUnit toWhom,
             IItemSkillDTO skill,
-            IUserItemDTO userItem
+            float itemQuality
         )
             : base(BattleEffects.Bleeding, 
                   battle, 
                   byWhom, 
                   toWhom, 
                   skill,
-                  userItem)
+                  itemQuality)
         {
         }
 
         protected override BattleEffectTurnExecutionDTO OnEffectExecuting()
         {
-            int damage = base.Skill.GetDataValueAsInt(ItemSkillData.Damage, base.UserItem);
+            int damage = base.Skill.GetDataValueAsInt(ItemSkillData.Damage, base.EffectQuality);
 
             // DO THE ACTION.
             ToWhom.ReduceHealth(damage);

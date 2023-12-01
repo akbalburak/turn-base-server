@@ -153,5 +153,10 @@ namespace TurnBase.Server.Game.Battle.Models
             this.CurrentNode = node;
             this.CurrentNode?.SetOwner(this);
         }
+
+        public bool IsAnEnemy(IBattleUnit targetUnit)
+        {
+            return this.TeamIndex != targetUnit.TeamIndex;
+        }
     }
 }

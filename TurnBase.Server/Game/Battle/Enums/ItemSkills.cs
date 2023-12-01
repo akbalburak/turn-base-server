@@ -5,6 +5,8 @@
         DoubleSlash = 1,
         BleedingSlash = 2,
         FinishHim = 3,
-        SplashSlashSkill = 4
+        SplashSlashSkill = 4,
+        OneHandedBasicAttackSkill = 5,
+        BasicSprint = 6
     }
 }

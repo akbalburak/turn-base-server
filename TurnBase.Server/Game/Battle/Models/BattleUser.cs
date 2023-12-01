@@ -37,6 +37,28 @@ namespace TurnBase.Server.Game.Battle.Models
             // UNIQUE ID COUNTER FOR SKILLS.
             int uniqueSkillId = 0;
 
+            // WE CREATE MOVEMENT SKILL.
+            IItemSkill sprintSkill = ItemSkillCreator.CreateSkill(
+                uniqueId: ++uniqueSkillId,
+                skill: ItemSkillService.GetItemSkill(Enums.ItemSkills.BasicSprint),
+                battle: Battle,
+                owner: this,
+                itemQuality: 1
+            );
+
+            this.AddSkill(sprintSkill);
+
+            // WE CREATE BASIC ATTACK SKILL.
+            IItemSkill attackSkill = ItemSkillCreator.CreateSkill(
+                uniqueId: ++uniqueSkillId,
+                skill: ItemSkillService.GetItemSkill(Enums.ItemSkills.OneHandedBasicAttackSkill),
+                battle: Battle,
+                owner: this,
+                itemQuality: 1
+            );
+
+            this.AddSkill(attackSkill);
+
             // WE LOOP ALL THE EQUIPMENTS.
             IUserItemDTO[] userItems = Inventory.GetEquippedItems();
             foreach (IUserItemDTO userItem in userItems)
@@ -66,12 +88,11 @@ namespace TurnBase.Server.Game.Battle.Models
 
                     // WE CREATE SKILL.
                     IItemSkill battleSkill = ItemSkillCreator.CreateSkill(
-                        ++uniqueSkillId,
-                        skill,
-                        Battle,
-                        this,
-                        userItem,
-                        itemData
+                        uniqueId: ++uniqueSkillId,
+                        skill: skill,
+                        battle: Battle,
+                        owner: this,
+                        userItem.Quality
                     );
 
                     // IF SOME HOW SKILL UNDEFINED JUST SKIP.

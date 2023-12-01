@@ -7,7 +7,7 @@ using TurnBase.Server.Game.Enums;
 
 namespace TurnBase.Server.Game.Battle.Core
 {
-    public partial class BattleItem : IBattleItem, IDisposable
+    public partial class BattleItem : IBattleItem, IBattlePath, IDisposable
     {
         public Action<IBattleItem> OnDisposed { get; set; }
         public double GetRandomValue => _randomizer.NextDouble();
@@ -30,7 +30,6 @@ namespace TurnBase.Server.Game.Battle.Core
         private bool _disposed;
         private Random _randomizer;
 
-        private AStarNode[] _nodes;
 
         public BattleItem(IBattleUser[] users, BattleLevelData levelData, LevelDifficulities difficulity)
         {
@@ -82,6 +81,7 @@ namespace TurnBase.Server.Game.Battle.Core
                 user.SetBattle(this);
                 user.SetId(++unitIdCounter);
                 user.SetTeam(1);
+
                 user.LoadSkills();
 
                 int initialIndex = _currentWave.PathData.PlayerSpawnPoints[0];

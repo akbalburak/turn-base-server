@@ -10,12 +10,15 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Item
         IItemSkillDTO SkillData { get; }
         IBattleUnit Owner { get; }
 
-        int LeftTurnToUse { get; }
-        int TurnCooldown { get; }
+        int CurrentCooldown { get; }
+        int InitialCooldown { get; }
         int UsageManaCost { get; }
         bool FinalizeTurnInUse { get; }
+        float SkillQuality { get; }
 
         bool IsSkillReadyToUse();
         void UseSkill(BattleSkillUseDTO useData);
+
+        BattleSkillDTO GetSkillDataDTO();
     }
 }

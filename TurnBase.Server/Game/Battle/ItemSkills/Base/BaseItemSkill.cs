@@ -9,36 +9,34 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
     public abstract class BaseItemSkill : IItemSkill
     {
         public int UniqueId { get; private set; }
-
+        
         public IItemSkillDTO SkillData { get; private set; }
-        public IUserItemDTO UserItem { get; private set; }
-        public IItemDTO ItemData { get; private set; }
         public IBattleItem Battle { get; private set; }
         public IBattleUnit Owner { get; private set; }
 
         public int UsageManaCost { get; private set; }
         public bool FinalizeTurnInUse { get; private set; }
-        public int LeftTurnToUse { get; private set; }
-        public int TurnCooldown { get; private set; }
+        public int CurrentCooldown { get; private set; }
+        public int InitialCooldown { get; private set; }
+
+        public float SkillQuality { get; private set; }
 
         public BaseItemSkill(
             int uniqueId,
             IItemSkillDTO skill,
             IBattleItem battle,
             IBattleUnit owner,
-            IUserItemDTO userItem,
-            IItemDTO itemData
+            float itemQuality
         )
         {
+            SkillQuality = itemQuality;
+
             UniqueId = uniqueId;
-            ItemData = itemData;
-            UserItem = userItem;
-
             Battle = battle;
-
             SkillData = skill;
-            TurnCooldown = SkillData.TurnCooldown;
-            UsageManaCost = SkillData.UsageManaCost;
+
+            InitialCooldown = SkillData.GetDataValueAsInt(Game.Enums.ItemSkillData.Cooldown, SkillQuality);
+            UsageManaCost = SkillData.GetDataValueAsInt(Game.Enums.ItemSkillData.Cooldown, SkillQuality);
             FinalizeTurnInUse = SkillData.FinalizeTurnInUse;
 
             Owner = owner;
@@ -47,14 +45,14 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
 
         public virtual bool IsSkillReadyToUse()
         {
-            return LeftTurnToUse <= 0 && Owner.IsManaEnough(UsageManaCost);
+            return CurrentCooldown <= 0 && Owner.IsManaEnough(UsageManaCost);
         }
 
         public void UseSkill(BattleSkillUseDTO useData)
         {
             Owner.ReduceMana(UsageManaCost);
 
-            LeftTurnToUse = TurnCooldown;
+            CurrentCooldown = InitialCooldown;
             OnSkillUse(useData);
 
             if (!FinalizeTurnInUse)
@@ -67,15 +65,20 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
 
         protected void ResetCooldown()
         {
-            LeftTurnToUse = 0;
+            CurrentCooldown = 0;
         }
 
         private void OnUnitTurnStarted(IBattleUnit unit)
         {
-            if (LeftTurnToUse <= 0)
+            if (CurrentCooldown <= 0)
                 return;
 
-            LeftTurnToUse -= 1;
+            CurrentCooldown -= 1;
+        }
+
+        public virtual BattleSkillDTO GetSkillDataDTO()
+        {
+            return new BattleSkillDTO(this);
         }
     }
 }

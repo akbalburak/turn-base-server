@@ -2,6 +2,7 @@
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills;
+using TurnBase.Server.Game.Battle.ItemSkills.SprintSkills;
 using TurnBase.Server.Game.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Skills
@@ -12,15 +13,16 @@ namespace TurnBase.Server.Game.Battle.Skills
             IItemSkillDTO skill,
             IBattleItem battle,
             IBattleUnit owner,
-            IUserItemDTO userItem,
-            IItemDTO itemData)
+            float itemQuality)
         {
             return skill.ItemSkill switch
             {
-                Enums.ItemSkills.DoubleSlash => new DoubleSlashSkill(uniqueId, skill, battle, owner, userItem, itemData),
-                Enums.ItemSkills.BleedingSlash => new BleedingSlashSkill(uniqueId, skill, battle, owner, userItem, itemData),
-                Enums.ItemSkills.FinishHim => new FinishHimSkill(uniqueId, skill, battle, owner, userItem, itemData),
-                Enums.ItemSkills.SplashSlashSkill => new SplashSlashSkill(uniqueId, skill, battle, owner, userItem, itemData),
+                Enums.ItemSkills.DoubleSlash => new DoubleSlashSkill(uniqueId, skill, battle, owner, itemQuality),
+                Enums.ItemSkills.BleedingSlash => new BleedingSlashSkill(uniqueId, skill, battle, owner, itemQuality),
+                Enums.ItemSkills.FinishHim => new FinishHimSkill(uniqueId, skill, battle, owner, itemQuality),
+                Enums.ItemSkills.SplashSlashSkill => new SplashSlashSkill(uniqueId, skill, battle, owner, itemQuality),
+                Enums.ItemSkills.BasicSprint => new BasicSprintSkill(uniqueId, skill, battle, owner, itemQuality),
+                Enums.ItemSkills.OneHandedBasicAttackSkill => new OneHandedBasicAttackSkill(uniqueId, skill, battle, owner, itemQuality),
                 _ => null,
             };
         }

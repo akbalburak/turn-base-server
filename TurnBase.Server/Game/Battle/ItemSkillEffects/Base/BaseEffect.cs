@@ -19,7 +19,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
         public IBattleUnit ByWhom { get; private set; }
         public IBattleUnit ToWhom { get; private set; }
         public IItemSkillDTO Skill { get; private set; }
-        public IUserItemDTO UserItem { get; private set; }
+        public float EffectQuality { get; set; }
 
         public BaseEffect(
             BattleEffects effect,
@@ -27,16 +27,18 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
             IBattleUnit byWhom,
             IBattleUnit toWhom,
             IItemSkillDTO skill,
-            IUserItemDTO userItem
+            float itemQuality
         )
         {
             Effect = effect;
             Battle = battle;
             ByWhom = byWhom;
-            UserItem = userItem;
             Skill = skill;
 
-            LeftTurnDuration = skill.GetDataValueAsInt(ItemSkillData.Duration, userItem);
+            EffectQuality = itemQuality;
+
+
+            LeftTurnDuration = skill.GetDataValueAsInt(ItemSkillData.Duration, EffectQuality);
             IsFriendEffect = byWhom.TeamIndex == toWhom.TeamIndex;
 
             ByWhom.OnUnitTurnStart += OnUnitTurnStarted;

@@ -7,39 +7,58 @@ namespace TurnBase.Server.Game.DTO
 {
     public class ItemSkillDTO : IItemSkillDTO
     {
-        [JsonProperty("A")] public ItemSkills ItemSkill { get; set; }
-        [JsonProperty("B")] public bool FinalizeTurnInUse { get; set; }
-        [JsonProperty("C")] public int TurnCooldown { get; set; }
-        [JsonProperty("D")] public ItemSkillDataDTO[] Data { get; set; }
-        [JsonProperty("E")] public int UsageManaCost { get; set; }
-        public ItemSkillDTO()
+        [JsonProperty("A")] public ItemSkills ItemSkill { get; private set; }
+        [JsonProperty("B")] public bool FinalizeTurnInUse { get; private set; }
+        [JsonProperty("C")] public ItemSkillDataDTO[] Data { get; private set; }
+        [JsonProperty("D")] public ItemSkillShapes Shape { get; private set; }
+        [JsonProperty("E")] public ItemSkillTargets Target { get; private set; }
+
+        public ItemSkillDTO(DBLayer.Models.TblItemSkill itemData)
         {
-            Data = Array.Empty<ItemSkillDataDTO>();
+            Target = (ItemSkillTargets)itemData.TargetId;
+            ItemSkill = (ItemSkills)itemData.Id;
+            FinalizeTurnInUse = itemData.FinalizeTurnInUse;
+            Shape = (ItemSkillShapes)itemData.ShapeId;
+            Data = itemData.TblItemSkillDataMappings.Select(z => new ItemSkillDataDTO(z)).ToArray();
         }
 
-        public double GetDataValue(ItemSkillData data, IUserItemDTO userItem)
+        public double GetDataValue(ItemSkillData data, float quality)
         {
-            var skillData = Data.FirstOrDefault(y => y.DataId == data);
+            ItemSkillDataDTO? skillData = Data.FirstOrDefault(y => y.DataId == data);
             if (skillData == null)
                 return 0.0;
-            return Math.Round(skillData.GetValue(userItem), 2);
+            return Math.Round(skillData.GetValue(quality), 2);
         }
 
-        public int GetDataValueAsInt(ItemSkillData data, IUserItemDTO userItem)
+        public int GetDataValueAsInt(ItemSkillData data, float quality)
         {
-            return (int)Math.Floor(GetDataValue(data, userItem));
+            return (int)Math.Floor(GetDataValue(data, quality));
         }
     }
 
     public class ItemSkillDataDTO : IItemSkillDataDTO
     {
         [JsonProperty("A")] public ItemSkillData DataId { get; set; }
-        [JsonProperty("B")] public double MinValue { get; set; }
-        [JsonProperty("C")] public double MaxValue { get; set; }
+        [JsonProperty("B")] public double MinQualityValue { get; set; }
+        [JsonProperty("C")] public double MaxQualityValue { get; set; }
 
-        public double GetValue(IUserItemDTO userItem)
+        public ItemSkillDataDTO(DBLayer.Models.TblItemSkillDataMapping skillDataMap)
         {
-            return MinValue + (MaxValue - MinValue) * userItem.Quality;
+            DataId = (ItemSkillData)skillDataMap.ItemSkillDataId;
+            MinQualityValue = skillDataMap.MinQualityValue;
+            MaxQualityValue = skillDataMap.MinQualityValue;
+        }
+
+        public double GetValue(float quality)
+        {
+            quality = Math.Clamp(quality, 0, 1);
+
+            if (MaxQualityValue > MinQualityValue)
+                return MinQualityValue + (MaxQualityValue - MinQualityValue) * quality;
+            else if (MinQualityValue > MaxQualityValue)
+                return MaxQualityValue + (MinQualityValue - MaxQualityValue) * quality;
+            else
+                return MinQualityValue;
         }
     }
 

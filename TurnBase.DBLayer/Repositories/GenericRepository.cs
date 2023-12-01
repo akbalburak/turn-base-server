@@ -99,5 +99,10 @@ namespace TurnBase.DBLayer.Repositories
         {
             return _dbContext.Set<T>().AsNoTracking().FirstOrDefault(predicate);
         }
+
+        public IQueryable<T> Include(Expression<Func<T, object>> include)
+        {
+            return _dbContext.Set<T>().AsQueryable().Include(include);
+        }
     }
 }

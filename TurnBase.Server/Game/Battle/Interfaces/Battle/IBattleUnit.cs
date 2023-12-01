@@ -34,10 +34,14 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         void SetTeam(int teamIndex);
         void SetBattle(IBattleItem battleItem);
 
+        void AddSkill(IItemSkill skill);
         void LoadSkills();
         void UseSkill(BattleSkillUseDTO useData);
+
         void AddEffect(IItemSkillEffect effect);
+
         bool IsManaEnough(int usageManaCost);
         void ReduceMana(int usageManaCost);
+        bool IsAnEnemy(IBattleUnit owner);
     }
 }

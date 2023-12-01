@@ -7,11 +7,9 @@ namespace TurnBase.Server.Game.Interfaces
     {
         public ItemSkills ItemSkill { get; }
 
-        int TurnCooldown { get; }
         bool FinalizeTurnInUse { get; }
-        int UsageManaCost { get; }
 
-        double GetDataValue(ItemSkillData data, IUserItemDTO userItem);
-        int GetDataValueAsInt(ItemSkillData data, IUserItemDTO userItem);
+        double GetDataValue(ItemSkillData data, float quality);
+        int GetDataValueAsInt(ItemSkillData data, float quality);
     }
 }

@@ -20,5 +20,6 @@ namespace TurnBase.DBLayer.Interfaces
         EntityState GetStateOfEntry(T entity);
         int Count(Expression<Func<T, bool>> predicate);
         IQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> predicate);
+        IQueryable<T> Include(Expression<Func<T, object>> include);
     }
 }

@@ -12,6 +12,9 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("E")] public bool FinalizeTurn { get; set; }
         [JsonProperty("F")] public bool DontStartCooldown { get; set; }
         [JsonProperty("G")] public int UsageManaCost { get; set; }
+        [JsonProperty("H")] public int TargetNodeIndex { get; set; }
+        [JsonProperty("I")] public int UsageStackCost { get; set; } 
+        
         public BattleSkillUsageDTO(IItemSkill itemSkill)
         {
             FinalizeTurn = itemSkill.FinalizeTurnInUse;
@@ -21,6 +24,15 @@ namespace TurnBase.Server.Game.Battle.DTO
             UsageManaCost = itemSkill.UsageManaCost;
 
             Damages = new List<BattleSkillUsageAttackItemDTO>();
+        }
+
+        public void AddTargetNode(int targetNodeIndex)
+        {
+            TargetNodeIndex = targetNodeIndex;
+        }
+        public void AddStackUsageCost(int stackUsageCost)
+        {
+            UsageStackCost = stackUsageCost;
         }
 
         public void AddToDamage(int defenderId, int damage)

@@ -12,24 +12,18 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
         public SplashSlashSkill(int uniqueId,
                                 IItemSkillDTO skill,
                                 IBattleItem battle,
-                                IBattleUnit unit,
-                                IUserItemDTO userItem,
-                                IItemDTO itemData)
-            : base(uniqueId, skill, battle, unit, userItem, itemData)
+                                IBattleUnit owner,
+                                float itemQuality)
+            : base(uniqueId, skill, battle, owner, itemQuality)
         {
         }
 
         public override void OnSkillUse(BattleSkillUseDTO useData)
         {
-            // WE ARE LOOKING FOR THE TARGET.
-            IBattleUnit targetUnit = Battle.GetUnit(useData.TargetUnitID);
-            if (targetUnit == null || targetUnit.IsDeath)
-            {
-                // WE ARE LOOKING FOR A RANDOM ENEMY TO ATTACK.
-                targetUnit = Battle.GetAliveEnemyUnit(Owner);
-                if (targetUnit == null)
-                    return;
-            }
+            // WE GET TARGET UNIT IN NODE.
+            IBattleUnit targetUnit = Battle.GetUnitInNode(useData.TargetNodeIndex);
+            if (targetUnit == null || !targetUnit.IsAnEnemy(Owner))
+                return;
 
             BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
 

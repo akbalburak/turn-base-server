@@ -8,13 +8,13 @@ using TurnBase.Server.Game.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
 {
-    public class DoubleSlashSkill : BaseItemSkill
+    public class OneHandedBasicAttackSkill : BaseItemSkill
     {
-        public DoubleSlashSkill(int uniqueId,
-                                IItemSkillDTO skill,
-                                IBattleItem battle,
-                                IBattleUnit owner,
-                                float itemQuality)
+        public OneHandedBasicAttackSkill(int uniqueId,
+                                         IItemSkillDTO skill,
+                                         IBattleItem battle,
+                                         IBattleUnit owner,
+                                         float itemQuality)
             : base(uniqueId, skill, battle, owner, itemQuality)
         {
         }
@@ -26,15 +26,11 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
             if (targetUnit == null || !targetUnit.IsAnEnemy(Owner))
                 return;
 
+            // SKILL USAGE DATA.
             BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
 
-            // WE DO THE FIRST SLASH.
+            // WE DO THE SLASH.
             int damage = Owner.GetBaseDamage(targetUnit);
-            Owner.AttackToUnit(targetUnit, damage);
-            usageData.AddToDamage(targetUnit.UniqueId, damage);
-
-            // WE DO THE SECOND SLASH.
-            damage = Owner.GetBaseDamage(targetUnit);
             Owner.AttackToUnit(targetUnit, damage);
             usageData.AddToDamage(targetUnit.UniqueId, damage);
 

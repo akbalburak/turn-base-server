@@ -33,6 +33,10 @@ public partial class DbTurnBaseDevContext : DbContext
 
     public virtual DbSet<TblItemSkillMapping> TblItemSkillMappings { get; set; }
 
+    public virtual DbSet<TblItemSkillShape> TblItemSkillShapes { get; set; }
+
+    public virtual DbSet<TblItemSkillTarget> TblItemSkillTargets { get; set; }
+
     public virtual DbSet<TblItemType> TblItemTypes { get; set; }
 
     public virtual DbSet<TblParameter> TblParameters { get; set; }
@@ -131,6 +135,16 @@ public partial class DbTurnBaseDevContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(50);
+
+            entity.HasOne(d => d.Shape).WithMany(p => p.TblItemSkills)
+                .HasForeignKey(d => d.ShapeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_item_skills_tbl_item_skill_shapes");
+
+            entity.HasOne(d => d.Target).WithMany(p => p.TblItemSkills)
+                .HasForeignKey(d => d.TargetId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_item_skills_tbl_item_skill_targets");
         });
 
         modelBuilder.Entity<TblItemSkillDataMapping>(entity =>
@@ -177,6 +191,21 @@ public partial class DbTurnBaseDevContext : DbContext
                 .HasForeignKey(d => d.SkillId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tbl_item_skill_mapping_tbl_item_skills");
+        });
+
+        modelBuilder.Entity<TblItemSkillShape>(entity =>
+        {
+            entity.ToTable("tbl_item_skill_shapes");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<TblItemSkillTarget>(entity =>
+        {
+            entity.ToTable("tbl_item_skill_targets");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(50);
         });
 
         modelBuilder.Entity<TblItemType>(entity =>

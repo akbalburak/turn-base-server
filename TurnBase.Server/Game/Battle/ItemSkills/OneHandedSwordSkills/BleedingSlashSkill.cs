@@ -5,6 +5,7 @@ using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.ItemSkills.Base;
+using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
 {
@@ -14,23 +15,17 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
             IItemSkillDTO skill,
             IBattleItem battle,
             IBattleUnit owner,
-            IUserItemDTO userItem,
-            IItemDTO itemData)
-            : base(uniqueId, skill, battle, owner, userItem, itemData)
+            float itemQuality)
+            : base(uniqueId, skill, battle, owner, itemQuality)
         {
         }
 
         public override void OnSkillUse(BattleSkillUseDTO useData)
         {
-            // WE ARE LOOKING FOR THE TARGET.
-            IBattleUnit targetUnit = Battle.GetUnit(useData.TargetUnitID);
-            if (targetUnit == null || targetUnit.IsDeath)
-            {
-                // WE ARE LOOKING FOR A RANDOM ENEMY TO ATTACK.
-                targetUnit = Battle.GetAliveEnemyUnit(Owner);
-                if (targetUnit == null)
-                    return;
-            }
+            // WE GET TARGET UNIT IN NODE.
+            IBattleUnit targetUnit = Battle.GetUnitInNode(useData.TargetNodeIndex);
+            if (targetUnit == null || !targetUnit.IsAnEnemy(Owner))
+                return;
 
             // SKILL USAGE DATA.
             BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
@@ -44,12 +39,13 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
 
             // WE WILL CREATE A BLEEDING EFFECT.
-            EffectBuilder.BuildEffect(BattleEffects.Bleeding,
-                Battle,
-                Owner,
-                targetUnit,
-                SkillData,
-                UserItem
+            EffectBuilder.BuildEffect(
+                effect: BattleEffects.Bleeding,
+                battle: Battle,
+                byWhom: Owner,
+                toWhom: targetUnit,
+                skill: SkillData,
+                itemQuality: base.SkillQuality
             );
 
         }

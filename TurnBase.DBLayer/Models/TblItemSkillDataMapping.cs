@@ -11,9 +11,9 @@ public partial class TblItemSkillDataMapping
 
     public int ItemSkillDataId { get; set; }
 
-    public double MinValue { get; set; }
+    public double MinQualityValue { get; set; }
 
-    public double MaxValue { get; set; }
+    public double MaxQualityValue { get; set; }
 
     public virtual TblItemSkill ItemSkill { get; set; } = null!;
 
