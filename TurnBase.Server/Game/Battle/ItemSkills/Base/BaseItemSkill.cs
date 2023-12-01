@@ -36,7 +36,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
             SkillData = skill;
 
             InitialCooldown = SkillData.GetDataValueAsInt(Game.Enums.ItemSkillData.Cooldown, SkillQuality);
-            UsageManaCost = SkillData.GetDataValueAsInt(Game.Enums.ItemSkillData.Cooldown, SkillQuality);
+            UsageManaCost = SkillData.GetDataValueAsInt(Game.Enums.ItemSkillData.ManaCost, SkillQuality);
             FinalizeTurnInUse = SkillData.FinalizeTurnInUse;
 
             Owner = owner;

@@ -94,6 +94,7 @@ namespace TurnBase.Server.Game.Battle.Core
                         UnitId = z.UnitId,
                         TeamIndex = z.TeamIndex,
                         NodeIndex = _nodes.IndexOf(z.CurrentNode),
+                        Skills = z.Skills.Select(v=> v.GetSkillDataDTO()).ToArray()
                     }).ToArray()
                 }).ToArray(),
                 Players = _users.Select(z => new BattlePlayerDTO

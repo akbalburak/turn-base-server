@@ -119,7 +119,7 @@ namespace TurnBase.Server.Game.Battle.Models
         }
         public void ReduceMana(int usageManaCost)
         {
-            Mana = usageManaCost;
+            Mana -= usageManaCost;
 
             if (Mana < 0)
                 Mana = 0;
