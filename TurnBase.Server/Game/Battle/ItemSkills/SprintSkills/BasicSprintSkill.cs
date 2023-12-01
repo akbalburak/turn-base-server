@@ -38,18 +38,21 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
             if (path.Length == 0)
                 return;
 
+            // CURRENT NODE SHOULD BE REMOVED FROM THE MOVEMENT COST.
+            int movementCost = path.Length - 1;
+
             // IF SKILL STACK NOT ENOUGH JUST RETURN.
-            if (!base.IsStackEnough(path.Length))
+            if (!base.IsStackEnough(movementCost)) 
                 return;
 
-            base.UseStack(path.Length);
+            base.UseStack(movementCost);
 
             Owner.ChangeNode(targetPoint);
 
             // SKILL USAGE DATA.
             BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
             usageData.AddTargetNode(useData.TargetNodeIndex);
-            usageData.AddStackUsageCost(path.Length);
+            usageData.AddStackUsageCost(movementCost);
 
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
         }
