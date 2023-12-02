@@ -6,6 +6,8 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Battle
 {
     public interface IBattleItem : IBattlePath
     {
+        IBattleTurnHandler BattleTurnHandler { get; }
+
         bool IsInCombat { get; }
         void CallGroupAggrieving(int group);
 

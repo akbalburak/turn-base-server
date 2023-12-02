@@ -13,7 +13,11 @@ namespace TurnBase.Server.Game.Battle.Pathfinding.Core
 
             // WE REMOVE OLD NODE PARENTS.
             foreach (IAStarNode node in nodes)
+            {
                 node.Parent = null;
+                node.Cost = 0;
+                node.Heuristic = 0;
+            }
 
             while (openList.Count > 0)
             {
@@ -39,14 +43,24 @@ namespace TurnBase.Server.Game.Battle.Pathfinding.Core
                         path.Add(current);
                         current = current.Parent;
                     }
+
                     path.Reverse();
+
+                    // IF THE LAST POINT IS INVALID WE WILL GO PREVIOUS ONE.
+                    if (!IsValidCell(goal))
+                        path.Remove(goal);
+
                     return path.ToArray();
                 }
 
                 foreach (IAStarNode neighbor in current.Neighbors)
                 {
-                    if (!IsValidCell(neighbor))
-                        continue;
+                    // IF NEIGHBOR ITSELF WE WONT CHECK IF THE CELL IS VALID HERE.
+                    if (neighbor != goal)
+                    {
+                        if (!IsValidCell(neighbor))
+                            continue;
+                    }
 
                     if (closedList.Contains(neighbor))
                         continue;

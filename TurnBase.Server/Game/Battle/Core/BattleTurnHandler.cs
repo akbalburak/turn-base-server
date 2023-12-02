@@ -131,6 +131,11 @@ namespace TurnBase.Server.Game.Battle.Core
             {
                 NextAttackTurn += Unit.Stats.AttackSpeed;
             }
+
+            public void ResetAndSkipTurn()
+            {
+                NextAttackTurn = 0;
+            }
         }
     }
 }

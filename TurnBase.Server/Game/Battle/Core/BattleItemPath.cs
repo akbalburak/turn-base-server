@@ -1,4 +1,5 @@
-﻿using TurnBase.Server.Game.Battle.Pathfinding.Core;
+﻿using TurnBase.Server.Extends;
+using TurnBase.Server.Game.Battle.Pathfinding.Core;
 using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Core
@@ -15,7 +16,7 @@ namespace TurnBase.Server.Game.Battle.Core
         }
         public int GetNodeIndex(IAStarNode node)
         {
-            return Array.IndexOf(_nodes, node);
+            return _nodes.IndexOf(node);
         }
 
         public IAStarNode[] GetPath(IAStarNode fromPoint, IAStarNode toPoint)

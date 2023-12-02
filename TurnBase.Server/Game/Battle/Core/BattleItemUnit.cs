@@ -10,9 +10,9 @@ namespace TurnBase.Server.Game.Battle.Core
         {
             return _users.FirstOrDefault(y => y.SocketUser == socketUser);
         }
-        public IBattleUnit GetUnit(int targetUnitID)
+        public IBattleUnit GetUnit(int uniqueId)
         {
-            return _allUnits.FirstOrDefault(y => y.UnitData.UniqueId == targetUnitID);
+            return _allUnits.FirstOrDefault(y => y.UnitData.UniqueId == uniqueId);
         }
         public IBattleUnit GetAliveEnemyUnit(IBattleUnit owner)
         {

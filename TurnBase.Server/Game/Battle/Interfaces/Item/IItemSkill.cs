@@ -20,5 +20,6 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Item
         void UseSkill(BattleSkillUseDTO useData);
 
         BattleSkillDTO GetSkillDataDTO();
+        int? GetNodeIndexForAI();
     }
 }

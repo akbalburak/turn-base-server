@@ -38,9 +38,12 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
             if (path.Length == 0)
                 return;
 
+            IAStarNode lastValidPath = path.Last();
+            int lastValidPathIndex = Battle.GetNodeIndex(lastValidPath);
+
             // SKILL USAGE DATA.
             BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
-            usageData.AddTargetNode(useData.TargetNodeIndex);
+            usageData.AddTargetNode(lastValidPathIndex);
 
             // ONLY IN COMBAT MOVEMENT COST IS SPENT.
             if (Battle.IsInCombat)
@@ -56,13 +59,19 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
                 usageData.AddStackUsageCost(movementCost);
             }
 
-            Owner.ChangeNode(targetPoint);
+            Owner.ChangeNode(lastValidPath);
 
             // WE TELL ALL THE UNITS IN RANGE TO AGGRO.
-            foreach(IAStarNode pathNode in path)
+            foreach (IAStarNode pathNode in path)
                 pathNode.TriggerAggro();
 
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
+        }
+
+        public override int? GetNodeIndexForAI()
+        {
+            IBattleUnit enemy = Battle.GetAliveEnemyUnit(Owner);
+            return Battle.GetNodeIndex(enemy.CurrentNode);
         }
     }
 }

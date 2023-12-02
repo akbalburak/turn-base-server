@@ -24,6 +24,8 @@ namespace TurnBase.Server.Game.Battle.Core
             }
         }
 
+        public IBattleTurnHandler BattleTurnHandler => _turnHandler;
+
         private BattleLevelData _levelData;
         private IBattleTurnHandler _turnHandler;
 
@@ -38,9 +40,11 @@ namespace TurnBase.Server.Game.Battle.Core
         private bool _gameOver;
         private bool _disposed;
         private Random _randomizer;
+        private List<int> _aggrodGroupIndex;
 
         public BattleItem(IBattleUser[] users, BattleLevelData levelData, LevelDifficulities difficulity)
         {
+            _aggrodGroupIndex = new List<int>();
             _allNpcs = new List<BattleNpcUnit>();
             _allUnits = new List<IBattleUnit>();
 
@@ -118,12 +122,21 @@ namespace TurnBase.Server.Game.Battle.Core
 
         public void CallGroupAggrieving(int groupIndex)
         {
-            List<BattleNpcUnit> aggroUnits = _allNpcs.FindAll(x => x.UnitData.GroupIndex == groupIndex);
+            if (_aggrodGroupIndex.Contains(groupIndex))
+                return;
+
+            _aggrodGroupIndex.Add(groupIndex);
+
+            // WE GET AGGRO UNITS.
+            List<BattleNpcUnit> aggroUnits = _allNpcs.FindAll(x => x.UnitData.GroupIndex == groupIndex && !x.IsAggrieved);
+            if (aggroUnits.Count == 0)
+                return;
+
+            // WE TELL ALL AGGRO.
             aggroUnits.ForEach(x => x.OnAggrieved());
 
+            // WE ADD THEM INTO TURN LIST.
             _turnHandler.AddUnits(aggroUnits);
-
-            BattleTillAnyPlayerTurn();
         }
     }
 }

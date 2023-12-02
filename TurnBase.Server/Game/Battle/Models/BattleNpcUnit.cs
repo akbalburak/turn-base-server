@@ -27,6 +27,17 @@ namespace TurnBase.Server.Game.Battle.Models
             // UNIQUE ID COUNTER FOR SKILLS.
             int uniqueSkillId = 0;
 
+            // WE CREATE BASIC SPRINT SKILL.
+            IItemSkill sprintSkill = ItemSkillCreator.CreateSkill(
+                uniqueId: ++uniqueSkillId,
+                skill: ItemSkillService.GetItemSkill(Enums.ItemSkills.BasicSprint),
+                battle: UnitData.BattleItem,
+                owner: this,
+                itemQuality: 1
+            );
+
+            this.AddSkill(sprintSkill);
+
             // WE CREATE BASIC ATTACK SKILL.
             IItemSkill attackSkill = ItemSkillCreator.CreateSkill(
                 uniqueId: ++uniqueSkillId,

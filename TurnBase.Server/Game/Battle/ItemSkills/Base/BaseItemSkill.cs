@@ -80,5 +80,10 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
         {
             return new BattleSkillDTO(this);
         }
+
+        public virtual int? GetNodeIndexForAI()
+        {
+            return null;
+        }
     }
 }

@@ -3,7 +3,6 @@ using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.ItemSkills.Base;
-using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 using TurnBase.Server.Game.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
@@ -36,6 +35,12 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
 
             // SEND TO USER.
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
+        }
+
+        public override int? GetNodeIndexForAI()
+        {
+            IBattleUnit enemy = Battle.GetAliveEnemyUnit(Owner);
+            return Battle.GetNodeIndex(enemy.CurrentNode);
         }
     }
 }

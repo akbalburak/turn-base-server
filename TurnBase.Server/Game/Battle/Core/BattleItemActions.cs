@@ -22,12 +22,23 @@ namespace TurnBase.Server.Game.Battle.Core
                 case BattleActions.IamReady:
                     StartGame();
                     break;
-                case BattleActions.TurnUpdated:
+                case BattleActions.FinalizeTurn:
+                    FinalizePlayerTurn(socketUser);
                     break;
                 case BattleActions.UnitUseSkill:
                     PlayerUseSkill(socketUser, requestData);
                     break;
             }
+        }
+
+        private void FinalizePlayerTurn(ISocketUser socketUser)
+        {
+            IBattleUser user = GetUser(socketUser);
+            if (!_turnHandler.IsUnitTurn(user))
+                return;
+
+            _turnHandler.SkipToNextTurn();
+            BattleTillAnyPlayerTurn();
         }
 
         private void StartGame()
@@ -57,18 +68,7 @@ namespace TurnBase.Server.Game.Battle.Core
             if (attacker is IBattleUser)
                 return;
 
-            // WE GET A RANDOM ENEMY.
-            IBattleUnit defender = _allUnits.Find(x => x.UnitData.TeamIndex != attacker.UnitData.TeamIndex && !x.IsDeath);
-            if (defender == null)
-                return;
-
-            int nodeIndex = GetNodeIndex(defender.CurrentNode);
-
-            attacker.UseSkill(new BattleSkillUseDTO
-            {
-                TargetNodeIndex = nodeIndex,
-                UniqueSkillID = 1
-            });
+            attacker.UseAI();
         }
         private void SendAllReqDataToClient(ISocketUser socketUser, BattleActionRequestDTO requestData)
         {
@@ -90,7 +90,7 @@ namespace TurnBase.Server.Game.Battle.Core
                     UnitId = z.UnitId,
                     TeamIndex = z.UnitData.TeamIndex,
                     NodeIndex = _nodes.IndexOf(z.CurrentNode),
-                    Skills = z.Skills.Select(v=> v.GetSkillDataDTO()).ToArray()
+                    Skills = z.Skills.Select(v => v.GetSkillDataDTO()).ToArray()
                 }).ToArray(),
                 Players = _users.Select(z => new BattlePlayerDTO
                 {

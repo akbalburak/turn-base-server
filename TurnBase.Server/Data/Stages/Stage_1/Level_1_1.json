@@ -7432,7 +7432,7 @@
             "Damage": 4,
             "TurnSpeed": 1.1,
             "SpawnIndex": 257,
-            "AggroDistance": 5
+            "AggroDistance": 3
           },
           {
             "Group": 1,
@@ -7441,7 +7441,7 @@
             "Damage": 4,
             "TurnSpeed": 1.1,
             "SpawnIndex": 353,
-            "AggroDistance": 5
+            "AggroDistance": 3
           },
           {
             "Group": 2,
@@ -7449,8 +7449,8 @@
             "Health": 12,
             "Damage": 4,
             "TurnSpeed": 1.1,
-            "SpawnIndex": 324,
-            "AggroDistance": 5
+            "SpawnIndex": 309,
+            "AggroDistance": 3
           },
           {
             "Group": 2,
@@ -7458,8 +7458,8 @@
             "Health": 12,
             "Damage": 4,
             "TurnSpeed": 1.1,
-            "SpawnIndex": 420,
-            "AggroDistance": 5
+            "SpawnIndex": 405,
+            "AggroDistance": 3
           },
           {
             "Group": 2,
@@ -7467,8 +7467,8 @@
             "Health": 12,
             "Damage": 4,
             "TurnSpeed": 1.1,
-            "SpawnIndex": 374,
-            "AggroDistance": 5
+            "SpawnIndex": 359,
+            "AggroDistance": 3
           }
         ]
       }

@@ -12,7 +12,6 @@ namespace TurnBase.Server.Game.Battle.Models
         public Action<IBattleUnit> OnUnitDie { get; set; }
 
         public IBattleUnitData UnitData { get; private set; }
-
         public IAStarNode CurrentNode { get; private set; }
 
         public int Health { get; private set; }
@@ -33,14 +32,6 @@ namespace TurnBase.Server.Game.Battle.Models
             Stats = new BattleUnitStats();
         }
 
-        public virtual void SetUnitData(IBattleUnitData unitData)
-        {
-            UnitData = unitData;
-            this.ChangeNode(UnitData.InitialNode);
-            this.LoadSkills();
-        }
-
-
         public int GetBaseDamage(IBattleUnit targetUnit)
         {
             bool isCritical = UnitData.BattleItem.GetRandomValue <= Stats.CriticalChance;
@@ -59,13 +50,6 @@ namespace TurnBase.Server.Game.Battle.Models
         public void AttackToUnit(IBattleUnit defender, int damage)
         {
             defender.ReduceHealth(damage);
-        }
-        public void ReduceHealth(int reduction)
-        {
-            Health -= reduction;
-
-            if (Health <= 0)
-                Kill();
         }
 
         public void AddSkill(IItemSkill skill)
@@ -123,6 +107,13 @@ namespace TurnBase.Server.Game.Battle.Models
                 Mana = 0;
         }
 
+        public void ReduceHealth(int reduction)
+        {
+            Health -= reduction;
+
+            if (Health <= 0)
+                Kill();
+        }
         public void Kill()
         {
             if (IsDeath)
@@ -150,6 +141,12 @@ namespace TurnBase.Server.Game.Battle.Models
             this.CurrentNode = node;
             this.CurrentNode?.SetOwner(this);
         }
+        public virtual void SetUnitData(IBattleUnitData unitData)
+        {
+            UnitData = unitData;
+            this.ChangeNode(UnitData.InitialNode);
+            this.LoadSkills();
+        }
 
         public void OnAggrieving()
         {
@@ -158,10 +155,43 @@ namespace TurnBase.Server.Game.Battle.Models
 
             UnitData.BattleItem.CallGroupAggrieving(UnitData.GroupIndex);
         }
-
         public void OnAggrieved()
         {
             IsAggrieved = true;
+        }
+
+        public void UseAI()
+        {
+            IItemSkill[] readySkills = Skills
+                .Where(x => x.IsSkillReadyToUse())
+                .OrderBy(x=> x.FinalizeTurnInUse)
+                .OrderByDescending(x => x.InitialCooldown)
+                .ToArray();
+
+            for (int i = 0; i < readySkills.Length; i++)
+            {
+                //IF NOT PLAYER TURN BREAK.
+                if (!UnitData.BattleItem.BattleTurnHandler.IsUnitTurn(this))
+                    break;
+
+                IItemSkill skill = readySkills[i];
+
+                // WE MAKE SURE THERE IS A VALID NODE.
+                int? nodeIndex = skill.GetNodeIndexForAI();
+                if (!nodeIndex.HasValue)
+                    continue;
+
+                // WE TRY TO USE SKILL.
+                UseSkill(new BattleSkillUseDTO()
+                {
+                    UniqueSkillID = skill.UniqueId,
+                    TargetNodeIndex = nodeIndex.Value
+                });
+            }
+
+            // IF STILL PLAYER TURN FINALIZE IT.
+            if (UnitData.BattleItem.BattleTurnHandler.IsUnitTurn(this))
+                UnitData.BattleItem.FinalizeTurn();
         }
     }
 }
