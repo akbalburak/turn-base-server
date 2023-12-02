@@ -33,9 +33,7 @@ namespace TurnBase.Server.Game.Battle.Core
         private void StartGame()
         {
             _gameStarted = true;
-
             _turnHandler.SkipToNextTurn();
-            BattleTillAnyPlayerTurn();
         }
         private void PlayerUseSkill(ISocketUser socketUser, BattleActionRequestDTO requestData)
         {
@@ -60,7 +58,7 @@ namespace TurnBase.Server.Game.Battle.Core
                 return;
 
             // WE GET A RANDOM ENEMY.
-            IBattleUnit defender = _allUnits.Find(x => x.TeamIndex != attacker.TeamIndex && !x.IsDeath);
+            IBattleUnit defender = _allUnits.Find(x => x.UnitData.TeamIndex != attacker.UnitData.TeamIndex && !x.IsDeath);
             if (defender == null)
                 return;
 
@@ -79,27 +77,24 @@ namespace TurnBase.Server.Game.Battle.Core
             BattleLoadAllDTO loadData = new BattleLoadAllDTO()
             {
                 Difficulity = _difficulity,
-                Waves = _waves.Select(y => new BattleWaveDTO
+                Units = _allNpcs.Select(z => new BattleNpcUnitDTO
                 {
-                    Units = _allNpcs.Select(z => new BattleNpcUnitDTO
-                    {
-                        AttackSpeed = z.Stats.AttackSpeed,
-                        Health = z.Health,
-                        Mana = z.Mana,
-                        UniqueId = z.UniqueId,
-                        Damage = z.Stats.Damage,
-                        MaxHealth = z.Stats.MaxHealth,
-                        MaxMana = z.Stats.MaxMana,
-                        IsDead = z.IsDeath,
-                        UnitId = z.UnitId,
-                        TeamIndex = z.TeamIndex,
-                        NodeIndex = _nodes.IndexOf(z.CurrentNode),
-                        Skills = z.Skills.Select(v=> v.GetSkillDataDTO()).ToArray()
-                    }).ToArray()
+                    AttackSpeed = z.Stats.AttackSpeed,
+                    Health = z.Health,
+                    Mana = z.Mana,
+                    UniqueId = z.UnitData.UniqueId,
+                    Damage = z.Stats.Damage,
+                    MaxHealth = z.Stats.MaxHealth,
+                    MaxMana = z.Stats.MaxMana,
+                    IsDead = z.IsDeath,
+                    UnitId = z.UnitId,
+                    TeamIndex = z.UnitData.TeamIndex,
+                    NodeIndex = _nodes.IndexOf(z.CurrentNode),
+                    Skills = z.Skills.Select(v=> v.GetSkillDataDTO()).ToArray()
                 }).ToArray(),
                 Players = _users.Select(z => new BattlePlayerDTO
                 {
-                    UniqueId = z.UniqueId,
+                    UniqueId = z.UnitData.UniqueId,
                     AttackSpeed = z.Stats.AttackSpeed,
                     Health = z.Health,
                     Mana = z.Mana,
@@ -109,7 +104,7 @@ namespace TurnBase.Server.Game.Battle.Core
                     MaxHealth = z.Stats.MaxHealth,
                     MaxMana = z.Stats.MaxMana,
                     IsDead = z.IsDeath,
-                    TeamIndex = z.TeamIndex,
+                    TeamIndex = z.UnitData.TeamIndex,
                     Skills = z.Skills.Select(v => v.GetSkillDataDTO()).ToArray(),
                     NodeIndex = _nodes.IndexOf(z.CurrentNode),
                 }).ToArray()

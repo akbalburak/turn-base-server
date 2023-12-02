@@ -39,7 +39,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
 
 
             LeftTurnDuration = skill.GetDataValueAsInt(ItemSkillData.Duration, EffectQuality);
-            IsFriendEffect = byWhom.TeamIndex == toWhom.TeamIndex;
+            IsFriendEffect = byWhom.UnitData.TeamIndex == toWhom.UnitData.TeamIndex;
 
             ByWhom.OnUnitTurnStart += OnUnitTurnStarted;
 

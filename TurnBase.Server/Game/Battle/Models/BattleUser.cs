@@ -41,7 +41,7 @@ namespace TurnBase.Server.Game.Battle.Models
             IItemSkill sprintSkill = ItemSkillCreator.CreateSkill(
                 uniqueId: ++uniqueSkillId,
                 skill: ItemSkillService.GetItemSkill(Enums.ItemSkills.BasicSprint),
-                battle: Battle,
+                battle: UnitData.BattleItem,
                 owner: this,
                 itemQuality: 1
             );
@@ -52,7 +52,7 @@ namespace TurnBase.Server.Game.Battle.Models
             IItemSkill attackSkill = ItemSkillCreator.CreateSkill(
                 uniqueId: ++uniqueSkillId,
                 skill: ItemSkillService.GetItemSkill(Enums.ItemSkills.OneHandedBasicAttackSkill),
-                battle: Battle,
+                battle: UnitData.BattleItem,
                 owner: this,
                 itemQuality: 1
             );
@@ -90,7 +90,7 @@ namespace TurnBase.Server.Game.Battle.Models
                     IItemSkill battleSkill = ItemSkillCreator.CreateSkill(
                         uniqueId: ++uniqueSkillId,
                         skill: skill,
-                        battle: Battle,
+                        battle: UnitData.BattleItem,
                         owner: this,
                         userItem.Quality
                     );

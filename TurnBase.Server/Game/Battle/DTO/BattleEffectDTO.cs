@@ -13,7 +13,7 @@ namespace TurnBase.Server.Game.Battle.DTO
 
         public BattleEffectTurnExecutionDTO(IItemSkillEffect effect)
         {
-            this.TargetUnitId = effect.ToWhom.UniqueId;
+            this.TargetUnitId = effect.ToWhom.UnitData.UniqueId;
             this.Effect = effect.Effect;
             this.LeftTurnDuration = effect.LeftTurnDuration;
         }
@@ -29,8 +29,8 @@ namespace TurnBase.Server.Game.Battle.DTO
         public BattleEffectStartedDTO(IItemSkillEffect effect)
         {
             this.Effect = effect.Effect;
-            this.TargetUnitId = effect.ToWhom.UniqueId;
-            this.OwnerUnitId = effect.ByWhom.UniqueId;
+            this.TargetUnitId = effect.ToWhom.UnitData.UniqueId;
+            this.OwnerUnitId = effect.ByWhom.UnitData.UniqueId;
             this.LeftTurnDuration = effect.LeftTurnDuration;
         }
     }
@@ -43,7 +43,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         public BattleEffectOverDTO(IItemSkillEffect effect)
         {
             this.Effect = effect.Effect;
-            this.TargetUnitId = effect.ToWhom.UniqueId;
+            this.TargetUnitId = effect.ToWhom.UnitData.UniqueId;
         }
     }
 }

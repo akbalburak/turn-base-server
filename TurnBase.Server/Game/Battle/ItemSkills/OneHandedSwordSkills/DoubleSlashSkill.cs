@@ -31,12 +31,12 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
             // WE DO THE FIRST SLASH.
             int damage = Owner.GetBaseDamage(targetUnit);
             Owner.AttackToUnit(targetUnit, damage);
-            usageData.AddToDamage(targetUnit.UniqueId, damage);
+            usageData.AddToDamage(targetUnit.UnitData.UniqueId, damage);
 
             // WE DO THE SECOND SLASH.
             damage = Owner.GetBaseDamage(targetUnit);
             Owner.AttackToUnit(targetUnit, damage);
-            usageData.AddToDamage(targetUnit.UniqueId, damage);
+            usageData.AddToDamage(targetUnit.UnitData.UniqueId, damage);
 
             // SEND TO USER.
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);

@@ -5,9 +5,9 @@ namespace TurnBase.Server.Game.Battle.Core
 {
     public partial class BattleItem
     {
-        private AStarNode[] _nodes;
-
         public int NodeSize => _nodes.Length;
+
+        private AStarNode[] _nodes;
 
         public IAStarNode GetNodeByIndex(int index)
         {

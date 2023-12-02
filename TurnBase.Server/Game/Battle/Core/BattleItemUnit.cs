@@ -1,5 +1,4 @@
 ﻿using TurnBase.Server.Game.Battle.Interfaces;
-using TurnBase.Server.Game.Battle.Models;
 using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 using TurnBase.Server.Server.Interfaces;
 
@@ -13,12 +12,12 @@ namespace TurnBase.Server.Game.Battle.Core
         }
         public IBattleUnit GetUnit(int targetUnitID)
         {
-            return _allUnits.FirstOrDefault(y => y.UniqueId == targetUnitID);
+            return _allUnits.FirstOrDefault(y => y.UnitData.UniqueId == targetUnitID);
         }
         public IBattleUnit GetAliveEnemyUnit(IBattleUnit owner)
         {
             return _allUnits.OrderBy(y => Guid.NewGuid())
-                .FirstOrDefault(y => !y.IsDeath && y.TeamIndex != owner.TeamIndex);
+                .FirstOrDefault(y => !y.IsDeath && y.UnitData.TeamIndex != owner.UnitData.TeamIndex);
         }
 
         public IBattleUnit GetUnitInNode(int nodeIndex)

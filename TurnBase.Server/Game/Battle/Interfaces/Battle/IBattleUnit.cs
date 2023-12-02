@@ -11,10 +11,6 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         Action<IBattleUnit> OnUnitTurnStart { get; set; }
         Action<IBattleUnit> OnUnitDie { get; set; }
 
-        int UniqueId { get; }
-
-        int TeamIndex { get; }
-
         int Health { get; }
         int Mana { get; }
         bool IsDeath { get; }
@@ -30,9 +26,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces
 
         void CallUnitTurnStart();
 
-        void SetId(int id);
-        void SetTeam(int teamIndex);
-        void SetBattle(IBattleItem battleItem);
+        void SetUnitData(IBattleUnitData unitData);
 
         void AddSkill(IItemSkill skill);
         void LoadSkills();

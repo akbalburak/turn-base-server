@@ -31,11 +31,10 @@ namespace TurnBase.Server.Game.Battle.Models
     public class BattleDifficulityData
     {
         public LevelDifficulities Difficulity { get; set; }
-        public List<BattleWave> Waves { get; private set; }
+        public MapData MapData { get; set; }
         public List<BattleRewardItemData> FirstCompletionRewards { get; set; }
         public BattleDifficulityData()
         {
-            Waves = new List<BattleWave>();
             FirstCompletionRewards = new List<BattleRewardItemData>();
         }
     }

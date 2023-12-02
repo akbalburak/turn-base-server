@@ -1,5 +1,4 @@
-﻿using TurnBase.Server.Game.Battle.Interfaces;
-using TurnBase.Server.Game.Battle.Models;
+﻿using TurnBase.Server.Game.Battle.Models;
 using TurnBase.Server.Game.DTO;
 using TurnBase.Server.Game.Interfaces;
 using TurnBase.Server.Game.Services;

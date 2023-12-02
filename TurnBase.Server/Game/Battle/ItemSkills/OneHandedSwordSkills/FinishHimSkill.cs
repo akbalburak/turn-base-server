@@ -35,7 +35,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
 
             // WE DO THE SLASH.
             Owner.AttackToUnit(targetUnit, damage);
-            usageData.AddToDamage(targetUnit.UniqueId, damage);
+            usageData.AddToDamage(targetUnit.UnitData.UniqueId, damage);
 
             // IF TARGET UNIT IS DEATH DONT START COOLDOWN.
             if (targetUnit.IsDeath)

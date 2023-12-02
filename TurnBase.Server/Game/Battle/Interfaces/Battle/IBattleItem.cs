@@ -6,19 +6,22 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Battle
 {
     public interface IBattleItem : IBattlePath
     {
-        public double GetRandomValue { get; }
-        public Action<IBattleItem> OnDisposed { get; set; }
+        bool IsInCombat { get; }
+        void CallGroupAggrieving(int group);
 
-        public void ExecuteAction(ISocketUser socketUser, BattleActionRequestDTO requestData);
+        double GetRandomValue { get; }
+        Action<IBattleItem> OnDisposed { get; set; }
 
-        public void SendToAllUsers(BattleActions battleAction, object data);
-        public void SendToUser(IBattleUser user, BattleActions battleAction, object data);
+        void ExecuteAction(ISocketUser socketUser, BattleActionRequestDTO requestData);
 
-        public IBattleUser GetUser(ISocketUser socketUser);
-        public IBattleUnit GetUnit(int targetUnitID);
-        public IBattleUnit GetAliveEnemyUnit(IBattleUnit owner);
+        void SendToAllUsers(BattleActions battleAction, object data);
+        void SendToUser(IBattleUser user, BattleActions battleAction, object data);
+
+        IBattleUser GetUser(ISocketUser socketUser);
+        IBattleUnit GetUnit(int targetUnitID);
+        IBattleUnit GetAliveEnemyUnit(IBattleUnit owner);
         IBattleUnit GetUnitInNode(int nodeIndex);
 
-        public void FinalizeTurn();
+        void FinalizeTurn();
     }
 }

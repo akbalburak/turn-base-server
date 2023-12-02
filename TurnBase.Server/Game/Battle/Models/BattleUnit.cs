@@ -11,21 +11,20 @@ namespace TurnBase.Server.Game.Battle.Models
         public Action<IBattleUnit> OnUnitTurnStart { get; set; }
         public Action<IBattleUnit> OnUnitDie { get; set; }
 
-        public int UniqueId { get; private set; }
+        public IBattleUnitData UnitData { get; private set; }
 
-        public int TeamIndex { get; private set; }
         public IAStarNode CurrentNode { get; private set; }
 
         public int Health { get; private set; }
         public int Mana { get; private set; }
+
+        public bool IsAggrieved { get; private set; }
         public bool IsDeath { get; private set; }
 
         public BattleUnitStats Stats { get; private set; }
 
         public List<IItemSkill> Skills { get; private set; }
         public List<IItemSkillEffect> Effects { get; private set; }
-
-        public IBattleItem Battle { get; private set; }
 
         protected BattleUnit()
         {
@@ -34,23 +33,17 @@ namespace TurnBase.Server.Game.Battle.Models
             Stats = new BattleUnitStats();
         }
 
-        public void SetTeam(int teamIndex)
+        public virtual void SetUnitData(IBattleUnitData unitData)
         {
-            this.TeamIndex = teamIndex;
-        }
-        public void SetId(int id)
-        {
-            this.UniqueId = id;
-        }
-        public void SetBattle(IBattleItem battleItem)
-        {
-            this.Battle = battleItem;
+            UnitData = unitData;
+            this.ChangeNode(UnitData.InitialNode);
+            this.LoadSkills();
         }
 
 
         public int GetBaseDamage(IBattleUnit targetUnit)
         {
-            bool isCritical = Battle.GetRandomValue <= Stats.CriticalChance;
+            bool isCritical = UnitData.BattleItem.GetRandomValue <= Stats.CriticalChance;
             int damage = Stats.Damage;
 
             if (isCritical)
@@ -113,6 +106,11 @@ namespace TurnBase.Server.Game.Battle.Models
             Effects.Remove(effect);
         }
 
+        public bool IsAnEnemy(IBattleUnit targetUnit)
+        {
+            return this.UnitData.TeamIndex != targetUnit.UnitData.TeamIndex;
+        }
+
         public bool IsManaEnough(int manaCost)
         {
             return Mana >= manaCost;
@@ -146,7 +144,6 @@ namespace TurnBase.Server.Game.Battle.Models
         {
 
         }
-
         public virtual void ChangeNode(IAStarNode node)
         {
             this.CurrentNode?.SetOwner(null);
@@ -154,9 +151,17 @@ namespace TurnBase.Server.Game.Battle.Models
             this.CurrentNode?.SetOwner(this);
         }
 
-        public bool IsAnEnemy(IBattleUnit targetUnit)
+        public void OnAggrieving()
         {
-            return this.TeamIndex != targetUnit.TeamIndex;
+            if (IsAggrieved)
+                return;
+
+            UnitData.BattleItem.CallGroupAggrieving(UnitData.GroupIndex);
+        }
+
+        public void OnAggrieved()
+        {
+            IsAggrieved = true;
         }
     }
 }

@@ -32,7 +32,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
             // WE DO THE SLASH.
             int damage = Owner.GetBaseDamage(targetUnit);
             Owner.AttackToUnit(targetUnit, damage);
-            usageData.AddToDamage(targetUnit.UniqueId, damage);
+            usageData.AddToDamage(targetUnit.UnitData.UniqueId, damage);
 
             // SEND TO USER.
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);

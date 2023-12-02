@@ -5,13 +5,13 @@ namespace TurnBase.Server.Game.Battle.DTO
 {
     public class BattleLoadAllDTO
     {
-        [JsonProperty("A")] public BattleWaveDTO[] Waves { get; set; }
+        [JsonProperty("A")] public BattleNpcUnitDTO[] Units { get; set; }
         [JsonProperty("B")] public BattlePlayerDTO[] Players { get; set; }
         [JsonProperty("C")] public LevelDifficulities Difficulity { get; set; }
 
         public BattleLoadAllDTO()
         {
-            Waves = Array.Empty<BattleWaveDTO>();
+            Units = Array.Empty<BattleNpcUnitDTO>();
             Players = Array.Empty<BattlePlayerDTO>();
         }
     }

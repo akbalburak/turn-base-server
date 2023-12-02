@@ -18,7 +18,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         public BattleSkillUsageDTO(IItemSkill itemSkill)
         {
             FinalizeTurn = itemSkill.FinalizeTurnInUse;
-            SkillOwnerId = itemSkill.Owner.UniqueId;
+            SkillOwnerId = itemSkill.Owner.UnitData.UniqueId;
             UniqueSkillId = itemSkill.UniqueId;
             ItemSkill = itemSkill.SkillData.ItemSkill;
             UsageManaCost = itemSkill.UsageManaCost;

@@ -1,17 +1,5 @@
 ﻿namespace TurnBase.Server.Game.Battle.Models
 {
-    public class BattleWave
-    {
-        public MapData PathData => _pathData;
-
-        public MapData _pathData;
-
-        public BattleWave(MapData pathData)
-        {
-            _pathData = pathData;
-        }
-    }
-
     public class MapData
     {
         public MapDataHexNodes[] MapHexNodes { get; set; }
@@ -28,20 +16,24 @@
 
     public interface IMapDataEnemy
     {
+        int Group { get; }
         int Enemy { get; }
         int Health { get; }
         int Damage { get; }
         float TurnSpeed { get; }
-        int SpawnIndex { get; set; }
+        int SpawnIndex { get; }
+        int AggroDistance { get; }
     }
 
     public class MapDataEnemy : IMapDataEnemy
     {
+        public int Group { get; set; }
         public int Enemy { get; set; }
         public int Health { get; set; }
         public int Damage { get; set; }
         public float TurnSpeed { get; set; }
         public int SpawnIndex { get; set; }
+        public int AggroDistance { get; set; }
     }
 
     public class MapDataHexNodes

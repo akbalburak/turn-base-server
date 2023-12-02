@@ -4,6 +4,8 @@ namespace TurnBase.Server.Game.Battle.Pathfinding.Core
 {
     public class AStarNode : IAStarNode
     {
+        public Action AggroUnits { get; set; }
+
         public float X { get; set; }
         public float Z { get; set; }
         public int Cost { get; set; }
@@ -46,10 +48,59 @@ namespace TurnBase.Server.Game.Battle.Pathfinding.Core
 
             Neighbors = neighbors.ToArray();
         }
+        public IAStarNode[] GetInDistance(int distance)
+        {
+            if (distance <= 0)
+                return Array.Empty<IAStarNode>();
+
+            List<IAStarNode> nodes = new List<IAStarNode>();
+
+            IAStarNode[] neighbors = new IAStarNode[] {
+                this
+            };
+
+            while (distance > 0)
+            {
+                distance--;
+
+                neighbors = neighbors
+                    .SelectMany(y => y.Neighbors)
+                    .Distinct()
+                    .Where(x => !nodes.Contains(x))
+                    .ToArray();
+
+                nodes.AddRange(neighbors);
+            }
+
+            return nodes.ToArray();
+        }
 
         public void SetOwner(IAStarUnit owner)
         {
+            // WE REMOVE OLDER AGGROS.
+            if (OwnedBy != null)
+            {
+                IAStarNode[] nodes = GetInDistance(OwnedBy.UnitData.AggroDistance);
+                foreach (IAStarNode node in nodes)
+                {
+                    node.AggroUnits -= OwnedBy.OnAggrieving;
+                }
+            }
+
             OwnedBy = owner;
+
+            if (OwnedBy != null)
+            {
+                IAStarNode[] nodes = GetInDistance(OwnedBy.UnitData.AggroDistance);
+                foreach (IAStarNode node in nodes)
+                {
+                    node.AggroUnits += OwnedBy.OnAggrieving;
+                }
+            }
+        }
+        public void TriggerAggro()
+        {
+            AggroUnits?.Invoke();
         }
     }
 }

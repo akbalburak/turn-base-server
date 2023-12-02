@@ -1,5 +1,4 @@
 ﻿using TurnBase.Server.Game.Battle.Interfaces.Item;
-using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 using TurnBase.Server.Game.Battle.Skills;
 using TurnBase.Server.Game.Services;
 
@@ -8,11 +7,11 @@ namespace TurnBase.Server.Game.Battle.Models
     public class BattleNpcUnit : BattleUnit
     {
         public int UnitId { get; }
-        public BattleNpcUnit(IMapDataEnemy enemyData, IAStarNode spawnNode)
+
+        public BattleNpcUnit(IMapDataEnemy enemyData)
         {
             UnitId = enemyData.Enemy;
 
-            base.ChangeNode(spawnNode);
             base.LoadStats(new BattleUnitStats()
             {
                 MaxHealth = enemyData.Health,
@@ -32,7 +31,7 @@ namespace TurnBase.Server.Game.Battle.Models
             IItemSkill attackSkill = ItemSkillCreator.CreateSkill(
                 uniqueId: ++uniqueSkillId,
                 skill: ItemSkillService.GetItemSkill(Enums.ItemSkills.OneHandedBasicAttackSkill),
-                battle: Battle,
+                battle: UnitData.BattleItem,
                 owner: this,
                 itemQuality: 1
             );
