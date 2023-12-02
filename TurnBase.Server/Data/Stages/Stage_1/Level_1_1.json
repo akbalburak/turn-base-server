@@ -7432,7 +7432,7 @@
             "Damage": 4,
             "TurnSpeed": 1.1,
             "SpawnIndex": 257,
-            "AggroDistance": 3
+            "AggroDistance": 4
           },
           {
             "Group": 1,
@@ -7441,7 +7441,7 @@
             "Damage": 4,
             "TurnSpeed": 1.1,
             "SpawnIndex": 353,
-            "AggroDistance": 3
+            "AggroDistance": 4
           },
           {
             "Group": 2,
@@ -7450,7 +7450,7 @@
             "Damage": 4,
             "TurnSpeed": 1.1,
             "SpawnIndex": 309,
-            "AggroDistance": 3
+            "AggroDistance": 4
           },
           {
             "Group": 2,
@@ -7459,7 +7459,7 @@
             "Damage": 4,
             "TurnSpeed": 1.1,
             "SpawnIndex": 405,
-            "AggroDistance": 3
+            "AggroDistance": 4
           },
           {
             "Group": 2,
@@ -7468,7 +7468,7 @@
             "Damage": 4,
             "TurnSpeed": 1.1,
             "SpawnIndex": 359,
-            "AggroDistance": 3
+            "AggroDistance": 4
           }
         ]
       }
