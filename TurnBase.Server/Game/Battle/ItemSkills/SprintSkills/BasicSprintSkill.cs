@@ -35,6 +35,18 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
 
             // WE LOOK FOR THE PATH.
             IAStarNode[] path = Battle.GetPath(fromPoint, targetPoint);
+
+            // IF IN COMBAT, WE WILL MAKE SURE ENEMY CAN GO AS MUCH AS STACK SIZE.
+            if (Battle.IsInCombat)
+            {
+                int movementCost = path.Length - 1;
+                if (movementCost > base.CurrentStackSize)
+                {
+                    movementCost = base.CurrentStackSize;
+                    Array.Resize(ref path, movementCost + 1);
+                }
+            }
+
             if (path.Length == 0)
                 return;
 
@@ -63,7 +75,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
 
             // WE TELL ALL THE UNITS IN RANGE TO AGGRO.
             foreach (IAStarNode pathNode in path)
-                pathNode.TriggerAggro();
+                pathNode.TriggerAggro(Owner);
 
             Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
         }

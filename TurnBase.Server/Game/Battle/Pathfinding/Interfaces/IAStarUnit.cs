@@ -9,7 +9,7 @@ namespace TurnBase.Server.Game.Battle.Pathfinding.Interfaces
         public IAStarNode CurrentNode { get; }
         void ChangeNode(IAStarNode node);
 
-        void OnAggrieving();
+        void OnAggrieving(IAStarUnit unit);
         void OnAggrieved();
     }
 }

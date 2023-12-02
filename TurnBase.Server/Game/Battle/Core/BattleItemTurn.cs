@@ -17,7 +17,7 @@ namespace TurnBase.Server.Game.Battle.Core
 
             // IF NOT OVER WE CAN SKIP TO NEXT TURN.
             _turnHandler.SkipToNextTurn();
-            BattleTillAnyPlayerTurn();
+            TryPlayAITurn();
         }
 
         private void CheckGameEnd()

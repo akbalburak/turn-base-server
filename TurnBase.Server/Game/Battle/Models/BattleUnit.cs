@@ -148,9 +148,13 @@ namespace TurnBase.Server.Game.Battle.Models
             this.LoadSkills();
         }
 
-        public void OnAggrieving()
+        public void OnAggrieving(IAStarUnit unit)
         {
             if (IsAggrieved)
+                return;
+
+            // IF THEY ARE IN THE SAME TEAM WONT AGGRO.
+            if (unit.UnitData.TeamIndex == UnitData.TeamIndex)
                 return;
 
             UnitData.BattleItem.CallGroupAggrieving(UnitData.GroupIndex);
@@ -170,10 +174,6 @@ namespace TurnBase.Server.Game.Battle.Models
 
             for (int i = 0; i < readySkills.Length; i++)
             {
-                //IF NOT PLAYER TURN BREAK.
-                if (!UnitData.BattleItem.BattleTurnHandler.IsUnitTurn(this))
-                    break;
-
                 IItemSkill skill = readySkills[i];
 
                 // WE MAKE SURE THERE IS A VALID NODE.
@@ -187,6 +187,10 @@ namespace TurnBase.Server.Game.Battle.Models
                     UniqueSkillID = skill.UniqueId,
                     TargetNodeIndex = nodeIndex.Value
                 });
+
+                //IF NOT PLAYER TURN BREAK.
+                if (!UnitData.BattleItem.BattleTurnHandler.IsUnitTurn(this))
+                    break;
             }
 
             // IF STILL PLAYER TURN FINALIZE IT.

@@ -5,8 +5,10 @@ namespace TurnBase.Server.Game.Interfaces
 {
     public interface IItemSkillDTO
     {
-        public ItemSkills ItemSkill { get; }
-
+        ItemSkills ItemSkill { get; }
+        ItemSkillShapes Shape { get; }
+        ItemSkillTargets Target { get; }
+        
         bool FinalizeTurnInUse { get; }
 
         double GetDataValue(ItemSkillData data, float quality);

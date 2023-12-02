@@ -1,11 +1,12 @@
-﻿using TurnBase.Server.Game.Battle.Pathfinding.Core;
+﻿using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Pathfinding.Core;
 
 namespace TurnBase.Server.Game.Battle.Pathfinding.Interfaces
 {
     public interface IAStarNode
     {
-        Action AggroUnits { get; set; }
-        void TriggerAggro();
+        Action<IAStarUnit> AggroUnits { get; set; }
+        void TriggerAggro(IAStarUnit owner);
 
         float X { get; }
         float Z { get; }

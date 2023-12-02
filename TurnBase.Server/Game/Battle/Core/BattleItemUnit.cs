@@ -20,6 +20,24 @@ namespace TurnBase.Server.Game.Battle.Core
                 .FirstOrDefault(y => !y.IsDeath && y.UnitData.TeamIndex != owner.UnitData.TeamIndex);
         }
 
+        public IBattleUnit GetAliveEnemyUnit(IBattleUnit owner, int distance)
+        {
+            IBattleUnit? aliveUnit = _allUnits
+                .Where(x => !x.IsDeath)
+                .Where(x => x.UnitData.TeamIndex != owner.UnitData.TeamIndex)
+                .OrderBy(x => x.CurrentNode.GetDistance(owner.CurrentNode))
+                .FirstOrDefault();
+
+            if (aliveUnit == null)
+                return null;
+
+            float aliveDistance = aliveUnit.CurrentNode.GetDistance(owner.CurrentNode);
+            if (aliveDistance > _difficulityData.MapData.DistancePerHex * distance)
+                return null;
+
+            return aliveUnit;
+        }
+
         public IBattleUnit GetUnitInNode(int nodeIndex)
         {
             IAStarNode targetNode = this.GetNodeByIndex(nodeIndex);

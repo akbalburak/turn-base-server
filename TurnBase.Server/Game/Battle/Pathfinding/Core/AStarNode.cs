@@ -1,10 +1,11 @@
-﻿using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
+﻿using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Pathfinding.Core
 {
     public class AStarNode : IAStarNode
     {
-        public Action AggroUnits { get; set; }
+        public Action<IAStarUnit> AggroUnits { get; set; }
 
         public float X { get; set; }
         public float Z { get; set; }
@@ -55,9 +56,7 @@ namespace TurnBase.Server.Game.Battle.Pathfinding.Core
 
             List<IAStarNode> nodes = new List<IAStarNode>();
 
-            IAStarNode[] neighbors = new IAStarNode[] {
-                this
-            };
+            IAStarNode[] neighbors = new IAStarNode[] { this };
 
             while (distance > 0)
             {
@@ -98,9 +97,9 @@ namespace TurnBase.Server.Game.Battle.Pathfinding.Core
                 }
             }
         }
-        public void TriggerAggro()
+        public void TriggerAggro(IAStarUnit unit)
         {
-            AggroUnits?.Invoke();
+            AggroUnits?.Invoke(unit);
         }
     }
 }

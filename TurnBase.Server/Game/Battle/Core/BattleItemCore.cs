@@ -40,11 +40,9 @@ namespace TurnBase.Server.Game.Battle.Core
         private bool _gameOver;
         private bool _disposed;
         private Random _randomizer;
-        private List<int> _aggrodGroupIndex;
 
         public BattleItem(IBattleUser[] users, BattleLevelData levelData, LevelDifficulities difficulity)
         {
-            _aggrodGroupIndex = new List<int>();
             _allNpcs = new List<BattleNpcUnit>();
             _allUnits = new List<IBattleUnit>();
 
@@ -122,11 +120,6 @@ namespace TurnBase.Server.Game.Battle.Core
 
         public void CallGroupAggrieving(int groupIndex)
         {
-            if (_aggrodGroupIndex.Contains(groupIndex))
-                return;
-
-            _aggrodGroupIndex.Add(groupIndex);
-
             // WE GET AGGRO UNITS.
             List<BattleNpcUnit> aggroUnits = _allNpcs.FindAll(x => x.UnitData.GroupIndex == groupIndex && !x.IsAggrieved);
             if (aggroUnits.Count == 0)

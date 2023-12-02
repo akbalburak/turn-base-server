@@ -39,7 +39,10 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
 
         public override int? GetNodeIndexForAI()
         {
-            IBattleUnit enemy = Battle.GetAliveEnemyUnit(Owner);
+            IBattleUnit enemy = Battle.GetAliveEnemyUnit(Owner, 1);
+            if (enemy == null) 
+                return null;
+
             return Battle.GetNodeIndex(enemy.CurrentNode);
         }
     }

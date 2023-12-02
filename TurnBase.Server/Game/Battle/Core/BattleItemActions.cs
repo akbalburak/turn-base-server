@@ -37,8 +37,7 @@ namespace TurnBase.Server.Game.Battle.Core
             if (!_turnHandler.IsUnitTurn(user))
                 return;
 
-            _turnHandler.SkipToNextTurn();
-            BattleTillAnyPlayerTurn();
+            FinalizeTurn();
         }
 
         private void StartGame()
@@ -61,7 +60,7 @@ namespace TurnBase.Server.Game.Battle.Core
 
             currentUser.UseSkill(useData);
         }
-        private void BattleTillAnyPlayerTurn()
+        private void TryPlayAITurn()
         {
             // WE LOOP TILL PLAYER TURN.
             IBattleUnit attacker = _turnHandler.GetCurrentTurnUnit();

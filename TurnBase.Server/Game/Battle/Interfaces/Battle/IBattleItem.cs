@@ -22,6 +22,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Battle
         IBattleUser GetUser(ISocketUser socketUser);
         IBattleUnit GetUnit(int targetUnitID);
         IBattleUnit GetAliveEnemyUnit(IBattleUnit owner);
+        IBattleUnit GetAliveEnemyUnit(IBattleUnit owner, int distance);
         IBattleUnit GetUnitInNode(int nodeIndex);
 
         void FinalizeTurn();
