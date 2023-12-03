@@ -73,11 +73,11 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
 
             Owner.ChangeNode(lastValidPath);
 
+            Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
+
             // WE TELL ALL THE UNITS IN RANGE TO AGGRO.
             foreach (IAStarNode pathNode in path)
                 pathNode.TriggerAggro(Owner);
-
-            Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
         }
 
         public override int? GetNodeIndexForAI()
