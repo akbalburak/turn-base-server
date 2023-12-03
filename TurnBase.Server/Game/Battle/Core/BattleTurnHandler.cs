@@ -8,6 +8,7 @@ namespace TurnBase.Server.Game.Battle.Core
     public class BattleTurnHandler : IBattleTurnHandler
     {
         public bool IsInCombat => _isInCombat;
+        public IBattleTurnItem[] TurnItems => _unitAttackTurns.ToArray();
 
         private IBattleItem _battle;
 
@@ -40,7 +41,7 @@ namespace TurnBase.Server.Game.Battle.Core
 
             _currentTurn = _unitAttackTurns
                 .OrderBy(y => y.NextAttackTurn)
-                .FirstOrDefault(x => !x.Unit.IsDeath);
+                .FirstOrDefault();
 
             if (_currentTurn == null)
                 return;
@@ -75,6 +76,9 @@ namespace TurnBase.Server.Game.Battle.Core
             foreach (IBattleUnit battleUnit in _units.OrderByDescending(y => y.Stats.AttackSpeed))
                 _unitAttackTurns.Add(new BattleTurnItem(battleUnit));
 
+            // WE SEND ALL PLAYERS TURN IS CHANGED.
+            _battle.SendToAllUsers(BattleActions.TurnOrderChanged, new BattleTurnChangedDTO(this));
+
             // WE SKIP TO NEXT UNIT.
             if (_currentTurn != null)
             {
@@ -84,6 +88,7 @@ namespace TurnBase.Server.Game.Battle.Core
 
             // WE CHECK IF PLAYERS IN COMBAT.
             CheckIsInCombat();
+
         }
         private void CheckIsInCombat()
         {
@@ -103,6 +108,9 @@ namespace TurnBase.Server.Game.Battle.Core
             BattleTurnItem unitTurnData = _unitAttackTurns.Find(y => y.Unit == unit);
             _unitAttackTurns.Remove(unitTurnData);
 
+            // WE SEND ALL PLAYERS TURN IS CHANGED.
+            _battle.SendToAllUsers(BattleActions.TurnOrderChanged, new BattleTurnChangedDTO(this));
+
             CheckIsInCombat();
         }
         private void OnUnitDie(IBattleUnit unit)
@@ -113,8 +121,14 @@ namespace TurnBase.Server.Game.Battle.Core
             RemoveUnit(unit);
         }
 
+        public interface IBattleTurnItem
+        {
+            public float BaseAttackTurn { get; }
+            public float NextAttackTurn { get; }
+            public IBattleUnit Unit { get; }
+        }
 
-        private class BattleTurnItem
+        public class BattleTurnItem : IBattleTurnItem
         {
             public float BaseAttackTurn { get; }
             public float NextAttackTurn { get; private set; }
@@ -129,7 +143,7 @@ namespace TurnBase.Server.Game.Battle.Core
 
             public void UpdateNextAttack()
             {
-                NextAttackTurn += Unit.Stats.AttackSpeed;
+                NextAttackTurn += BaseAttackTurn;
             }
 
             public void ResetAndSkipTurn()

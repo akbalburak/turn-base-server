@@ -11,5 +11,7 @@
         EffectStarted = 8,
         EffectExecutionTurn = 9,
         EffectOver = 10,
+        MovePlayerUnit = 11,
+        TurnOrderChanged = 12
     }
 }

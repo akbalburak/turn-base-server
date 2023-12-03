@@ -20,7 +20,7 @@ namespace TurnBase.Server.Game.Battle.Core
                     SendAllReqDataToClient(socketUser, requestData);
                     break;
                 case BattleActions.IamReady:
-                    StartGame();
+                    StartGame(socketUser);
                     break;
                 case BattleActions.FinalizeTurn:
                     FinalizePlayerTurn(socketUser);
@@ -40,8 +40,11 @@ namespace TurnBase.Server.Game.Battle.Core
             FinalizeTurn();
         }
 
-        private void StartGame()
+        private void StartGame(ISocketUser socketUser)
         {
+            IBattleUser user = GetUser(socketUser);
+            _turnHandler.AddUnits(new IBattleUnit[] { user });
+
             _gameStarted = true;
             _turnHandler.SkipToNextTurn();
         }

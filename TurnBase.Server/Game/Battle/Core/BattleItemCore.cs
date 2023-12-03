@@ -98,7 +98,6 @@ namespace TurnBase.Server.Game.Battle.Core
 
             // WE CREATE TURN HANDLER.
             _turnHandler = new BattleTurnHandler(this);
-            _turnHandler.AddUnits(_users);
         }
 
         public void Dispose()
