@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
 
 namespace TurnBase.Server.Game.Battle.DTO
 {
@@ -16,9 +18,20 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("J")] public int MaxMana { get; set; }
         [JsonProperty("K")] public int NodeIndex { get; set; }
 
-        public BattleUnitDTO()
+        public BattleUnitDTO(IBattleItem battleItem, IBattleUnit battleUnit)
         {
-            Skills = Array.Empty<BattleSkillDTO>();
+            UniqueId = battleUnit.UnitData.UniqueId;
+            AttackSpeed = battleUnit.Stats.AttackSpeed;
+            Health = battleUnit.Health;
+            Mana = battleUnit.Mana;
+            Damage = battleUnit.Stats.Damage;
+
+            MaxHealth = battleUnit.Stats.MaxHealth;
+            MaxMana = battleUnit.Stats.MaxMana;
+            IsDead = battleUnit.IsDeath;
+            TeamIndex = battleUnit.UnitData.TeamIndex;
+            NodeIndex = battleItem.GetNodeIndex(battleUnit.CurrentNode);
+            Skills = battleUnit.Skills.Select(v => v.GetSkillDataDTO()).ToArray();
         }
     }
 }

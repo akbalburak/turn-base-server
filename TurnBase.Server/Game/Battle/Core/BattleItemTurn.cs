@@ -59,7 +59,7 @@ namespace TurnBase.Server.Game.Battle.Core
                     team1EndData.WinnerTeam = 1;
 
                     if (user.IsFirstCompletion)
-                        team1EndData.FirstCompletionRewards = _difficulityData.FirstCompletionRewards;
+                        team1EndData.FirstCompletionRewards = _levelData.FirstCompletionRewards;
 
                     SendToAllUsers(BattleActions.BattleEnd, team1EndData);
 

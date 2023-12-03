@@ -17,8 +17,8 @@ namespace TurnBase.Server.Game.Services
             using IUnitOfWork uow = new UnitOfWork();
 
             _itemSkills = uow.GetRepository<TblItemSkill>()
-                .Include(x=> x.TblItemSkillDataMappings)
-                .Select(y => new ItemSkillDTO(y))
+                .Include(itemSkill => itemSkill.TblItemSkillDataMappings)
+                .Select(itemSkill => new ItemSkillDTO(itemSkill))
                 .ToArray();
         }
 

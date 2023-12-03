@@ -32,7 +32,7 @@ namespace TurnBase.Server.Game.Battle.Core
                 return null;
 
             float aliveDistance = aliveUnit.CurrentNode.GetDistance(owner.CurrentNode);
-            if (aliveDistance > _difficulityData.MapData.DistancePerHex * distance)
+            if (aliveDistance > _levelData.DistancePerHex * distance)
                 return null;
 
             return aliveUnit;

@@ -75,38 +75,8 @@ namespace TurnBase.Server.Game.Battle.Core
 
             BattleLoadAllDTO loadData = new BattleLoadAllDTO()
             {
-                Difficulity = _difficulity,
-                Units = _allNpcs.Select(z => new BattleNpcUnitDTO
-                {
-                    AttackSpeed = z.Stats.AttackSpeed,
-                    Health = z.Health,
-                    Mana = z.Mana,
-                    UniqueId = z.UnitData.UniqueId,
-                    Damage = z.Stats.Damage,
-                    MaxHealth = z.Stats.MaxHealth,
-                    MaxMana = z.Stats.MaxMana,
-                    IsDead = z.IsDeath,
-                    UnitId = z.UnitId,
-                    TeamIndex = z.UnitData.TeamIndex,
-                    NodeIndex = _nodes.IndexOf(z.CurrentNode),
-                    Skills = z.Skills.Select(v => v.GetSkillDataDTO()).ToArray()
-                }).ToArray(),
-                Players = _users.Select(z => new BattlePlayerDTO
-                {
-                    UniqueId = z.UnitData.UniqueId,
-                    AttackSpeed = z.Stats.AttackSpeed,
-                    Health = z.Health,
-                    Mana = z.Mana,
-                    Damage = z.Stats.Damage,
-                    IsRealPlayer = z.SocketUser == socketUser,
-                    PlayerName = z.PlayerName,
-                    MaxHealth = z.Stats.MaxHealth,
-                    MaxMana = z.Stats.MaxMana,
-                    IsDead = z.IsDeath,
-                    TeamIndex = z.UnitData.TeamIndex,
-                    Skills = z.Skills.Select(v => v.GetSkillDataDTO()).ToArray(),
-                    NodeIndex = _nodes.IndexOf(z.CurrentNode),
-                }).ToArray()
+                Units = _allNpcs.Select(npc => new BattleNpcUnitDTO(this, npc)).ToArray(),
+                Players = _users.Select(user => new BattlePlayerDTO(this, user, user.SocketUser == socketUser)).ToArray()
             };
 
             SendToUser(user, BattleActions.LoadAll, loadData);

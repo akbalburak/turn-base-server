@@ -10,7 +10,6 @@ namespace TurnBase.Server.Game.DTO
     {
         [JsonProperty("A")] public int Stage { get; set; }
         [JsonProperty("B")] public int Level { get; set; }
-        [JsonProperty("C")] public LevelDifficulities CompletedDifficulites { get; set; }
         [JsonProperty("D")] public int PlayCount { get; set; }
         [JsonProperty("E")] public int CompletedCount { get; set; }
 
@@ -18,19 +17,6 @@ namespace TurnBase.Server.Game.DTO
         {
             Stage = stage;
             Level = level;
-        }
-
-        public bool IsDifficulityAlreadyCompleted(LevelDifficulities difficulity)
-        {
-            return CompletedDifficulites.HasFlag(difficulity);
-        }
-
-        public void CompleteDifficulitiy(LevelDifficulities difficulity)
-        {
-            if (IsDifficulityAlreadyCompleted(difficulity))
-                return;
-
-            CompletedDifficulites |= difficulity;
         }
 
         public void IncreasePlayCount()

@@ -26,10 +26,9 @@ namespace TurnBase.Server.Game.Controllers
             InventoryDTO inventory = user.GetInventory();
 
             // WE CHECK IF WE ARE GOING TO GIVE USER THE LEVEL REWARDS.
-            bool isFirstCompletion = !campaign.IsDifficulityCompleted(
+            bool isFirstCompletion = !campaign.IsLevelAlreadyCompleted(
                 requestData.StageIndex,
-                requestData.LevelIndex,
-                requestData.Difficulity);
+                requestData.LevelIndex);
 
             // WE CREATE A BATTLE USER.
             BattleUser battleUser = new BattleUser(
@@ -42,8 +41,7 @@ namespace TurnBase.Server.Game.Controllers
             BattleService.CreateALevel(new IBattleUser[]
                 { battleUser },
                 requestData.StageIndex,
-                requestData.LevelIndex,
-                requestData.Difficulity
+                requestData.LevelIndex
             );
 
             return SocketResponse.GetSuccess();
@@ -67,8 +65,7 @@ namespace TurnBase.Server.Game.Controllers
 
             BattleDTO.BattleDataResponseDTO levelData = BattleLevelService.GetLevelMetaData(
                 requestData.StageIndex,
-                requestData.LevelIndex,
-                requestData.Difficulity
+                requestData.LevelIndex
             );
 
             if (levelData == null)

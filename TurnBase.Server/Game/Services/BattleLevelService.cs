@@ -1,7 +1,5 @@
 ﻿using TurnBase.Server.Game.Battle.Models;
 using TurnBase.Server.Extends.Json;
-using TurnBase.Server.Game.Enums;
-using TurnBase.Server.Game.DTO;
 using static TurnBase.Server.Game.DTO.BattleDTO;
 
 namespace TurnBase.Server.Game.Services
@@ -30,19 +28,16 @@ namespace TurnBase.Server.Game.Services
                     continue;
 
                 // WE ASSIGN ALL DIFFICULITIES WITH THEIR LEVELS.
-                levelData.Difficulities.ForEach(diffData =>
+                string levelName = GetLevelKey(levelData.Stage, levelData.Level);
+                _levelData.Add(levelName, new BattleDataResponseDTO
                 {
-                    string levelName = GetLevelKey(levelData.Stage, levelData.Level, diffData.Difficulity);
-                    _levelData.Add(levelName, new BattleDataResponseDTO
+                    FirstTimeRewards = levelData.FirstCompletionRewards.Select(y => new BattleDataRewardItemDTO
                     {
-                        FirstTimeRewards = diffData.FirstCompletionRewards.Select(y => new BattleDTO.BattleDataRewardItemDTO
-                        {
-                            ItemId = y.ItemId,
-                            Level = y.Level,
-                            Quality = y.Quality,
-                            Quantity = y.Quantity,
-                        }).ToList()
-                    });
+                        ItemId = y.ItemId,
+                        Level = y.Level,
+                        Quality = y.Quality,
+                        Quantity = y.Quantity,
+                    }).ToList()
                 });
 
                 _levels.Add(GetLevelKey(levelData.Stage, levelData.Level), fileData);
@@ -54,14 +49,14 @@ namespace TurnBase.Server.Game.Services
             string levelName = GetLevelKey(stageIndex, levelIndex);
 
             if (!_levels.TryGetValue(levelName, out string levelData))
-                return null;
+                throw new Exception("Level Not Found");
 
             return levelData.ToObject<BattleLevelData>();
         }
 
-        public static BattleDataResponseDTO GetLevelMetaData(int stageIndex, int levelIndex, LevelDifficulities difficulity)
+        public static BattleDataResponseDTO GetLevelMetaData(int stageIndex, int levelIndex)
         {
-            string levelName = GetLevelKey(stageIndex, levelIndex, difficulity);
+            string levelName = GetLevelKey(stageIndex, levelIndex);
             _levelData.TryGetValue(levelName, out BattleDataResponseDTO levelData);
             return levelData;
         }
@@ -70,10 +65,5 @@ namespace TurnBase.Server.Game.Services
         {
             return $"{stage}_{level}";
         }
-        private static string GetLevelKey(int stage, int level, LevelDifficulities difficulity)
-        {
-            return $"{GetLevelKey(stage, level)}_{(int)difficulity}";
-        }
-
     }
 }

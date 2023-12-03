@@ -14,6 +14,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         int Health { get; }
         int Mana { get; }
         bool IsDeath { get; }
+        bool IsAggrieved { get; }
 
         BattleUnitStats Stats { get; }
         List<IItemSkill> Skills { get; }

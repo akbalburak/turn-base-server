@@ -9,14 +9,12 @@ namespace TurnBase.Server.Game.DTO
         {
             [JsonProperty("A")] public int StageIndex { get; set; }
             [JsonProperty("B")] public int LevelIndex { get; set; }
-            [JsonProperty("C")] public LevelDifficulities Difficulity { get; set; }
         }
 
         public class BattleDataRequestDTO
         {
             [JsonProperty("A")] public int StageIndex { get; set; }
             [JsonProperty("B")] public int LevelIndex { get; set; }
-            [JsonProperty("C")] public LevelDifficulities Difficulity { get; set; }
         }
 
         public class BattleDataResponseDTO

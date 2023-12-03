@@ -12,17 +12,17 @@ namespace TurnBase.Server.Game.DTO
             StageProgress = new List<StageLevelDTO>();
         }
 
-        public bool IsDifficulityCompleted(int stageIndex, int levelIndex, LevelDifficulities difficulity)
+        public bool IsLevelAlreadyCompleted(int stageIndex, int levelIndex)
         {
-            StageLevelDTO levelProgress = GetStageProgress(stageIndex, levelIndex);
+            StageLevelDTO levelProgress = GetLevelProgress(stageIndex, levelIndex);
             if (levelProgress == null)
                 return false;
 
-            return levelProgress.IsDifficulityAlreadyCompleted(difficulity);
+            return levelProgress.CompletedCount > 0;
         }
-        public void AddStageProgress(int stageIndex, int levelIndex, LevelDifficulities difficulity)
+        public void SaveLevelProgress(int stageIndex, int levelIndex)
         {
-            StageLevelDTO progress = GetStageProgress(stageIndex, levelIndex);
+            StageLevelDTO progress = GetLevelProgress(stageIndex, levelIndex);
             if (progress == null)
             {
                 StageProgress.Add(new StageLevelDTO(stageIndex, levelIndex));
@@ -30,24 +30,16 @@ namespace TurnBase.Server.Game.DTO
                 progress = StageProgress[^1];
 
                 progress.SetChangeHandler(_changeHandler);
-
-                progress.CompleteDifficulitiy(difficulity);
-            }
-            else
-            {
-                if (!progress.IsDifficulityAlreadyCompleted(difficulity))
-                    progress.CompleteDifficulitiy(difficulity);
             }
 
             progress.IncreasePlayCount();
 
             progress.SetAsModified();
         }
-
-        private StageLevelDTO GetStageProgress(int stageIndex, int levelIndex)
+        
+        private StageLevelDTO GetLevelProgress(int stageIndex, int levelIndex)
         {
-            return StageProgress.Find(y => y.Stage == stageIndex &&
-                                                y.Level == levelIndex);
+            return StageProgress.Find(y => y.Stage == stageIndex && y.Level == levelIndex);
         }
 
         private IChangeHandler _changeHandler;

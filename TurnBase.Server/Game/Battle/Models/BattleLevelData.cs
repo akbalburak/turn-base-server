@@ -4,38 +4,20 @@ namespace TurnBase.Server.Game.Battle.Models
 {
     public class BattleLevelData
     {
-        public int Stage { get; private set; }
+        public int Stage { get; set; }
         public int Level { get; set; }
-        public List<BattleDifficulityData> Difficulities { get; private set; }
-
-        public BattleLevelData(int stage, int level, List<BattleDifficulityData> difficulities)
-        {
-            Stage = stage;
-            Level = level;
-            Difficulities = difficulities;
-        }
-
-        public BattleDifficulityData GetDifficulityData(LevelDifficulities difficulity)
-        {
-            if (Difficulities.Count == 0)
-                return null;
-
-            BattleDifficulityData difficulityData = Difficulities.FirstOrDefault(y => y.Difficulity == difficulity);
-            if (difficulityData != null)
-                return difficulityData;
-
-            return null;
-        }
-    }
-
-    public class BattleDifficulityData
-    {
-        public LevelDifficulities Difficulity { get; set; }
-        public MapData MapData { get; set; }
         public List<BattleRewardItemData> FirstCompletionRewards { get; set; }
-        public BattleDifficulityData()
+        public float DistancePerHex { get; set; }
+        public MapDataHexNodes[] MapHexNodes { get; set; }
+        public int[] PlayerSpawnPoints { get; set; }
+        public MapDataEnemy[] Enemies { get; set; }
+
+        public BattleLevelData()
         {
+            MapHexNodes = Array.Empty<MapDataHexNodes>();
+            Enemies = Array.Empty<MapDataEnemy>();
             FirstCompletionRewards = new List<BattleRewardItemData>();
+            PlayerSpawnPoints = Array.Empty<int>();
         }
     }
 
@@ -45,6 +27,38 @@ namespace TurnBase.Server.Game.Battle.Models
         public int Quantity { get; set; }
         public int Level { get; set; }
         public float Quality { get; set; }
+    }
+
+    public interface IMapDataEnemy
+    {
+        int Group { get; }
+        int Enemy { get; }
+        int Health { get; }
+        int Damage { get; }
+        float TurnSpeed { get; }
+        int SpawnIndex { get; }
+        int AggroDistance { get; }
+    }
+
+    public class MapDataEnemy : IMapDataEnemy
+    {
+        public int Group { get; set; }
+        public int Enemy { get; set; }
+        public int Health { get; set; }
+        public int Damage { get; set; }
+        public float TurnSpeed { get; set; }
+        public int SpawnIndex { get; set; }
+        public int AggroDistance { get; set; }
+    }
+
+    public class MapDataHexNodes
+    {
+        public SerializableVector3 Node { get; private set; }
+
+        public MapDataHexNodes(SerializableVector3 node)
+        {
+            Node = node;
+        }
     }
 
     [Serializable]

@@ -1,10 +1,11 @@
-﻿using TurnBase.Server.Game.Battle.Interfaces.Item;
+﻿using TurnBase.Server.Game.Battle.Interfaces.Battle;
+using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.Battle.Skills;
 using TurnBase.Server.Game.Services;
 
 namespace TurnBase.Server.Game.Battle.Models
 {
-    public class BattleNpcUnit : BattleUnit
+    public class BattleNpcUnit : BattleUnit, IBattleNpcUnit
     {
         public int UnitId { get; }
 

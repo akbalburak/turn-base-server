@@ -25,10 +25,10 @@ namespace TurnBase.Server.Game.Battle.Core
                     CampaignDTO campaign = userData.GetCampaign();
 
                     // WHEN THIS LEVEL COMPLETED FOR THE FIRST TIME.
-                    bool firstTimeVictory = !campaign.IsDifficulityCompleted(_levelData.Stage, _levelData.Level, _difficulity);
+                    bool firstTimeVictory = !campaign.IsLevelAlreadyCompleted(_levelData.Stage, _levelData.Level);
 
                     // WE COMPLETE THE CAMPAIGN FOR THE USER.
-                    campaign.AddStageProgress(_levelData.Stage, _levelData.Level, _difficulity);
+                    campaign.SaveLevelProgress(_levelData.Stage, _levelData.Level);
                     userData.UpdateCampaign(campaign);
 
                     // IF THIS IS THE FIRST TIME ITS COMPLETED.
@@ -36,7 +36,7 @@ namespace TurnBase.Server.Game.Battle.Core
                     {
                         // WE ADD VICTORY REWARD ITEMS INTO INVENTORY. 
                         InventoryDTO inventory = userData.GetInventory();
-                        foreach (BattleRewardItemData reward in _difficulityData.FirstCompletionRewards)
+                        foreach (BattleRewardItemData reward in _levelData.FirstCompletionRewards)
                         {
                             // WE MAKE SURE ITEM EXISTS.
                             IItemDTO itemData = ItemService.GetItem(reward.ItemId);

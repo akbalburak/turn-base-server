@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using TurnBase.Server.Game.Enums;
 
 namespace TurnBase.Server.Game.Battle.DTO
 {
@@ -7,7 +6,6 @@ namespace TurnBase.Server.Game.Battle.DTO
     {
         [JsonProperty("A")] public BattleNpcUnitDTO[] Units { get; set; }
         [JsonProperty("B")] public BattlePlayerDTO[] Players { get; set; }
-        [JsonProperty("C")] public LevelDifficulities Difficulity { get; set; }
 
         public BattleLoadAllDTO()
         {

@@ -1,5 +1,4 @@
-﻿using TurnBase.Server.Extends;
-using TurnBase.Server.Game.Battle.Interfaces;
+﻿using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Models;
 using TurnBase.Server.Game.Battle.Pathfinding.Core;
@@ -31,19 +30,16 @@ namespace TurnBase.Server.Game.Battle.Core
 
         private IBattleUser[] _users;
         private List<IBattleUnit> _allUnits;
-        private List<BattleNpcUnit> _allNpcs;
-
-        private BattleDifficulityData _difficulityData;
-        private LevelDifficulities _difficulity;
+        private List<IBattleNpcUnit> _allNpcs;
 
         private bool _gameStarted;
         private bool _gameOver;
         private bool _disposed;
         private Random _randomizer;
 
-        public BattleItem(IBattleUser[] users, BattleLevelData levelData, LevelDifficulities difficulity)
+        public BattleItem(IBattleUser[] users, BattleLevelData levelData)
         {
-            _allNpcs = new List<BattleNpcUnit>();
+            _allNpcs = new List<IBattleNpcUnit>();
             _allUnits = new List<IBattleUnit>();
 
             _randomizer = new Random();
@@ -51,22 +47,20 @@ namespace TurnBase.Server.Game.Battle.Core
 
             // WE LOAD LEVEL DATA AND DIFFICULITY DATA.
             _levelData = levelData;
-            _difficulity = difficulity;
-            _difficulityData = levelData.GetDifficulityData(difficulity);
-
-            _nodes = _difficulityData.MapData.MapHexNodes
+            
+            _nodes = _levelData.MapHexNodes
                 .Select(y => new AStarNode(y.Node.X, y.Node.Z))
                 .ToArray();
 
             foreach (IAStarNode node in _nodes)
             {
-                node.FindNeighbors(_nodes, _difficulityData.MapData.DistancePerHex);
+                node.FindNeighbors(_nodes, _levelData.DistancePerHex);
             }
 
             int unitIdCounter = 0;
 
             // WE LOAD ALL UNITS REQUIRED DATA.
-            foreach (IMapDataEnemy unitData in _difficulityData.MapData.Enemies)
+            foreach (IMapDataEnemy unitData in _levelData.Enemies)
             {
                 IAStarNode spawnNode = _nodes[unitData.SpawnIndex];
                 BattleNpcUnit unit = new BattleNpcUnit(unitData);
@@ -87,7 +81,7 @@ namespace TurnBase.Server.Game.Battle.Core
             // WE LOAD ALL USERS REQUIRED DATA.
             foreach (IBattleUser user in _users)
             {
-                int initialIndex = _difficulityData.MapData.PlayerSpawnPoints[0];
+                int initialIndex = _levelData.PlayerSpawnPoints[0];
                 IAStarNode node = _nodes[initialIndex];
 
                 user.SetUnitData(new BattleUnitData(
@@ -121,7 +115,7 @@ namespace TurnBase.Server.Game.Battle.Core
         public void CallGroupAggrieving(int groupIndex)
         {
             // WE GET AGGRO UNITS.
-            List<BattleNpcUnit> aggroUnits = _allNpcs.FindAll(x => x.UnitData.GroupIndex == groupIndex && !x.IsAggrieved);
+            List<IBattleNpcUnit> aggroUnits = _allNpcs.FindAll(x => x.UnitData.GroupIndex == groupIndex && !x.IsAggrieved);
             if (aggroUnits.Count == 0)
                 return;
 

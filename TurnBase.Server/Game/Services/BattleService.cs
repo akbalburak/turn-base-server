@@ -13,8 +13,7 @@ namespace TurnBase.Server.Game.Services
 
         public static IBattleItem CreateALevel(IBattleUser[] users,
             int stageIndex,
-            int levelIndex,
-            LevelDifficulities difficulity)
+            int levelIndex)
         {
             // WE LOOK FOR THE LEVEL.
             BattleLevelData levelData = BattleLevelService.GetLevelData(stageIndex, levelIndex);
@@ -22,7 +21,7 @@ namespace TurnBase.Server.Game.Services
                 return null;
 
             // WE CREATE A BATTLE.
-            IBattleItem battle = new BattleItem(users, levelData, difficulity);
+            IBattleItem battle = new BattleItem(users, levelData);
             battle.OnDisposed += OnBattleDiposed;
 
             // WE ASSIGN ALL THE PLAYERS SAME BATTLE.
