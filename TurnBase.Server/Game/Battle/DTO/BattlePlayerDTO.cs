@@ -11,7 +11,7 @@ namespace TurnBase.Server.Game.Battle.DTO
 
         public BattlePlayerDTO(IBattleItem battleItem,
                                IBattleUser battleUser,
-                               bool isRealPlayer) 
+                               bool isRealPlayer)
             : base(battleItem, battleUser)
         {
             IsRealPlayer = isRealPlayer;

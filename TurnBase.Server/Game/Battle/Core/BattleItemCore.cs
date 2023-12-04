@@ -4,6 +4,7 @@ using TurnBase.Server.Game.Battle.Models;
 using TurnBase.Server.Game.Battle.Pathfinding.Core;
 using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 using TurnBase.Server.Game.Enums;
+using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Core
 {
@@ -24,6 +25,7 @@ namespace TurnBase.Server.Game.Battle.Core
         }
 
         public IBattleTurnHandler BattleTurnHandler => _turnHandler;
+        public IBattleUser[] Users => _users.ToArray();
 
         private BattleLevelData _levelData;
         private IBattleTurnHandler _turnHandler;
@@ -37,6 +39,7 @@ namespace TurnBase.Server.Game.Battle.Core
         private bool _disposed;
         private Random _randomizer;
 
+        
         public BattleItem(IBattleUser[] users, BattleLevelData levelData)
         {
             _allNpcs = new List<IBattleNpcUnit>();
@@ -123,6 +126,15 @@ namespace TurnBase.Server.Game.Battle.Core
 
             // WE ADD THEM INTO TURN LIST.
             _turnHandler.AddUnits(aggroUnits);
+        }
+
+        public void ReConnectUser(ISocketUser socketUser)
+        {
+            var existsUser = _users.FirstOrDefault(x=> x.SocketUser.User.Id == socketUser.User.Id);
+            if (existsUser == null)
+                return;
+
+            existsUser.UpdateSocketUser(socketUser);
         }
     }
 }

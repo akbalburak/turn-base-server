@@ -11,5 +11,6 @@ namespace TurnBase.Server.Game.DTO
         [JsonProperty("E")] public long Gold { get; set; }
         [JsonProperty("F")] public string Inventory { get; set; }
         [JsonProperty("G")] public string Campaign { get; set; }
+        [JsonProperty("H")] public bool IsInBattle { get; set; }
     }
 }

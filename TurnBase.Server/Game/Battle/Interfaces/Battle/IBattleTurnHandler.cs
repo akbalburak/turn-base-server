@@ -15,5 +15,6 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Battle
         bool IsUnitTurn(IBattleUnit currentUser);
 
         void SkipToNextTurn();
+        void CalculateAttackOrder();
     }
 }

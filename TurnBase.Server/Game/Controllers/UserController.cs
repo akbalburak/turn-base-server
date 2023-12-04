@@ -1,5 +1,7 @@
 ﻿using TurnBase.DBLayer.Models;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.DTO;
+using TurnBase.Server.Game.Services;
 using TurnBase.Server.Models;
 using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
@@ -21,6 +23,13 @@ namespace TurnBase.Server.Game.Controllers
 
             smp.UOW.SaveChanges();
 
+            IBattleItem battle = BattleService.GetBattle(user.Id);
+            if (battle != null)
+            {
+                smp.SocketUser.SetBattle(battle);
+                battle.ReConnectUser(smp.SocketUser);
+            }
+
             return SocketResponse.GetSuccess(new LoginDTO.LoginResponseDTO
             {
                 User = new UserDTO
@@ -31,7 +40,8 @@ namespace TurnBase.Server.Game.Controllers
                     Experience = user.Experience,
                     Gold = user.Gold,
                     Inventory = user.Inventory,
-                    Campaign = user.Campaign
+                    Campaign = user.Campaign,
+                    IsInBattle = smp.SocketUser.CurrentBattle != null
                 }
             });
         }

@@ -68,8 +68,7 @@ namespace TurnBase.Server.Game.Battle.Core
 
             CalculateAttackOrder();
         }
-
-        private void CalculateAttackOrder()
+        public void CalculateAttackOrder()
         {
             _unitAttackTurns.Clear();
 
@@ -90,6 +89,7 @@ namespace TurnBase.Server.Game.Battle.Core
             CheckIsInCombat();
 
         }
+
         private void CheckIsInCombat()
         {
             int teamCount = _unitAttackTurns.Select(x => x.Unit.UnitData.TeamIndex).Distinct().Count();

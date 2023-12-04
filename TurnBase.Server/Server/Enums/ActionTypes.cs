@@ -18,6 +18,7 @@
         UserGoldChanged = 14,
         CampaignProgressModified = 15,
         LoadItemSkills = 16,
-        SwitchSkillSlot = 17
+        SwitchSkillSlot = 17,
+        BattleStarting = 18
     }
 }

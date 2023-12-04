@@ -1,4 +1,5 @@
 ﻿using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.Battle.Skills;
 using TurnBase.Server.Game.Interfaces;
@@ -19,6 +20,7 @@ namespace TurnBase.Server.Game.Battle.Models
 
         private int _lastDataId;
         public int GetNewDataId => ++_lastDataId;
+        public int GetLastDataId => _lastDataId;
 
         public BattleUser(ISocketUser socketUser,
             InventoryDTO inventory,
@@ -103,6 +105,11 @@ namespace TurnBase.Server.Game.Battle.Models
                     this.AddSkill(battleSkill);
                 }
             }
+        }
+
+        public void UpdateSocketUser(ISocketUser socketUser)
+        {
+            SocketUser = socketUser;
         }
     }
 }

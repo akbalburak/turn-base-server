@@ -42,7 +42,11 @@ namespace TurnBase.Server.Game.Battle.Core
 
         private void StartGame(ISocketUser socketUser)
         {
+            if (_gameStarted)
+                return;
+
             IBattleUser user = GetUser(socketUser);
+
             _turnHandler.AddUnits(new IBattleUnit[] { user });
 
             _gameStarted = true;
@@ -79,10 +83,13 @@ namespace TurnBase.Server.Game.Battle.Core
             BattleLoadAllDTO loadData = new BattleLoadAllDTO()
             {
                 Units = _allNpcs.Select(npc => new BattleNpcUnitDTO(this, npc)).ToArray(),
-                Players = _users.Select(user => new BattlePlayerDTO(this, user, user.SocketUser == socketUser)).ToArray()
+                Players = _users.Select(user => new BattlePlayerDTO(this, user, user.SocketUser == socketUser)).ToArray(),
+                LastDataId = user.GetLastDataId
             };
 
             SendToUser(user, BattleActions.LoadAll, loadData);
+
+            _turnHandler.CalculateAttackOrder();
         }
 
     }

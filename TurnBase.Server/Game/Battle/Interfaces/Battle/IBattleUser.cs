@@ -1,4 +1,5 @@
-﻿using TurnBase.Server.Server.Interfaces;
+﻿using TurnBase.Server.Game.Battle.Interfaces.Battle;
+using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Interfaces
 {
@@ -8,5 +9,8 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         string PlayerName { get; }
         bool IsConnected { get; }
         int GetNewDataId { get; }
+        int GetLastDataId { get; }
+
+        void UpdateSocketUser(ISocketUser socketUser);
     }
 }

@@ -7,6 +7,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Battle
     public interface IBattleItem : IBattlePath
     {
         IBattleTurnHandler BattleTurnHandler { get; }
+        IBattleUser[] Users { get; }
 
         bool IsInCombat { get; }
         void CallGroupAggrieving(int group);
@@ -26,5 +27,6 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Battle
         IBattleUnit GetUnitInNode(int nodeIndex);
 
         void FinalizeTurn();
+        void ReConnectUser(ISocketUser socketUser);
     }
 }
