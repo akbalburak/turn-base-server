@@ -62,8 +62,8 @@ namespace TurnBase.Server.Game.Battle.Models
             this.AddSkill(attackSkill);
 
             // WE LOOP ALL THE EQUIPMENTS.
-            IUserItemDTO[] userItems = Inventory.GetEquippedItems();
-            foreach (IUserItemDTO userItem in userItems)
+            IInventoryItemDTO[] userItems = Inventory.GetEquippedItems();
+            foreach (IInventoryItemDTO userItem in userItems)
             {
                 // SOMEHOW IF THE ITEM DOES NOT EXISTS.
                 IItemDTO itemData = ItemService.GetItem(userItem.ItemID);

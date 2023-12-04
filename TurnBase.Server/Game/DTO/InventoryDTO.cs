@@ -8,13 +8,13 @@ namespace TurnBase.Server.Models
     public class InventoryDTO
     {
         [JsonProperty("A")] public int IdCounter { get; set; }
-        [JsonProperty("B")] public List<UserItemDTO> Items { get; set; }
+        [JsonProperty("B")] public List<InventoryItemDTO> Items { get; set; }
         
         private IChangeHandler _changeHandler;
 
         public InventoryDTO()
         {
-            Items = new List<UserItemDTO>();
+            Items = new List<InventoryItemDTO>();
         }
 
         public void SetChangeHandler(IChangeHandler changeHandler)
@@ -25,16 +25,16 @@ namespace TurnBase.Server.Models
 
         public void AddStackable(IItemDTO item, int quantity)
         {
-            UserItemDTO userItem = Items.Find(y => y.ItemID == item.Id);
+            InventoryItemDTO userItem = Items.Find(y => y.ItemID == item.Id);
 
             if (userItem == null)
             {
-                userItem = new UserItemDTO
+                userItem = new InventoryItemDTO
                 {
                     ItemID = item.Id,
                     Quantity = quantity,
                     IsNew = true,
-                    UserItemID = ++IdCounter,
+                    InventoryItemID = ++IdCounter,
                 };
 
                 userItem.SetChangeHandler(_changeHandler);
@@ -50,9 +50,9 @@ namespace TurnBase.Server.Models
         }
         public void AddNonStackableItem(IItemDTO item, int level, float quality)
         {
-            UserItemDTO userItem = new UserItemDTO
+            InventoryItemDTO userItem = new InventoryItemDTO
             {
-                UserItemID = ++IdCounter,
+                InventoryItemID = ++IdCounter,
                 ItemID = item.Id,
                 Quantity = 1,
                 Quality = quality,
@@ -67,9 +67,9 @@ namespace TurnBase.Server.Models
             userItem.SetAsModified();
         }
 
-        public void RemoveStackable(IUserItemDTO userItem, int quantity)
+        public void RemoveStackable(IInventoryItemDTO userItem, int quantity)
         {
-            if (userItem is not UserItemDTO userItemClass)
+            if (userItem is not InventoryItemDTO userItemClass)
                 return;
 
             userItemClass.Quality -= quantity;
@@ -79,20 +79,20 @@ namespace TurnBase.Server.Models
 
             userItem.SetAsModified();
         }
-        public void RemoveNonStackable(IUserItemDTO userItem)
+        public void RemoveNonStackable(IInventoryItemDTO userItem)
         {
-            if (userItem is not UserItemDTO userItemClass)
+            if (userItem is not InventoryItemDTO userItemClass)
                 return;
 
             Items.Remove(userItemClass);
             userItem.SetAsModified();
         }
 
-        public IUserItemDTO GetItem(int userItemId)
+        public IInventoryItemDTO GetItem(int userItemId)
         {
-            return Items.FirstOrDefault(y => y.UserItemID == userItemId);
+            return Items.FirstOrDefault(y => y.InventoryItemID == userItemId);
         }
-        public IUserItemDTO[] GetEquippedItems()
+        public IInventoryItemDTO[] GetEquippedItems()
         {
             return Items.Where(item => item.Equipped).ToArray();
         }

@@ -7,11 +7,9 @@ namespace TurnBase.Server.Game.Battle.DTO
     public class BattleTurnDTO
     {
         [JsonProperty("A")] public int UnitId { get; set; }
-        [JsonProperty("B")] public bool Changed { get; set; }
-        public BattleTurnDTO(int unitId, bool changed)
+        public BattleTurnDTO(int unitId)
         {
             UnitId = unitId;
-            Changed = changed;
         }
     }
 

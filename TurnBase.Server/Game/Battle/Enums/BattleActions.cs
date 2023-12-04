@@ -8,9 +8,9 @@
         FinalizeTurn = 4,
         UnitUseSkill = 5,
         BattleEnd = 6,
-        EffectStarted = 8,
-        EffectExecutionTurn = 9,
-        EffectOver = 10,
-        TurnOrderChanged = 11
+        EffectStarted = 7,
+        EffectExecutionTurn = 8,
+        EffectOver = 9,
+        TurnOrderChanged = 10
     }
 }

@@ -6,9 +6,9 @@ using TurnBase.Server.Game.Trackables;
 
 namespace TurnBase.Server.Game.DTO
 {
-    public class UserItemDTO : TrackableDTO, IUserItemDTO
+    public class InventoryItemDTO : TrackableDTO, IInventoryItemDTO
     {
-        [JsonProperty("A")] public int UserItemID { get; set; }
+        [JsonProperty("A")] public int InventoryItemID { get; set; }
         [JsonProperty("B")] public int ItemID { get; set; }
         [JsonProperty("C")] public int Quantity { get; set; }
         [JsonProperty("D")] public bool IsNew { get; set; }
@@ -17,7 +17,7 @@ namespace TurnBase.Server.Game.DTO
         [JsonProperty("H")] public int Level { get; set; }
         [JsonProperty("I")] public int[] SelectedSkills { get; set; }
 
-        public UserItemDTO()
+        public InventoryItemDTO()
         {
             SelectedSkills = Array.Empty<int>();
         }

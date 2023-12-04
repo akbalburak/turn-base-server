@@ -51,14 +51,11 @@ namespace TurnBase.Server.Game.Battle.Core
             if (_currentTurn == null)
                 return;
 
-            bool firstPlayerChanged = currentUnitId != _currentTurn.Unit.UnitData.UniqueId;
-
-            BattleTurnDTO unitTurnData = new BattleTurnDTO(_currentTurn.Unit.UnitData.UniqueId, firstPlayerChanged);
+            BattleTurnDTO unitTurnData = new BattleTurnDTO(_currentTurn.Unit.UnitData.UniqueId);
             _battle.SendToAllUsers(BattleActions.TurnUpdated, unitTurnData);
 
             // TURN CHANGED DATA.
-            if (firstPlayerChanged)
-                _currentTurn.Unit.CallUnitTurnStart();
+            _currentTurn.Unit.CallUnitTurnStart();
         }
 
         public void RemoveUnits(IEnumerable<IBattleUnit> units)
@@ -78,23 +75,26 @@ namespace TurnBase.Server.Game.Battle.Core
         }
         public void CalculateAttackOrder()
         {
-            _unitAttackTurns.Clear();
+            // WE FIND THE LATEST ATTACKER TO APPEND NEW UNITS.
+            float currentMaxTurnSpeed = _unitAttackTurns
+                .Select(x => x.NextAttackTurn - x.BaseAttackTurn)
+                .DefaultIfEmpty()
+                .Max();
 
+            /// WE CHECK NEWLY ADDED UNITS.
             foreach (IBattleUnit battleUnit in _units.OrderByDescending(y => y.Stats.AttackSpeed))
-                _unitAttackTurns.Add(new BattleTurnItem(battleUnit));
+            {
+                if (_unitAttackTurns.Exists(y => y.Unit == battleUnit))
+                    continue;
+
+                _unitAttackTurns.Add(new BattleTurnItem(battleUnit, currentMaxTurnSpeed));
+            }
 
             // WE SEND ALL PLAYERS TURN IS CHANGED.
             _battle.SendToAllUsers(BattleActions.TurnOrderChanged, new BattleTurnChangedDTO(this));
 
-            // WE SKIP TO NEXT UNIT.
-            if (_currentTurn != null)
-            {
-                SkipToNextTurn();
-            }
-
             // WE CHECK IF PLAYERS IN COMBAT.
             CheckIsInCombat();
-
         }
 
         private void CheckIsInCombat()
@@ -141,10 +141,10 @@ namespace TurnBase.Server.Game.Battle.Core
             public float NextAttackTurn { get; private set; }
             public IBattleUnit Unit { get; }
 
-            public BattleTurnItem(IBattleUnit unit)
+            public BattleTurnItem(IBattleUnit unit, float offset = 0)
             {
                 Unit = unit;
-                NextAttackTurn = unit.Stats.AttackSpeed;
+                NextAttackTurn = unit.Stats.AttackSpeed + offset;
                 BaseAttackTurn = unit.Stats.AttackSpeed;
             }
 

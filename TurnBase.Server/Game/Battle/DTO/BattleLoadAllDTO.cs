@@ -7,7 +7,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("A")] public BattleNpcUnitDTO[] Units { get; set; }
         [JsonProperty("B")] public BattlePlayerDTO[] Players { get; set; }
         [JsonProperty("C")] public int LastDataId { get; set; }
-
+        [JsonProperty("D")] public BattleTurnDTO TurnData { get; set; }
         public BattleLoadAllDTO()
         {
             Units = Array.Empty<BattleNpcUnitDTO>();

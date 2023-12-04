@@ -1,6 +1,6 @@
 ﻿namespace TurnBase.Server.Game.Interfaces
 {
-    public interface IUserItemDTO
+    public interface IInventoryItemDTO
     {
         int ItemID { get; }
         bool Equipped { get; }

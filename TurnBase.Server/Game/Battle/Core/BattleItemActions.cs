@@ -79,12 +79,14 @@ namespace TurnBase.Server.Game.Battle.Core
         private void SendAllReqDataToClient(ISocketUser socketUser, BattleActionRequestDTO requestData)
         {
             IBattleUser user = _users.FirstOrDefault(y => y.SocketUser == socketUser);
+            IBattleUnit currentTurnUnit = _turnHandler.GetCurrentTurnUnit();
 
             BattleLoadAllDTO loadData = new BattleLoadAllDTO()
             {
                 Units = _allNpcs.Select(npc => new BattleNpcUnitDTO(this, npc)).ToArray(),
                 Players = _users.Select(user => new BattlePlayerDTO(this, user, user.SocketUser == socketUser)).ToArray(),
-                LastDataId = user.GetLastDataId
+                LastDataId = user.GetLastDataId,
+                TurnData = currentTurnUnit == null ? null : new BattleTurnDTO(currentTurnUnit.UnitData.UniqueId)
             };
 
             SendToUser(user, BattleActions.LoadAll, loadData);
