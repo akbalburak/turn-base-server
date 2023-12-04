@@ -17,6 +17,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("I")] public int Mana { get; set; }
         [JsonProperty("J")] public int MaxMana { get; set; }
         [JsonProperty("K")] public int NodeIndex { get; set; }
+        [JsonProperty("L")] public BattleEffectStartedDTO[] Effects { get; set; }
 
         public BattleUnitDTO(IBattleItem battleItem, IBattleUnit battleUnit)
         {
@@ -32,6 +33,8 @@ namespace TurnBase.Server.Game.Battle.DTO
             TeamIndex = battleUnit.UnitData.TeamIndex;
             NodeIndex = battleItem.GetNodeIndex(battleUnit.CurrentNode);
             Skills = battleUnit.Skills.Select(v => v.GetSkillDataDTO()).ToArray();
+            Effects = battleUnit.Effects.Select(v => v.GetEffectDataDTO()).ToArray();
+
         }
     }
 }

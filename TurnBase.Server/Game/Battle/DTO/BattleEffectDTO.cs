@@ -28,6 +28,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("E")] public bool IsFriendEffect { get; set; }
         public BattleEffectStartedDTO(IItemSkillEffect effect)
         {
+            this.IsFriendEffect = effect.IsFriendEffect;
             this.Effect = effect.Effect;
             this.TargetUnitId = effect.ToWhom.UnitData.UniqueId;
             this.OwnerUnitId = effect.ByWhom.UnitData.UniqueId;

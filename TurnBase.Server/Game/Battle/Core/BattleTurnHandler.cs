@@ -37,7 +37,12 @@ namespace TurnBase.Server.Game.Battle.Core
         }
         public void SkipToNextTurn()
         {
-            _currentTurn?.UpdateNextAttack();
+            int currentUnitId = 0;
+            if (_currentTurn != null)
+            {
+                currentUnitId = _currentTurn.Unit.UnitData.UniqueId;
+                _currentTurn.UpdateNextAttack();
+            }
 
             _currentTurn = _unitAttackTurns
                 .OrderBy(y => y.NextAttackTurn)
@@ -46,11 +51,14 @@ namespace TurnBase.Server.Game.Battle.Core
             if (_currentTurn == null)
                 return;
 
-            // TURN CHANGED DATA.
-            BattleTurnDTO unitTurnData = new BattleTurnDTO(_currentTurn.Unit.UnitData.UniqueId);
+            bool firstPlayerChanged = currentUnitId != _currentTurn.Unit.UnitData.UniqueId;
+
+            BattleTurnDTO unitTurnData = new BattleTurnDTO(_currentTurn.Unit.UnitData.UniqueId, firstPlayerChanged);
             _battle.SendToAllUsers(BattleActions.TurnUpdated, unitTurnData);
 
-            _currentTurn.Unit.CallUnitTurnStart();
+            // TURN CHANGED DATA.
+            if (firstPlayerChanged)
+                _currentTurn.Unit.CallUnitTurnStart();
         }
 
         public void RemoveUnits(IEnumerable<IBattleUnit> units)
@@ -81,7 +89,6 @@ namespace TurnBase.Server.Game.Battle.Core
             // WE SKIP TO NEXT UNIT.
             if (_currentTurn != null)
             {
-                _currentTurn = null;
                 SkipToNextTurn();
             }
 

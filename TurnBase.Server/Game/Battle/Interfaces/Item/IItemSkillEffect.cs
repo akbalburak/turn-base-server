@@ -1,4 +1,5 @@
-﻿using TurnBase.Server.Game.Battle.Enums;
+﻿using TurnBase.Server.Game.Battle.DTO;
+using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 
 namespace TurnBase.Server.Game.Battle.Interfaces
@@ -12,5 +13,8 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         IBattleUnit ByWhom { get; }
         IBattleUnit ToWhom { get; }
         int LeftTurnDuration { get; }
+        bool IsFriendEffect { get; }
+
+        BattleEffectStartedDTO GetEffectDataDTO();
     }
 }

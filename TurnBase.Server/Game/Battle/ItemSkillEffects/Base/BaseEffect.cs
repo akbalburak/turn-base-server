@@ -87,5 +87,10 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
 
             OnEffectCompleted?.Invoke(this);
         }
+
+        public BattleEffectStartedDTO GetEffectDataDTO()
+        {
+            return new BattleEffectStartedDTO(this);
+        }
     }
 }
