@@ -1,5 +1,4 @@
-﻿using TurnBase.Server.Extends;
-using TurnBase.Server.Game.Battle.DTO;
+﻿using TurnBase.Server.Game.Battle.DTO;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Server.Interfaces;
@@ -17,7 +16,7 @@ namespace TurnBase.Server.Game.Battle.Core
             switch (requestData.BattleAction)
             {
                 case BattleActions.LoadAll:
-                    SendAllReqDataToClient(socketUser, requestData);
+                    SendAllGameData(socketUser, requestData);
                     break;
                 case BattleActions.IamReady:
                     StartGame(socketUser);
@@ -67,16 +66,7 @@ namespace TurnBase.Server.Game.Battle.Core
 
             currentUser.UseSkill(useData);
         }
-        private void TryPlayAITurn()
-        {
-            // WE LOOP TILL PLAYER TURN.
-            IBattleUnit attacker = _turnHandler.GetCurrentTurnUnit();
-            if (attacker is IBattleUser)
-                return;
-
-            attacker.UseAI();
-        }
-        private void SendAllReqDataToClient(ISocketUser socketUser, BattleActionRequestDTO requestData)
+        private void SendAllGameData(ISocketUser socketUser, BattleActionRequestDTO requestData)
         {
             IBattleUser user = _users.FirstOrDefault(y => y.SocketUser == socketUser);
             IBattleUnit currentTurnUnit = _turnHandler.GetCurrentTurnUnit();
@@ -94,5 +84,24 @@ namespace TurnBase.Server.Game.Battle.Core
             _turnHandler.CalculateAttackOrder();
         }
 
+
+        private void TryPlayAITurn()
+        {
+            // WE LOOP TILL PLAYER TURN.
+            IBattleUnit attacker = _turnHandler.GetCurrentTurnUnit();
+            if (attacker is IBattleUser)
+                return;
+
+            attacker.UseAI();
+        }
+
+        public void ReConnectUser(ISocketUser socketUser)
+        {
+            var existsUser = _users.FirstOrDefault(x => x.SocketUser.User.Id == socketUser.User.Id);
+            if (existsUser == null)
+                return;
+
+            existsUser.UpdateSocketUser(socketUser);
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using TurnBase.Server.Game.DTO;
-using TurnBase.Server.Game.Interfaces;
+using TurnBase.Server.Game.DTO.Interfaces;
 using TurnBase.Server.Game.Services;
 using TurnBase.Server.Game.Trackables;
 using TurnBase.Server.Models;

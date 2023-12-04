@@ -2,6 +2,7 @@
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Models;
+using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
 
 namespace TurnBase.Server.Game.Battle.Core
@@ -28,6 +29,7 @@ namespace TurnBase.Server.Game.Battle.Core
 
             user.SocketUser.SendToClient(dataToSend);
         }
+
 
     }
 }

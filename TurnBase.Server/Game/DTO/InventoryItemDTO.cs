@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
-using TurnBase.Server.Game.Interfaces;
 using TurnBase.Server.Enums;
 using TurnBase.Server.Server.ServerModels;
 using TurnBase.Server.Game.Trackables;
+using TurnBase.Server.Game.DTO.Interfaces;
 
 namespace TurnBase.Server.Game.DTO
 {

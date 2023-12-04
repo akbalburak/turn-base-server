@@ -2,7 +2,7 @@
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.Battle.Skills;
-using TurnBase.Server.Game.Interfaces;
+using TurnBase.Server.Game.DTO.Interfaces;
 using TurnBase.Server.Game.Services;
 using TurnBase.Server.Models;
 using TurnBase.Server.Server.Interfaces;

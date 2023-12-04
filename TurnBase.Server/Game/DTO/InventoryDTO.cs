@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using TurnBase.Server.Game.DTO;
-using TurnBase.Server.Game.Interfaces;
+using TurnBase.Server.Game.DTO.Interfaces;
 using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Models

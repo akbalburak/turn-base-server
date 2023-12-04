@@ -1,6 +1,6 @@
 ﻿using TurnBase.Server.Game.Battle.Enums;
 
-namespace TurnBase.Server.Game.Interfaces
+namespace TurnBase.Server.Game.DTO.Interfaces
 {
     public interface IItemSkillMappingDTO
     {

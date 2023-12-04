@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using TurnBase.Server.Game.Battle.Enums;
+using TurnBase.Server.Game.DTO.Interfaces;
 using TurnBase.Server.Game.Enums;
-using TurnBase.Server.Game.Interfaces;
 
 namespace TurnBase.Server.Game.DTO
 {

@@ -3,8 +3,6 @@ using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Models;
 using TurnBase.Server.Game.Battle.Pathfinding.Core;
 using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
-using TurnBase.Server.Game.Enums;
-using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Core
 {
@@ -128,13 +126,5 @@ namespace TurnBase.Server.Game.Battle.Core
             _turnHandler.AddUnits(aggroUnits);
         }
 
-        public void ReConnectUser(ISocketUser socketUser)
-        {
-            var existsUser = _users.FirstOrDefault(x=> x.SocketUser.User.Id == socketUser.User.Id);
-            if (existsUser == null)
-                return;
-
-            existsUser.UpdateSocketUser(socketUser);
-        }
     }
 }

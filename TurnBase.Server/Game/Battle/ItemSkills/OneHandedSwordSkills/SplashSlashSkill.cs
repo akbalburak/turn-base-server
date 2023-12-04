@@ -3,7 +3,7 @@ using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.ItemSkills.Base;
-using TurnBase.Server.Game.Interfaces;
+using TurnBase.Server.Game.DTO.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
 {

@@ -3,7 +3,7 @@ using TurnBase.DBLayer.Models;
 using TurnBase.DBLayer.Repositories;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.DTO;
-using TurnBase.Server.Game.Interfaces;
+using TurnBase.Server.Game.DTO.Interfaces;
 
 namespace TurnBase.Server.Game.Services
 {

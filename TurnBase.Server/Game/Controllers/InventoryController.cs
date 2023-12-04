@@ -1,11 +1,11 @@
-﻿using TurnBase.Server.Game.Interfaces;
-using TurnBase.Server.Game.Services;
+﻿using TurnBase.Server.Game.Services;
 using TurnBase.Server.Models;
 using TurnBase.Server.Server.Interfaces;
 using TurnBase.Server.Server.ServerModels;
 using TurnBase.Server.Game.DTO;
 using TurnBase.Server.Game.Enums;
 using TurnBase.Server.Game.Trackables;
+using TurnBase.Server.Game.DTO.Interfaces;
 
 namespace TurnBase.Server.Game.Controllers
 {

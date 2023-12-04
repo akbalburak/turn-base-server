@@ -1,7 +1,7 @@
 ﻿using TurnBase.Server.Game.DTO;
 using TurnBase.Server.Game.Enums;
 
-namespace TurnBase.Server.Game.Interfaces
+namespace TurnBase.Server.Game.DTO.Interfaces
 {
     public interface IItemDTO
     {

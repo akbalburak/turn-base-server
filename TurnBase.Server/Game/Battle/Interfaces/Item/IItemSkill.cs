@@ -1,5 +1,5 @@
 ﻿using TurnBase.Server.Game.Battle.DTO;
-using TurnBase.Server.Game.Interfaces;
+using TurnBase.Server.Game.DTO.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Interfaces.Item
 {

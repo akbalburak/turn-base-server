@@ -4,8 +4,8 @@ using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.ItemSkills.Base;
 using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
+using TurnBase.Server.Game.DTO.Interfaces;
 using TurnBase.Server.Game.Enums;
-using TurnBase.Server.Game.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
 {
