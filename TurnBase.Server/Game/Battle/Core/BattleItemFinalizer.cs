@@ -1,5 +1,4 @@
-﻿using TurnBase.Server.Game.Battle.Map;
-using TurnBase.Server.Game.Battle.Map.Interfaces;
+﻿using TurnBase.Server.Game.Battle.Map.Interfaces;
 using TurnBase.Server.Game.DTO;
 using TurnBase.Server.Game.DTO.Interfaces;
 using TurnBase.Server.Game.Services;
@@ -70,6 +69,17 @@ namespace TurnBase.Server.Game.Battle.Core
                     smp.ExecuteOnSuccess();
                 }
             });
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+            _gameOver = true;
+
+            OnDisposed?.Invoke(this);
         }
     }
 }

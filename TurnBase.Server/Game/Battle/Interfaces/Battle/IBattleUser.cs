@@ -5,6 +5,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces
 {
     public interface IBattleUser : IBattleUnit
     {
+        IBattleInventory LootInventory { get; }
         ISocketUser SocketUser { get; }
         string PlayerName { get; }
         bool IsConnected { get; }

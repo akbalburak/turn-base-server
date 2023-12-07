@@ -33,7 +33,7 @@ namespace TurnBase.Server.Game.Controllers
             // WE CREATE A BATTLE USER.
             BattleUser battleUser = new BattleUser(
                 socketUser: smp.SocketUser,
-                inventory: inventory,
+                equipments: inventory,
                 isFirstCompletion: isFirstCompletion
             );
 

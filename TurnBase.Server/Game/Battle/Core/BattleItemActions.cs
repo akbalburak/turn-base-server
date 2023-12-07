@@ -1,6 +1,7 @@
 ﻿using TurnBase.Server.Game.Battle.DTO;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Core
@@ -27,9 +28,32 @@ namespace TurnBase.Server.Game.Battle.Core
                 case BattleActions.UnitUseSkill:
                     PlayerUseSkill(socketUser, requestData);
                     break;
+                case BattleActions.ClaimADrop:
+                    ClaimDrop(socketUser, requestData);
+                    break;
             }
         }
 
+        private void ClaimDrop(ISocketUser socketUser, BattleActionRequestDTO requestData)
+        {
+            BattleDropClaimRequestDTO data = requestData.GetRequestData<BattleDropClaimRequestDTO>();
+
+            lock (_drops)
+            {
+                IBattleUser user = GetUser(socketUser);
+
+                // WE FIND PLAYER DROP FOR THE GIVEN UNIT.
+                IBattleDrop drop = _drops.Find(x =>
+                    x.DropOwner == user &&
+                    x.KilledUnit.UnitData.UniqueId == data.UnitUniqueId
+                );
+
+                if (drop == null)
+                    return;
+
+                drop.Claim(data.DropItemId);
+            }
+        }
         private void FinalizePlayerTurn(ISocketUser socketUser)
         {
             IBattleUser user = GetUser(socketUser);
@@ -38,7 +62,6 @@ namespace TurnBase.Server.Game.Battle.Core
 
             FinalizeTurn();
         }
-
         private void StartGame(ISocketUser socketUser)
         {
             if (_gameStarted)
