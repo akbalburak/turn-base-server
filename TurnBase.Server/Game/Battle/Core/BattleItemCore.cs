@@ -1,5 +1,8 @@
-﻿using TurnBase.Server.Game.Battle.Interfaces;
+﻿using TurnBase.Server.Game.Battle.DTO;
+using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
+using TurnBase.Server.Game.Battle.Map;
+using TurnBase.Server.Game.Battle.Map.Interfaces;
 using TurnBase.Server.Game.Battle.Models;
 using TurnBase.Server.Game.Battle.Pathfinding.Core;
 using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
@@ -25,21 +28,23 @@ namespace TurnBase.Server.Game.Battle.Core
         public IBattleTurnHandler BattleTurnHandler => _turnHandler;
         public IBattleUser[] Users => _users.ToArray();
 
-        private BattleLevelData _levelData;
+        private IMapDataJson _levelData;
         private IBattleTurnHandler _turnHandler;
 
         private IBattleUser[] _users;
         private List<IBattleUnit> _allUnits;
         private List<IBattleNpcUnit> _allNpcs;
+        private List<IBattleDrop> _drops;
 
         private bool _gameStarted;
         private bool _gameOver;
         private bool _disposed;
         private Random _randomizer;
 
-        
-        public BattleItem(IBattleUser[] users, BattleLevelData levelData)
+
+        public BattleItem(IBattleUser[] users, IMapDataJson levelData)
         {
+            _drops = new List<IBattleDrop>();
             _allNpcs = new List<IBattleNpcUnit>();
             _allUnits = new List<IBattleUnit>();
 
@@ -48,8 +53,8 @@ namespace TurnBase.Server.Game.Battle.Core
 
             // WE LOAD LEVEL DATA AND DIFFICULITY DATA.
             _levelData = levelData;
-            
-            _nodes = _levelData.MapHexNodes
+
+            _nodes = _levelData.IMapHexNodes
                 .Select(y => new AStarNode(y.Node.X, y.Node.Z))
                 .ToArray();
 
@@ -61,28 +66,32 @@ namespace TurnBase.Server.Game.Battle.Core
             int unitIdCounter = 0;
 
             // WE LOAD ALL UNITS REQUIRED DATA.
-            foreach (IMapDataEnemy unitData in _levelData.Enemies)
+            foreach (IMapDataEnemyJson unitData in _levelData.IEnemies)
             {
                 IAStarNode spawnNode = _nodes[unitData.SpawnIndex];
                 BattleNpcUnit unit = new BattleNpcUnit(unitData);
-
+                unit.OnUnitDie += OnUnitDie;
                 unit.SetUnitData(new BattleUnitData(
                     uniqueId: ++unitIdCounter,
                     battleItem: this,
                     teamIndex: 2,
                     groupIndex: unitData.Group,
                     initialNode: spawnNode,
-                    aggroDistance: unitData.AggroDistance
+                    aggroDistance: unitData.AggroDistance,
+                    drops: unitData.IDrops
                 ));
 
                 _allNpcs.Add(unit);
                 _allUnits.Add(unit);
             }
 
+            int[] spawnPoints = _levelData.IPlayerSpawnPoints;
+
             // WE LOAD ALL USERS REQUIRED DATA.
+            int index = 0;
             foreach (IBattleUser user in _users)
             {
-                int initialIndex = _levelData.PlayerSpawnPoints[0];
+                int initialIndex = spawnPoints[index];
                 IAStarNode node = _nodes[initialIndex];
 
                 user.SetUnitData(new BattleUnitData(
@@ -91,14 +100,73 @@ namespace TurnBase.Server.Game.Battle.Core
                     teamIndex: 1,
                     groupIndex: 0,
                     initialNode: node,
-                    aggroDistance: 0
+                    aggroDistance: 0,
+                    drops: Array.Empty<IMapDataEnemyDropJson>()
                 ));
 
                 _allUnits.Add(user);
+                index++;
             }
 
             // WE CREATE TURN HANDLER.
             _turnHandler = new BattleTurnHandler(this);
+        }
+
+        private void OnUnitDie(IBattleUnit unit)
+        {
+            // WE MAKE SURE THERE IS A KILLER.
+            IBattleUnit killedBy = unit.KilledBy;
+            if (killedBy == null)
+                return;
+
+            // IF NPC KILLED PLAYER NO LONGER NEED TO GO DOWN.
+            if (killedBy is IBattleNpcUnit)
+                return;
+
+            // WE GET ALL THE TEAM MEMBERS OF THE KILLER.
+            IBattleUser[] killerTeam = _users
+                .Where(x => x.UnitData.TeamIndex == killedBy.UnitData.TeamIndex)
+                .ToArray();
+
+            // ALL TEAM IS GOING TO TAKE REWARD IF THEY LUCKY ENOUGH.
+            List<IBattleDropItem> dropItems = new List<IBattleDropItem>();
+            foreach (IBattleUser user in killerTeam)
+            {
+                dropItems.Clear();
+
+                // WE LOOP ALL THE POSSIBLE DROPS.
+                foreach (IMapDataEnemyDropJson drop in unit.UnitData.IDrops)
+                {
+                    double chance = GetRandomValue;
+
+                    // IF NOT LUCKY ENOUGH JUST SKIP IT.
+                    if (chance > drop.DropChance)
+                        continue;
+
+                    // WEGET A RANDOM QUANTITY.
+                    int quantity = _randomizer.Next(drop.Quantity.X, drop.Quantity.Y);
+                    if (quantity == 0)
+                        continue;
+
+                    dropItems.Add(new BattleDropItem(drop.ItemId, drop.Level, drop.Quality));
+                }
+
+                // WHEN THERE IS A LOOT WE CREATE A GROUP FOR IT.
+                if (dropItems.Count > 0)
+                {
+                    BattleDrop dropGroup = new(user, unit, dropItems.ToArray());
+                    dropGroup.OnAllDropsClaimed += OnAllDropsClaimed;
+
+                    _drops.Add(dropGroup);
+
+                    SendToUser(user, Enums.BattleActions.YouHaveDrop, new BattleDropDTO(dropGroup));
+                }
+            }
+        }
+
+        private void OnAllDropsClaimed(IBattleDrop drop)
+        {
+            _drops.Remove(drop);
         }
 
         public void Dispose()

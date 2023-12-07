@@ -7,47 +7,107 @@
     {
       "Group": 1,
       "Enemy": 1,
-      "Health": 12,
-      "Damage": 4,
-      "TurnSpeed": 1.1,
+      "Health": 20,
+      "Damage": 3,
+      "TurnSpeed": 1.0,
       "SpawnIndex": 257,
-      "AggroDistance": 4
+      "AggroDistance": 3,
+      "Drops": [
+        {
+          "DropChance": 0.8,
+          "ItemId": 6,
+          "Level": 0,
+          "Quality": 0.0,
+          "Quantity": {
+            "X": 1,
+            "Y": 3
+          }
+        }
+      ]
     },
     {
       "Group": 1,
       "Enemy": 1,
-      "Health": 12,
-      "Damage": 4,
-      "TurnSpeed": 1.1,
+      "Health": 20,
+      "Damage": 3,
+      "TurnSpeed": 1.0,
       "SpawnIndex": 353,
-      "AggroDistance": 4
+      "AggroDistance": 3,
+      "Drops": [
+        {
+          "DropChance": 0.8,
+          "ItemId": 6,
+          "Level": 0,
+          "Quality": 0.0,
+          "Quantity": {
+            "X": 1,
+            "Y": 3
+          }
+        }
+      ]
     },
     {
       "Group": 2,
       "Enemy": 1,
-      "Health": 12,
-      "Damage": 4,
-      "TurnSpeed": 1.1,
+      "Health": 20,
+      "Damage": 3,
+      "TurnSpeed": 1.0,
       "SpawnIndex": 309,
-      "AggroDistance": 4
+      "AggroDistance": 3,
+      "Drops": [
+        {
+          "DropChance": 0.8,
+          "ItemId": 6,
+          "Level": 0,
+          "Quality": 0.0,
+          "Quantity": {
+            "X": 1,
+            "Y": 3
+          }
+        }
+      ]
     },
     {
       "Group": 2,
       "Enemy": 1,
-      "Health": 12,
-      "Damage": 4,
-      "TurnSpeed": 1.1,
+      "Health": 20,
+      "Damage": 3,
+      "TurnSpeed": 1.0,
       "SpawnIndex": 405,
-      "AggroDistance": 4
+      "AggroDistance": 3,
+      "Drops": [
+        {
+          "DropChance": 0.8,
+          "ItemId": 6,
+          "Level": 0,
+          "Quality": 0.0,
+          "Quantity": {
+            "X": 1,
+            "Y": 3
+          }
+        }
+      ]
     },
     {
       "Group": 2,
       "Enemy": 1,
-      "Health": 12,
-      "Damage": 4,
-      "TurnSpeed": 1.1,
+      "Health": 20,
+      "Damage": 3,
+      "TurnSpeed": 1.0,
       "SpawnIndex": 359,
-      "AggroDistance": 4
+      "AggroDistance": 3,
+      "Drops": [
+        {
+          "DropChance": 0.8,
+          "ItemId": 6,
+          "Level": 0,
+          "Quality": 0.0,
+          "Quantity": {
+            "X": 1,
+            "Y": 3
+          }
+        }
+      ]
     }
   ],
   "FirstCompletionRewards": [

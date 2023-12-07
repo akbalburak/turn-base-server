@@ -1,5 +1,6 @@
 ﻿using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
+using TurnBase.Server.Game.Battle.Map.Interfaces;
 using TurnBase.Server.Game.Battle.Skills;
 using TurnBase.Server.Game.Services;
 
@@ -9,7 +10,7 @@ namespace TurnBase.Server.Game.Battle.Models
     {
         public int UnitId { get; }
 
-        public BattleNpcUnit(IMapDataEnemy enemyData)
+        public BattleNpcUnit(IMapDataEnemyJson enemyData)
         {
             UnitId = enemyData.Enemy;
 

@@ -11,6 +11,7 @@
         EffectStarted = 7,
         EffectExecutionTurn = 8,
         EffectOver = 9,
-        TurnOrderChanged = 10
+        TurnOrderChanged = 10,
+        YouHaveDrop = 11
     }
 }

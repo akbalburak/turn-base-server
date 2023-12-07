@@ -1,4 +1,5 @@
 ﻿using TurnBase.Server.Game.Battle.Interfaces.Battle;
+using TurnBase.Server.Game.Battle.Map.Interfaces;
 using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Models
@@ -11,14 +12,17 @@ namespace TurnBase.Server.Game.Battle.Models
         public int GroupIndex { get; }
         public IAStarNode InitialNode { get; }
         public int AggroDistance { get; }
+        public IMapDataEnemyDropJson[] IDrops { get; }
 
         public BattleUnitData(int uniqueId,
                               IBattleItem battleItem,
                               int teamIndex,
                               int groupIndex,
                               IAStarNode initialNode,
-                              int aggroDistance)
+                              int aggroDistance,
+                              IMapDataEnemyDropJson[] drops)
         {
+            IDrops = drops;
             AggroDistance = aggroDistance;
             UniqueId = uniqueId;
             BattleItem = battleItem;

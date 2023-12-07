@@ -2,7 +2,7 @@
 using TurnBase.Server.Game.Battle.Core;
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
-using TurnBase.Server.Game.Battle.Models;
+using TurnBase.Server.Game.Battle.Map;
 using TurnBase.Server.Game.Enums;
 using TurnBase.Server.Server.ServerModels;
 
@@ -21,7 +21,7 @@ namespace TurnBase.Server.Game.Services
             int levelIndex)
         {
             // WE LOOK FOR THE LEVEL.
-            BattleLevelData levelData = BattleLevelService.GetLevelData(stageIndex, levelIndex);
+            MapDataJson levelData = BattleLevelService.GetLevelData(stageIndex, levelIndex);
             if (levelData == null)
                 return null;
 

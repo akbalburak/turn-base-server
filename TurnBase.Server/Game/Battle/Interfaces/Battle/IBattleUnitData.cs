@@ -1,4 +1,5 @@
-﻿using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
+﻿using TurnBase.Server.Game.Battle.Map.Interfaces;
+using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Interfaces.Battle
 {
@@ -10,5 +11,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Battle
         int AggroDistance { get; }
         IBattleItem BattleItem { get; }
         IAStarNode InitialNode { get; }
+
+        IMapDataEnemyDropJson[] IDrops { get; }
     }
 }

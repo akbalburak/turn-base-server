@@ -25,6 +25,8 @@ namespace TurnBase.Server.Game.Battle.Models
         public List<IItemSkill> Skills { get; private set; }
         public List<IItemSkillEffect> Effects { get; private set; }
 
+        public IBattleUnit KilledBy { get; private set; }
+
         protected BattleUnit()
         {
             Skills = new List<IItemSkill>();
@@ -49,7 +51,7 @@ namespace TurnBase.Server.Game.Battle.Models
         }
         public void AttackToUnit(IBattleUnit defender, int damage)
         {
-            defender.ReduceHealth(damage);
+            defender.HitUnit(attacker: this, damage);
         }
 
         public void AddSkill(IItemSkill skill)
@@ -99,7 +101,7 @@ namespace TurnBase.Server.Game.Battle.Models
         {
             return Mana >= manaCost;
         }
-        public void ReduceMana(int usageManaCost)
+        public void UseMana(int usageManaCost)
         {
             Mana -= usageManaCost;
 
@@ -107,20 +109,23 @@ namespace TurnBase.Server.Game.Battle.Models
                 Mana = 0;
         }
 
-        public void ReduceHealth(int reduction)
+        public void HitUnit(IBattleUnit attacker, int reduction)
         {
             Health -= reduction;
 
             if (Health <= 0)
-                Kill();
+                Kill(attacker);
         }
-        public void Kill()
+        public void Kill(IBattleUnit killedBy)
         {
             if (IsDeath)
                 return;
 
             ChangeNode(null);
+
             IsDeath = true;
+            KilledBy = killedBy;
+
             OnUnitDie?.Invoke(this);
         }
 
@@ -168,7 +173,7 @@ namespace TurnBase.Server.Game.Battle.Models
         {
             IItemSkill[] readySkills = Skills
                 .Where(x => x.IsSkillReadyToUse())
-                .OrderBy(x=> x.FinalizeTurnInUse)
+                .OrderBy(x => x.FinalizeTurnInUse)
                 .OrderByDescending(x => x.InitialCooldown)
                 .ToArray();
 

@@ -1,6 +1,6 @@
-﻿using TurnBase.Server.Game.Battle.Models;
-using TurnBase.Server.Extends.Json;
+﻿using TurnBase.Server.Extends.Json;
 using static TurnBase.Server.Game.DTO.BattleDTO;
+using TurnBase.Server.Game.Battle.Map;
 
 namespace TurnBase.Server.Game.Services
 {
@@ -23,7 +23,7 @@ namespace TurnBase.Server.Game.Services
 
                 string fileData = File.ReadAllText(file);
 
-                BattleLevelData levelData = fileData.ToObject<BattleLevelData>();
+                MapDataJson levelData = fileData.ToObject<MapDataJson>();
                 if (levelData == null)
                     continue;
 
@@ -44,14 +44,14 @@ namespace TurnBase.Server.Game.Services
             }
         }
 
-        public static BattleLevelData GetLevelData(int stageIndex, int levelIndex)
+        public static MapDataJson GetLevelData(int stageIndex, int levelIndex)
         {
             string levelName = GetLevelKey(stageIndex, levelIndex);
 
             if (!_levels.TryGetValue(levelName, out string levelData))
                 throw new Exception("Level Not Found");
 
-            return levelData.ToObject<BattleLevelData>();
+            return levelData.ToObject<MapDataJson>();
         }
 
         public static BattleDataResponseDTO GetLevelMetaData(int stageIndex, int levelIndex)

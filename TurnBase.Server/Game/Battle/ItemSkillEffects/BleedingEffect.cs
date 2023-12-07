@@ -16,10 +16,10 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects
             IItemSkillDTO skill,
             float itemQuality
         )
-            : base(BattleEffects.Bleeding, 
-                  battle, 
-                  byWhom, 
-                  toWhom, 
+            : base(BattleEffects.Bleeding,
+                  battle,
+                  byWhom,
+                  toWhom,
                   skill,
                   itemQuality)
         {
@@ -30,7 +30,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects
             int damage = base.Skill.GetDataValueAsInt(ItemSkillData.Damage, base.EffectQuality);
 
             // DO THE ACTION.
-            ToWhom.ReduceHealth(damage);
+            ToWhom.HitUnit(attacker: ByWhom, damage);
 
             // RETURN REQUIRED DATA.
             BattleEffectTurnExecutionDTO effectExecuteData = new BattleEffectTurnExecutionDTO(this)

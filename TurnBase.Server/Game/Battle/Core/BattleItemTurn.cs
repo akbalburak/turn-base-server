@@ -49,7 +49,7 @@ namespace TurnBase.Server.Game.Battle.Core
                 return;
             }
 
-            // MEANS ONE OF THE TEAMS IS DEFEATED.
+            // MEANS TEAM 1 IS DEFEATED.
             if (team1AliveUnitCount > 0)
             {
                 foreach (BattleUser user in _users)
@@ -59,7 +59,7 @@ namespace TurnBase.Server.Game.Battle.Core
                     team1EndData.WinnerTeam = 1;
 
                     if (user.IsFirstCompletion)
-                        team1EndData.FirstCompletionRewards = _levelData.FirstCompletionRewards;
+                        team1EndData.FirstCompletionRewards = _levelData.IFirstCompletionRewards;
 
                     SendToAllUsers(BattleActions.BattleEnd, team1EndData);
 
@@ -70,7 +70,7 @@ namespace TurnBase.Server.Game.Battle.Core
                 return;
             }
 
-            // MEANS ONE OF THE TEAMS IS DEFEATED.
+            // MEANS TEAM 2 IS DEFEATED.
             if (team2AliveUnitCount > 0)
             {
                 // TEAM 2 WON.

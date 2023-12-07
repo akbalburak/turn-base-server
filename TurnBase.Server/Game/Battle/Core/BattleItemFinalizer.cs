@@ -1,4 +1,5 @@
-﻿using TurnBase.Server.Game.Battle.Models;
+﻿using TurnBase.Server.Game.Battle.Map;
+using TurnBase.Server.Game.Battle.Map.Interfaces;
 using TurnBase.Server.Game.DTO;
 using TurnBase.Server.Game.DTO.Interfaces;
 using TurnBase.Server.Game.Services;
@@ -36,7 +37,7 @@ namespace TurnBase.Server.Game.Battle.Core
                     {
                         // WE ADD VICTORY REWARD ITEMS INTO INVENTORY. 
                         InventoryDTO inventory = userData.GetInventory();
-                        foreach (BattleRewardItemData reward in _levelData.FirstCompletionRewards)
+                        foreach (IMapDataFirstTimeRewardJson reward in _levelData.IFirstCompletionRewards)
                         {
                             // WE MAKE SURE ITEM EXISTS.
                             IItemDTO itemData = ItemService.GetItem(reward.ItemId);

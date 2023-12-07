@@ -50,7 +50,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
 
         public void UseSkill(BattleSkillUseDTO useData)
         {
-            Owner.ReduceMana(UsageManaCost);
+            Owner.UseMana(UsageManaCost);
 
             CurrentCooldown = InitialCooldown;
             OnSkillUse(useData);
