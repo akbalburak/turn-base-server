@@ -6,7 +6,7 @@ using TurnBase.Server.Game.DTO.Interfaces;
 
 namespace TurnBase.Server.Game.DTO
 {
-    public class InventoryItemDTO : TrackableDTO, IInventoryItemDTO
+    public class InventoryItemDTO : TrackableDTO, IEquipmentItemDTO
     {
         [JsonProperty("A")] public int InventoryItemID { get; set; }
         [JsonProperty("B")] public int ItemID { get; set; }

@@ -11,6 +11,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         bool IsConnected { get; }
         int GetNewDataId { get; }
         int GetLastDataId { get; }
+        bool IsFirstCompletion { get; }
 
         void UpdateSocketUser(ISocketUser socketUser);
     }

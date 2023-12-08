@@ -27,7 +27,7 @@ namespace TurnBase.Server.Game.Battle.Models
             MaxMana = ParameterService.GetIntValue(Parameters.BaseMana);
 
             // WE LOOP ALL THE WORN ITEMS.
-            foreach (IInventoryItemDTO inventoryItem in inventory.GetEquippedItems())
+            foreach (IEquipmentItemDTO inventoryItem in inventory.GetEquippedItems())
             {
                 if (!inventoryItem.Equipped)
                     continue;

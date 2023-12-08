@@ -22,7 +22,7 @@ namespace TurnBase.Server.Game.Controllers
             InventoryDTO inventory = user.GetInventory();
 
             // WE GET THE INVENTORY ITEM.
-            IInventoryItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
+            IEquipmentItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
             if (inventoryItem != null)
             {
                 // WE MAKE SURE THE SAME TYPE ITEM NOT WORN.
@@ -33,7 +33,7 @@ namespace TurnBase.Server.Game.Controllers
                     return SocketResponse.GetError("Invalid Item To Wear!");
 
                 // WE MAKE SURE THE SAME TYPE ITEM DIDN'T NOT WORN.
-                foreach (IInventoryItemDTO equippedItem in inventory.GetEquippedItems())
+                foreach (IEquipmentItemDTO equippedItem in inventory.GetEquippedItems())
                 {
                     IItemDTO eItemData = ItemService.GetItem(equippedItem.ItemID);
                     if (eItemData.TypeId != itemData.TypeId)
@@ -63,7 +63,7 @@ namespace TurnBase.Server.Game.Controllers
             InventoryDTO inventory = user.GetInventory();
 
             // WE GET THE INVENTORY ITEM.
-            IInventoryItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
+            IEquipmentItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
             if (inventoryItem == null)
                 return SocketResponse.GetError("Inventory item not found!");
 
@@ -88,7 +88,7 @@ namespace TurnBase.Server.Game.Controllers
             InventoryDTO inventory = user.GetInventory();
 
             // WE GET THE INVENTORY ITEM.
-            IInventoryItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
+            IEquipmentItemDTO inventoryItem = inventory.GetItem(requestData.UserItemId);
 
             // IF ITEM DOES NOT EXISTS.
             if (inventoryItem == null || inventoryItem.Quantity <= 0)

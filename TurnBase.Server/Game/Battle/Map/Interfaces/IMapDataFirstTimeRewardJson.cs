@@ -1,10 +1,8 @@
-﻿namespace TurnBase.Server.Game.Battle.Map.Interfaces
+﻿using TurnBase.Server.Game.DTO.Interfaces;
+
+namespace TurnBase.Server.Game.Battle.Map.Interfaces
 {
-    public interface IMapDataFirstTimeRewardJson
+    public interface IMapDataFirstTimeRewardJson : IInventoryItemDTO
     {
-        public int ItemId { get; }
-        public int Quantity { get; }
-        public int Level { get; }
-        public float Quality { get; }
     }
 }

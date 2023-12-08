@@ -8,6 +8,8 @@ namespace TurnBase.Server.Game.Battle.Models
     public class BattleInventory : IBattleInventory
     {
         public IBattleUser Owner { get; }
+        public IInventoryItemDTO[] IItems => _inventory.ToArray();
+
 
         private int _inventoryItemId;
 
@@ -28,14 +30,14 @@ namespace TurnBase.Server.Game.Battle.Models
 
             if (itemData.CanStack)
             {
-                BattleInventoryItem? invItem = _inventory.Find(x => x.ItemId == item.ItemId);
+                BattleInventoryItem? invItem = _inventory.Find(x => x.ItemID == item.ItemId);
                 if (invItem == null)
                 {
                     _inventory.Add(new BattleInventoryItem(++_inventoryItemId, item));
                 }
                 else
                 {
-                    invItem.Quantity += item.Quantity;
+                    invItem.AddQuantity(item.Quantity);
                 }
             }
             else
@@ -43,24 +45,27 @@ namespace TurnBase.Server.Game.Battle.Models
                 _inventory.Add(new BattleInventoryItem(++_inventoryItemId, item));
             }
         }
-
-        private class BattleInventoryItem
+    }
+    public class BattleInventoryItem : IInventoryItemDTO
+    {
+        public int InventoryItemId { get; }
+        public int ItemID { get; }
+        public int Quantity { get; private set; }
+        public float Quality { get; private set; }
+        public int Level { get; private set; }
+        public BattleInventoryItem(int inventoryItemId, IBattleDropItem item)
         {
-            public int InventoryItemId { get; set; }
-            public int ItemId { get; set; }
-            public int Quantity { get; set; }
-            public float Quality { get; set; }
-            public int Level { get; set; }
-            public BattleInventoryItem(int inventoryItemId, IBattleDropItem item)
-            {
-                InventoryItemId = inventoryItemId;
-                ItemId = item.ItemId;
-                Quality = item.Quality;
-                Quantity = item.Quantity;
-                Level = item.Level;
-            }
+            InventoryItemId = inventoryItemId;
+            ItemID = item.ItemId;
+            Quality = item.Quality;
+            Quantity = item.Quantity;
+            Level = item.Level;
+        }
+
+        public void AddQuantity(int quantity)
+        {
+            Quantity += quantity;
         }
     }
 
-    
 }

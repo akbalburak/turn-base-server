@@ -67,7 +67,7 @@ namespace TurnBase.Server.Models
             userItem.SetAsModified();
         }
 
-        public void RemoveStackable(IInventoryItemDTO userItem, int quantity)
+        public void RemoveStackable(IEquipmentItemDTO userItem, int quantity)
         {
             if (userItem is not InventoryItemDTO userItemClass)
                 return;
@@ -79,7 +79,7 @@ namespace TurnBase.Server.Models
 
             userItem.SetAsModified();
         }
-        public void RemoveNonStackable(IInventoryItemDTO userItem)
+        public void RemoveNonStackable(IEquipmentItemDTO userItem)
         {
             if (userItem is not InventoryItemDTO userItemClass)
                 return;
@@ -88,11 +88,11 @@ namespace TurnBase.Server.Models
             userItem.SetAsModified();
         }
 
-        public IInventoryItemDTO GetItem(int userItemId)
+        public IEquipmentItemDTO GetItem(int userItemId)
         {
             return Items.FirstOrDefault(y => y.InventoryItemID == userItemId);
         }
-        public IInventoryItemDTO[] GetEquippedItems()
+        public IEquipmentItemDTO[] GetEquippedItems()
         {
             return Items.Where(item => item.Equipped).ToArray();
         }

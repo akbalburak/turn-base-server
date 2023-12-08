@@ -33,7 +33,7 @@ namespace TurnBase.Server.Game.Services
                 {
                     FirstTimeRewards = levelData.FirstCompletionRewards.Select(y => new BattleDataRewardItemDTO
                     {
-                        ItemId = y.ItemId,
+                        ItemId = y.ItemID,
                         Level = y.Level,
                         Quality = y.Quality,
                         Quantity = y.Quantity,

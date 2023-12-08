@@ -1,4 +1,4 @@
-﻿using TurnBase.Server.Game.Battle.Map.Interfaces;
+﻿using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.DTO;
 using TurnBase.Server.Game.DTO.Interfaces;
 using TurnBase.Server.Game.Services;
@@ -11,13 +11,13 @@ namespace TurnBase.Server.Game.Battle.Core
 {
     public partial class BattleItem
     {
-        public void CompleteCampaign(ISocketUser user, long userId)
+        public void CompleteCampaign(IBattleUser battleUser, long userId)
         {
             Task.Run(() =>
             {
-                lock (user)
+                lock (battleUser.SocketUser)
                 {
-                    using ISocketMethodParameter smp = new SocketMethodParameter(user, null);
+                    using ISocketMethodParameter smp = new SocketMethodParameter(battleUser.SocketUser, null);
 
                     TrackedUser userData = UserService.GetTrackedUser(smp, userId);
 
@@ -31,15 +31,24 @@ namespace TurnBase.Server.Game.Battle.Core
                     campaign.SaveLevelProgress(_levelData.Stage, _levelData.Level);
                     userData.UpdateCampaign(campaign);
 
-                    // IF THIS IS THE FIRST TIME ITS COMPLETED.
+                    // ALL THE REWARDS EARNED IN THE GAME.
+                    List<IInventoryItemDTO> rewards = new List<IInventoryItemDTO>();
+                    rewards.AddRange(battleUser.LootInventory.IItems);
+
+                    // IF CAMPAIGN EARNED FIRST TIME.
                     if (firstTimeVictory)
+                        rewards.AddRange(_levelData.IFirstCompletionRewards);
+
+                    if (rewards.Count > 0)
                     {
-                        // WE ADD VICTORY REWARD ITEMS INTO INVENTORY. 
+                        // IF THIS IS THE FIRST TIME ITS COMPLETED.
                         InventoryDTO inventory = userData.GetInventory();
-                        foreach (IMapDataFirstTimeRewardJson reward in _levelData.IFirstCompletionRewards)
+
+                        // WE ADD VICTORY REWARD ITEMS INTO INVENTORY. 
+                        foreach (IInventoryItemDTO reward in rewards)
                         {
                             // WE MAKE SURE ITEM EXISTS.
-                            IItemDTO itemData = ItemService.GetItem(reward.ItemId);
+                            IItemDTO itemData = ItemService.GetItem(reward.ItemID);
                             if (itemData == null)
                                 continue;
 
@@ -61,8 +70,8 @@ namespace TurnBase.Server.Game.Battle.Core
                             }
 
                         }
-                        userData.UpdateInventory(inventory);
 
+                        userData.UpdateInventory(inventory);
                     }
 
                     smp.UOW.SaveChanges();

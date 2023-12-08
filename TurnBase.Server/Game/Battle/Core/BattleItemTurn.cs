@@ -1,5 +1,6 @@
 ﻿using TurnBase.Server.Game.Battle.DTO;
 using TurnBase.Server.Game.Battle.Enums;
+using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Models;
 
 namespace TurnBase.Server.Game.Battle.Core
@@ -52,7 +53,7 @@ namespace TurnBase.Server.Game.Battle.Core
             // MEANS TEAM 1 IS DEFEATED.
             if (team1AliveUnitCount > 0)
             {
-                foreach (BattleUser user in _users)
+                foreach (IBattleUser user in _users)
                 {
                     // TEAM 1 WON.
                     BattleEndDTO team1EndData = new BattleEndDTO(BattleEndSates.Win);
@@ -63,7 +64,7 @@ namespace TurnBase.Server.Game.Battle.Core
 
                     SendToAllUsers(BattleActions.BattleEnd, team1EndData);
 
-                    CompleteCampaign(user.SocketUser, userId: user.SocketUser.User.Id);
+                    CompleteCampaign(user, userId: user.SocketUser.User.Id);
                 }
 
                 Dispose();
