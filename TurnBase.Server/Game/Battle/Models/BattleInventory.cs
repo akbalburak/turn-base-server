@@ -10,9 +10,7 @@ namespace TurnBase.Server.Game.Battle.Models
         public IBattleUser Owner { get; }
         public IInventoryItemDTO[] IItems => _inventory.ToArray();
 
-
         private int _inventoryItemId;
-
         private List<BattleInventoryItem> _inventory;
 
         public BattleInventory(IBattleUser owner)
@@ -24,26 +22,20 @@ namespace TurnBase.Server.Game.Battle.Models
         public void AddItem(IBattleDropItem item)
         {
             // WE FIND ITEM FOR 
-            IItemDTO itemData = ItemService.GetItem(item.ItemId);
+            IItemDTO itemData = ItemService.GetItem(item.ItemID);
             if (itemData == null)
                 return;
 
             if (itemData.CanStack)
             {
-                BattleInventoryItem? invItem = _inventory.Find(x => x.ItemID == item.ItemId);
+                BattleInventoryItem? invItem = _inventory.Find(x => x.ItemID == item.ItemID);
                 if (invItem == null)
-                {
                     _inventory.Add(new BattleInventoryItem(++_inventoryItemId, item));
-                }
                 else
-                {
                     invItem.AddQuantity(item.Quantity);
-                }
             }
             else
-            {
                 _inventory.Add(new BattleInventoryItem(++_inventoryItemId, item));
-            }
         }
     }
     public class BattleInventoryItem : IInventoryItemDTO
@@ -56,7 +48,7 @@ namespace TurnBase.Server.Game.Battle.Models
         public BattleInventoryItem(int inventoryItemId, IBattleDropItem item)
         {
             InventoryItemId = inventoryItemId;
-            ItemID = item.ItemId;
+            ItemID = item.ItemID;
             Quality = item.Quality;
             Quantity = item.Quantity;
             Level = item.Level;

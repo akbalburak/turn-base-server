@@ -10,6 +10,7 @@
         OffHand = 6,
         Potion = 7,
         Food = 8,
-        MoneyBag = 9
+        MoneyBag = 9,
+        Ingredients = 10
     }
 }

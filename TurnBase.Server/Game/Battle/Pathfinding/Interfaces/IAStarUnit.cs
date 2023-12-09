@@ -6,7 +6,9 @@ namespace TurnBase.Server.Game.Battle.Pathfinding.Interfaces
     {
         IBattleUnitData UnitData { get; }
 
-        public IAStarNode CurrentNode { get; }
+        IAStarNode KilledNode { get; }
+        IAStarNode CurrentNode { get; }
+
         void ChangeNode(IAStarNode node);
 
         void OnAggrieving(IAStarUnit unit);

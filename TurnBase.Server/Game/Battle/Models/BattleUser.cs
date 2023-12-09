@@ -2,6 +2,7 @@
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.Battle.Skills;
+using TurnBase.Server.Game.DTO;
 using TurnBase.Server.Game.DTO.Interfaces;
 using TurnBase.Server.Game.Services;
 using TurnBase.Server.Models;
@@ -12,7 +13,7 @@ namespace TurnBase.Server.Game.Battle.Models
     public class BattleUser : BattleUnit, IBattleUser
     {
         public IBattleInventory LootInventory { get; }
-        public InventoryDTO Equipments { get; set; }
+        public IInventoryItemDTO[] Equipments { get; set; }
         public ISocketUser SocketUser { get; private set; }
         public string PlayerName { get; private set; }
         public bool IsFirstCompletion { get; private set; }
@@ -24,7 +25,7 @@ namespace TurnBase.Server.Game.Battle.Models
         public int GetLastDataId => _lastDataId;
 
         public BattleUser(ISocketUser socketUser,
-            InventoryDTO equipments,
+            IEquipmentItemDTO[] equipments,
             bool isFirstCompletion)
         {
             LootInventory = new BattleInventory(this);
@@ -64,8 +65,7 @@ namespace TurnBase.Server.Game.Battle.Models
             this.AddSkill(attackSkill);
 
             // WE LOOP ALL THE EQUIPMENTS.
-            IEquipmentItemDTO[] userItems = Equipments.GetEquippedItems();
-            foreach (IEquipmentItemDTO userItem in userItems)
+            foreach (IEquipmentItemDTO userItem in Equipments)
             {
                 // SOMEHOW IF THE ITEM DOES NOT EXISTS.
                 IItemDTO itemData = ItemService.GetItem(userItem.ItemID);

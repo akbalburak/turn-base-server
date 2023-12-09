@@ -1,15 +1,12 @@
-﻿namespace TurnBase.Server.Game.Battle.Interfaces.Battle
+﻿using TurnBase.Server.Game.DTO.Interfaces;
+
+namespace TurnBase.Server.Game.Battle.Interfaces.Battle
 {
-    public interface IBattleDropItem
+    public interface IBattleDropItem : IInventoryItemDTO
     {
         int DropItemId { get; }
-
-        int ItemId { get; }
-        int Level { get; }
-        float Quality { get; }
         bool Claimed { get; }
-        int Quantity { get; }
-
+        
         void SetAsClaimed();
     }
 }

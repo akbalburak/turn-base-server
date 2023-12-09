@@ -18,7 +18,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("J")] public int MaxMana { get; set; }
         [JsonProperty("K")] public int NodeIndex { get; set; }
         [JsonProperty("L")] public BattleEffectStartedDTO[] Effects { get; set; }
-
+        [JsonProperty("M")] public int KilledNodeIndex { get; set; }
         public BattleUnitDTO(IBattleItem battleItem, IBattleUnit battleUnit)
         {
             UniqueId = battleUnit.UnitData.UniqueId;
@@ -35,6 +35,11 @@ namespace TurnBase.Server.Game.Battle.DTO
             Skills = battleUnit.Skills.Select(v => v.GetSkillDataDTO()).ToArray();
             Effects = battleUnit.Effects.Select(v => v.GetEffectDataDTO()).ToArray();
 
+            // WHEN DEAD WE WILL SEND EXTRA COUPLE DATA.
+            if (IsDead)
+            {
+                KilledNodeIndex = battleItem.GetNodeIndex(battleUnit.KilledNode);
+            }
         }
     }
 }

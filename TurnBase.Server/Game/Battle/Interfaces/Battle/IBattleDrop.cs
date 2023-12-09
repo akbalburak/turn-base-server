@@ -6,7 +6,6 @@
         IBattleUnit KilledUnit { get; }
         IBattleDropItem[] Drops { get; }
 
-
         void Claim(int dropItemId);
     }
 }

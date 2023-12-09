@@ -21,13 +21,13 @@ namespace TurnBase.Server.Game.Battle.Models
             
         }
 
-        public BattleUnitStats(InventoryDTO inventory)
+        public BattleUnitStats(IInventoryItemDTO[] equipments)
         {
             MaxHealth = ParameterService.GetIntValue(Parameters.BaseHealth);
             MaxMana = ParameterService.GetIntValue(Parameters.BaseMana);
 
             // WE LOOP ALL THE WORN ITEMS.
-            foreach (IEquipmentItemDTO inventoryItem in inventory.GetEquippedItems())
+            foreach (IEquipmentItemDTO inventoryItem in equipments)
             {
                 if (!inventoryItem.Equipped)
                     continue;

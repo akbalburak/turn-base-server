@@ -2,6 +2,7 @@
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Models;
 using TurnBase.Server.Game.DTO;
+using TurnBase.Server.Game.DTO.Interfaces;
 using TurnBase.Server.Game.Services;
 using TurnBase.Server.Game.Trackables;
 using TurnBase.Server.Models;
@@ -24,6 +25,7 @@ namespace TurnBase.Server.Game.Controllers
             TrackedUser user = UserService.GetTrackedUser(smp, smp.SocketUser.User.Id);
             CampaignDTO campaign = user.GetCampaign();
             InventoryDTO inventory = user.GetInventory();
+            IEquipmentItemDTO[] equipments = inventory.GetEquippedItems();
 
             // WE CHECK IF WE ARE GOING TO GIVE USER THE LEVEL REWARDS.
             bool isFirstCompletion = !campaign.IsLevelAlreadyCompleted(
@@ -33,7 +35,7 @@ namespace TurnBase.Server.Game.Controllers
             // WE CREATE A BATTLE USER.
             BattleUser battleUser = new BattleUser(
                 socketUser: smp.SocketUser,
-                equipments: inventory,
+                equipments: equipments,
                 isFirstCompletion: isFirstCompletion
             );
 

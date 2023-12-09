@@ -1,4 +1,6 @@
-﻿namespace TurnBase.Server.Game.DTO.Interfaces
+﻿using Newtonsoft.Json;
+
+namespace TurnBase.Server.Game.DTO.Interfaces
 {
     public interface IEquipmentItemDTO : IInventoryItemDTO
     {

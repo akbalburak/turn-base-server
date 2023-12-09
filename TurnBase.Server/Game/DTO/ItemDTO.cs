@@ -52,6 +52,7 @@ namespace TurnBase.Server.Game.DTO
                     case ItemTypes.MoneyBag:
                     case ItemTypes.Potion:
                     case ItemTypes.Food:
+                    case ItemTypes.Ingredients:
                         return true;
                 }
             }

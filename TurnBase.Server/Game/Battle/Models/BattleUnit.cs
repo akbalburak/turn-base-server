@@ -13,6 +13,7 @@ namespace TurnBase.Server.Game.Battle.Models
 
         public IBattleUnitData UnitData { get; private set; }
         public IAStarNode CurrentNode { get; private set; }
+        public IAStarNode KilledNode { get; private set; }
 
         public int Health { get; private set; }
         public int Mana { get; private set; }
@@ -121,6 +122,7 @@ namespace TurnBase.Server.Game.Battle.Models
             if (IsDeath)
                 return;
 
+            KilledNode = CurrentNode;
             ChangeNode(null);
 
             IsDeath = true;

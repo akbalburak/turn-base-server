@@ -42,6 +42,8 @@ namespace TurnBase.Server.Game.Battle.Models
             // AFTER FOUND IT WE SET AS CLAIMED.
             item.SetAsClaimed();
 
+            OnDropClaimed?.Invoke(item);
+
             OnClaimItem(new List<IBattleDropItem> { item });
         }
 
@@ -57,6 +59,8 @@ namespace TurnBase.Server.Game.Battle.Models
                 drop.SetAsClaimed();
 
                 claims.Add(drop);
+
+                OnDropClaimed?.Invoke(drop);
             }
 
             OnClaimItem(claims);
@@ -75,13 +79,19 @@ namespace TurnBase.Server.Game.Battle.Models
                     items.Select(x => x.DropItemId).ToArray()
                 )
             );
+
+            // IF ALL THE DROPS ARE CLEANED.
+            if (Array.TrueForAll(Drops,x=> x.Claimed))
+            {
+                OnAllDropsClaimed?.Invoke(this);
+            }
         }
     }
 
     public class BattleDropItem : IBattleDropItem
     {
         public int DropItemId { get; }
-        public int ItemId { get; }
+        public int ItemID { get; }
         public int Level { get; }
         public float Quality { get; }
         public int Quantity { get; }
@@ -95,7 +105,7 @@ namespace TurnBase.Server.Game.Battle.Models
                               int quantity)
         {
             DropItemId = dropItemId;
-            ItemId = itemId;
+            ItemID = itemId;
             Level = level;
             Quality = quality;
             Quantity = quantity;

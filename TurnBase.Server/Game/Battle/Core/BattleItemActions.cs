@@ -2,6 +2,7 @@
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
+using TurnBase.Server.Game.DTO;
 using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Core
@@ -91,15 +92,23 @@ namespace TurnBase.Server.Game.Battle.Core
         }
         private void SendAllGameData(ISocketUser socketUser, BattleActionRequestDTO requestData)
         {
-            IBattleUser user = _users.FirstOrDefault(y => y.SocketUser == socketUser);
+            IBattleUser user = GetUser(socketUser);
             IBattleUnit currentTurnUnit = _turnHandler.GetCurrentTurnUnit();
 
+            // WE GET PLAYER DROPS.
+            IBattleDrop[] drops = Array.Empty<IBattleDrop>();
+            lock (_drops)
+                drops = _drops.Where(x => x.DropOwner == user).ToArray();
+
+            // ALL THE REQUIRED DATA TO CONTINUE GAME.
             BattleLoadAllDTO loadData = new BattleLoadAllDTO()
             {
                 Units = _allNpcs.Select(npc => new BattleNpcUnitDTO(this, npc)).ToArray(),
                 Players = _users.Select(user => new BattlePlayerDTO(this, user, user.SocketUser == socketUser)).ToArray(),
                 LastDataId = user.GetLastDataId,
-                TurnData = currentTurnUnit == null ? null : new BattleTurnDTO(currentTurnUnit.UnitData.UniqueId)
+                TurnData = currentTurnUnit == null ? null : new BattleTurnDTO(currentTurnUnit.UnitData.UniqueId),
+                Drops = drops.Select(x => new BattleDropDTO(x)).ToArray(),
+                LootInventory = user.LootInventory.IItems.Select(x=> new BattleInventoryDTO(x)).ToArray()
             };
 
             SendToUser(user, BattleActions.LoadAll, loadData);
