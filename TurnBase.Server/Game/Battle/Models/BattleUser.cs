@@ -12,25 +12,30 @@ namespace TurnBase.Server.Game.Battle.Models
 {
     public class BattleUser : BattleUnit, IBattleUser
     {
+        public Action<IBattleUser> OnUserConnected { get; set; }
+        public Action<IBattleUser> OnUserDisconnected { get; set; }
+
         public IBattleInventory LootInventory { get; }
         public IInventoryItemDTO[] Equipments { get; set; }
         public ISocketUser SocketUser { get; private set; }
+
         public string PlayerName { get; private set; }
         public bool IsFirstCompletion { get; private set; }
 
-        public bool IsConnected => SocketUser != null;
+        public bool IsConnected { get; private set; }
 
-        private int _lastDataId;
         public int GetNewDataId => ++_lastDataId;
         public int GetLastDataId => _lastDataId;
+
+        private int _lastDataId;
 
         public BattleUser(ISocketUser socketUser,
             IEquipmentItemDTO[] equipments,
             bool isFirstCompletion)
         {
+            UpdateSocketUser(socketUser);
             LootInventory = new BattleInventory(this);
             Equipments = equipments;
-            SocketUser = socketUser;
             PlayerName = socketUser.User.UserName;
             IsFirstCompletion = isFirstCompletion;
 
@@ -111,7 +116,36 @@ namespace TurnBase.Server.Game.Battle.Models
 
         public void UpdateSocketUser(ISocketUser socketUser)
         {
+            if (SocketUser != null)
+                SocketUser.OnUserTimeout -= OnUserTimeout;
+
             SocketUser = socketUser;
+            SocketUser.OnUserTimeout += OnUserTimeout;
+
+            IsConnected = true;
+        }
+
+        public void SetAsDisconnected()
+        {
+            if (IsConnected == false)
+                return;
+
+            IsConnected = false;
+            OnUserDisconnected?.Invoke(this);
+        }
+
+        public void SetAsConnected()
+        {
+            if (IsConnected)
+                return;
+
+            IsConnected = true;
+            OnUserConnected?.Invoke(this);
+        }
+
+        private void OnUserTimeout()
+        {
+            SetAsDisconnected();
         }
     }
 }

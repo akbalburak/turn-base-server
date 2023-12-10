@@ -17,5 +17,11 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         bool IsFirstCompletion { get; }
 
         void UpdateSocketUser(ISocketUser socketUser);
+
+        public Action<IBattleUser> OnUserConnected { get; set; }
+        public Action<IBattleUser> OnUserDisconnected { get; set; }
+
+        void SetAsDisconnected();
+        void SetAsConnected();
     }
 }

@@ -2,7 +2,6 @@
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
-using TurnBase.Server.Game.DTO;
 using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.Core
@@ -32,7 +31,25 @@ namespace TurnBase.Server.Game.Battle.Core
                 case BattleActions.ClaimADrop:
                     ClaimDrop(socketUser, requestData);
                     break;
+                case BattleActions.LeaveBattle:
+                    LeaveBattle(socketUser);
+                    break;
             }
+        }
+
+        private void LeaveBattle(ISocketUser socketUser)
+        {
+            socketUser.ClearBattle();
+
+            IBattleUser user = GetUser(socketUser);
+            if (user.IsConnected == false)
+                return;
+
+            user.SetAsDisconnected();
+
+            // IF ALL USERS LEFT WE WILL TERMINATE THE GAME.
+            if (_users.All(x => x.IsConnected == false))
+                Dispose();
         }
 
         private void ClaimDrop(ISocketUser socketUser, BattleActionRequestDTO requestData)
@@ -108,7 +125,7 @@ namespace TurnBase.Server.Game.Battle.Core
                 LastDataId = user.GetLastDataId,
                 TurnData = currentTurnUnit == null ? null : new BattleTurnDTO(currentTurnUnit.UnitData.UniqueId),
                 Drops = drops.Select(x => new BattleDropDTO(x)).ToArray(),
-                LootInventory = user.LootInventory.IItems.Select(x=> new BattleInventoryDTO(x)).ToArray()
+                LootInventory = user.LootInventory.IItems.Select(x => new BattleInventoryDTO(x)).ToArray()
             };
 
             SendToUser(user, BattleActions.LoadAll, loadData);
@@ -121,8 +138,18 @@ namespace TurnBase.Server.Game.Battle.Core
         {
             // WE LOOP TILL PLAYER TURN.
             IBattleUnit attacker = _turnHandler.GetCurrentTurnUnit();
-            if (attacker is IBattleUser)
-                return;
+
+            // WE CHECK IF PLAYERS WE FINALIZE THE TURN.
+            if (attacker is IBattleUser battleUser)
+            {
+                // THER SHOULD BE ATLEAST ONE PLAYER CAN PLAY.
+                if (_users.Count(x => x.IsConnected) == 0)
+                    return;
+
+                // IF PLAYER NOT CONNECTED WE USE AI FOR IT.
+                if (battleUser.IsConnected)
+                    return;
+            }
 
             attacker.UseAI();
         }

@@ -13,6 +13,8 @@
         EffectOver = 9,
         TurnOrderChanged = 10,
         YouHaveDrop = 11,
-        ClaimADrop = 12
+        ClaimADrop = 12,
+        LeaveBattle = 13,
+        ReconnectBattle = 14
     }
 }

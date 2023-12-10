@@ -57,9 +57,7 @@ namespace TurnBase.Server.Game.Battle.Core
                 .ToArray();
 
             foreach (IAStarNode node in _nodes)
-            {
                 node.FindNeighbors(_nodes, _levelData.DistancePerHex);
-            }
 
             int unitIdCounter = 0;
 
@@ -102,6 +100,9 @@ namespace TurnBase.Server.Game.Battle.Core
                     drops: Array.Empty<IMapDataEnemyDropJson>()
                 ));
 
+                user.OnUserDisconnected += OnUserDisconnected;
+                user.OnUserConnected += OnUserConnected;
+
                 _allUnits.Add(user);
                 index++;
             }
@@ -109,7 +110,6 @@ namespace TurnBase.Server.Game.Battle.Core
             // WE CREATE TURN HANDLER.
             _turnHandler = new BattleTurnHandler(this);
         }
-
 
         public void CallGroupAggrieving(int groupIndex)
         {

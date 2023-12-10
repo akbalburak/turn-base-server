@@ -10,6 +10,8 @@ namespace TurnBase.Server.Server.ServerModels
 {
     public class SocketUser : BaseSocketUser, ISocketUser
     {
+        public Action OnUserTimeout { get; set; }
+
         public const int ListSize = 25;
         public const int TimeOutSeconds = 45;
 
@@ -37,12 +39,6 @@ namespace TurnBase.Server.Server.ServerModels
             SocketUserBusSystem.CallSocketUserConnect(this);
         }
 
-
-        public void SetBattle(IBattleItem battle)
-        {
-            CurrentBattle = battle;
-            CurrentBattle.OnDisposed += (IBattleItem battle) => CurrentBattle = null;
-        }
         public void SendToClient(SocketResponse response)
         {
             if (IsDisposed)
@@ -54,7 +50,6 @@ namespace TurnBase.Server.Server.ServerModels
                 _unExpectedNotReceivedResponses.Add(response);
             }
         }
-
 
         private void OnUnExpectedTimerElapsed(object? state)
         {
@@ -150,6 +145,23 @@ namespace TurnBase.Server.Server.ServerModels
             }
         }
 
+        public void SetBattle(IBattleItem battle)
+        {
+            CurrentBattle = battle;
+            CurrentBattle.OnDisposed += OnBattleDispose;
+        }
+        private void OnBattleDispose(IBattleItem battle)
+        {
+            ClearBattle();
+        }
+        public void ClearBattle()
+        {
+            if (CurrentBattle != null)
+                CurrentBattle.OnDisposed -= OnBattleDispose;
+
+            CurrentBattle = null;
+        }
+
         protected override void OnAddData(string data)
         {
             string[] jsonValues = data.Split(TcpServer.ENDFIX, StringSplitOptions.RemoveEmptyEntries);
@@ -217,8 +229,10 @@ namespace TurnBase.Server.Server.ServerModels
             {
                 lock (this)
                 {
+
                     _unExpectedTimer.Dispose();
 
+                    OnUserTimeout?.Invoke();
                     SocketUserBusSystem.CallSocketUserDisconnect(this);
                 }
             }

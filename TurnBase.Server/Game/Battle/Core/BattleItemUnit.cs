@@ -1,4 +1,5 @@
-﻿using TurnBase.Server.Game.Battle.Interfaces;
+﻿using TurnBase.Server.Game.Battle.DTO;
+using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 using TurnBase.Server.Server.Interfaces;
 
@@ -52,5 +53,13 @@ namespace TurnBase.Server.Game.Battle.Core
             return targetUnit;
         }
 
+        private void OnUserConnected(IBattleUser user)
+        {
+            SendToAllUsers(Enums.BattleActions.ReconnectBattle, new BattleDisconnectDTO(user));
+        }
+        private void OnUserDisconnected(IBattleUser user)
+        {
+            SendToAllUsers(Enums.BattleActions.LeaveBattle, new BattleDisconnectDTO(user));
+        }
     }
 }
