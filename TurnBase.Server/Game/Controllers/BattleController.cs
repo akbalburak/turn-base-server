@@ -59,21 +59,5 @@ namespace TurnBase.Server.Game.Controllers
 
             return SocketResponse.GetSuccess();
         }
-
-        public static SocketResponse GetBattleRewards(ISocketMethodParameter smp)
-        {
-            BattleDTO.BattleDataRequestDTO requestData = smp
-                .GetRequestData<BattleDTO.BattleDataRequestDTO>();
-
-            BattleDTO.BattleDataResponseDTO levelData = BattleLevelService.GetLevelMetaData(
-                requestData.StageIndex,
-                requestData.LevelIndex
-            );
-
-            if (levelData == null)
-                return SocketResponse.GetSuccess(new BattleDTO.BattleDataResponseDTO());
-            else
-                return SocketResponse.GetSuccess(levelData);
-        }
     }
 }

@@ -13,7 +13,6 @@
         UnequipItem = 9,
         Parameters = 10,
         InventoryModified = 11,
-        LevelData = 12,
         UseItem = 13,
         UserGoldChanged = 14,
         CampaignProgressModified = 15,
