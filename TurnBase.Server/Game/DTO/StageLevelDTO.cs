@@ -23,10 +23,16 @@ namespace TurnBase.Server.Game.DTO
         {
             PlayCount++;
         }
+        public void IncreaseCompleteCount()
+        {
+            CompletedCount++;
+        }
 
         public override SocketResponse GetResponse()
         {
             return SocketResponse.GetSuccess(ActionTypes.CampaignProgressModified, this);
         }
+
+
     }
 }

@@ -28,7 +28,7 @@ namespace TurnBase.Server.Game.Battle.Core
                     bool firstTimeVictory = !campaign.IsLevelAlreadyCompleted(_levelData.Stage, _levelData.Level);
 
                     // WE COMPLETE THE CAMPAIGN FOR THE USER.
-                    campaign.SaveLevelProgress(_levelData.Stage, _levelData.Level);
+                    campaign.SaveLevelProgress(_levelData.Stage, _levelData.Level, isCompleted: true);
                     userData.UpdateCampaign(campaign);
 
                     // ALL THE REWARDS EARNED IN THE GAME.

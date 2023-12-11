@@ -34,7 +34,6 @@ namespace TurnBase.Server.Game.Battle.Core
             {
                 BattleEndDTO drawData = new BattleEndDTO(BattleEndSates.Lose);
                 SendToAllUsers(BattleActions.BattleEnd, drawData);
-                Dispose();
                 return;
             }
 
@@ -43,13 +42,16 @@ namespace TurnBase.Server.Game.Battle.Core
             {
                 BattleEndDTO drawData = new BattleEndDTO(BattleEndSates.Lose);
                 SendToAllUsers(BattleActions.BattleEnd, drawData);
-                Dispose();
                 return;
             }
 
             // MEANS TEAM 1 IS DEFEATED.
             if (team1AliveUnitCount > 0)
             {
+                BattleEndRewardDTO[] completionRewards = _levelData.IFirstCompletionRewards
+                    .Select(x => new BattleEndRewardDTO(x))
+                    .ToArray();
+
                 foreach (IBattleUser user in _users)
                 {
                     // TEAM 1 WON.
@@ -57,14 +59,15 @@ namespace TurnBase.Server.Game.Battle.Core
                     team1EndData.WinnerTeam = 1;
 
                     if (user.IsFirstCompletion)
-                        team1EndData.FirstCompletionRewards = _levelData.IFirstCompletionRewards;
+                    {
+                        team1EndData.FirstCompletionRewards = completionRewards;
+                    }
 
                     SendToAllUsers(BattleActions.BattleEnd, team1EndData);
 
                     CompleteCampaign(user, userId: user.SocketUser.User.Id);
                 }
 
-                Dispose();
                 return;
             }
 
@@ -77,7 +80,6 @@ namespace TurnBase.Server.Game.Battle.Core
                     WinnerTeam = 2
                 };
                 SendToAllUsers(BattleActions.BattleEnd, team1EndData);
-                Dispose();
                 return;
             }
         }

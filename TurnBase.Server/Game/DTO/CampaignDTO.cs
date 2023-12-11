@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using TurnBase.Server.Game.Enums;
 using TurnBase.Server.Server.Interfaces;
 
 namespace TurnBase.Server.Game.DTO
@@ -20,23 +19,27 @@ namespace TurnBase.Server.Game.DTO
 
             return levelProgress.CompletedCount > 0;
         }
-        public void SaveLevelProgress(int stageIndex, int levelIndex)
+        public void SaveLevelProgress(int stageIndex, int levelIndex, bool isCompleted)
         {
             StageLevelDTO progress = GetLevelProgress(stageIndex, levelIndex);
             if (progress == null)
             {
-                StageProgress.Add(new StageLevelDTO(stageIndex, levelIndex));
-
-                progress = StageProgress[^1];
-
+                progress = new StageLevelDTO(stageIndex, levelIndex);
                 progress.SetChangeHandler(_changeHandler);
+
+                StageProgress.Add(progress);
             }
 
             progress.IncreasePlayCount();
 
+            if (isCompleted)
+            {
+                progress.IncreaseCompleteCount();
+            }
+
             progress.SetAsModified();
         }
-        
+
         private StageLevelDTO GetLevelProgress(int stageIndex, int levelIndex)
         {
             return StageProgress.Find(y => y.Stage == stageIndex && y.Level == levelIndex);
