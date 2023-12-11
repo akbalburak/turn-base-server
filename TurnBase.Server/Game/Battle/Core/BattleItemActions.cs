@@ -11,7 +11,7 @@ namespace TurnBase.Server.Game.Battle.Core
         public void ExecuteAction(ISocketUser socketUser, BattleActionRequestDTO requestData)
         {
             // IF THE GAME IS OVER NO LONGER ACTIONS CAN BE EXECUTED.
-            if (_gameOver)
+            if (GameOver)
                 return;
 
             switch (requestData.BattleAction)
@@ -82,12 +82,14 @@ namespace TurnBase.Server.Game.Battle.Core
         }
         private void StartGame(ISocketUser socketUser)
         {
+            IBattleUser user = GetUser(socketUser);
+            if (user.IsReady) return;
+
+            user.SetAsReady();
+            _turnHandler.AddUnits(new IBattleUnit[] { user });
+
             if (_gameStarted)
                 return;
-
-            IBattleUser user = GetUser(socketUser);
-
-            _turnHandler.AddUnits(new IBattleUnit[] { user });
 
             _gameStarted = true;
             _turnHandler.SkipToNextTurn();
@@ -99,10 +101,6 @@ namespace TurnBase.Server.Game.Battle.Core
             // WE GET THE PLAYER.
             IBattleUser currentUser = GetUser(socketUser);
             if (currentUser == null)
-                return;
-
-            // MAKE SURE PLAYER TURN.
-            if (!_turnHandler.IsUnitTurn(currentUser))
                 return;
 
             currentUser.UseSkill(useData);
@@ -120,6 +118,7 @@ namespace TurnBase.Server.Game.Battle.Core
             // ALL THE REQUIRED DATA TO CONTINUE GAME.
             BattleLoadAllDTO loadData = new BattleLoadAllDTO()
             {
+                IsInCombat = _turnHandler.IsInCombat,
                 Units = _allNpcs.Select(npc => new BattleNpcUnitDTO(this, npc)).ToArray(),
                 Players = _users.Select(user => new BattlePlayerDTO(this, user, user.SocketUser == socketUser)).ToArray(),
                 LastDataId = user.GetLastDataId,

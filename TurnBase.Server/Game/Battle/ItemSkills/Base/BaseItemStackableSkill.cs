@@ -23,6 +23,12 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
             CurrentStackSize = InitialStackSize;
 
             Owner.OnUnitTurnStart += OnUnitTurnStarted;
+            Battle.BattleTurnHandler.OnInCombatStateChanged += OnInCombatStateChanged;
+        }
+
+        private void OnInCombatStateChanged(bool isInCombat)
+        {
+            ResetStack();
         }
 
         private void OnUnitTurnStarted(IBattleUnit unit)

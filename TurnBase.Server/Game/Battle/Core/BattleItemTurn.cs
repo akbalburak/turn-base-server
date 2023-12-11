@@ -1,7 +1,6 @@
 ﻿using TurnBase.Server.Game.Battle.DTO;
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
-using TurnBase.Server.Game.Battle.Models;
 
 namespace TurnBase.Server.Game.Battle.Core
 {
@@ -13,7 +12,7 @@ namespace TurnBase.Server.Game.Battle.Core
             CheckGameEnd();
 
             // WE CHECK IF THE GAME IS OVER.
-            if (_gameOver)
+            if (GameOver)
                 return;
 
             // IF NOT OVER WE CAN SKIP TO NEXT TURN.
@@ -29,8 +28,6 @@ namespace TurnBase.Server.Game.Battle.Core
             // IF THERE IS AN ALIVE UNIT FOR BOTH TEAM..
             if (team1AliveUnitCount > 0 && team2AliveUnitCount > 0)
                 return;
-
-            // WE WILL CHECK IF THIS IS THE LAST WAVE.
 
             // WHEN TWO TEAM LOSES ALL THEIR UNITS.
             if (team1AliveUnitCount == 0 && team2AliveUnitCount == 0)

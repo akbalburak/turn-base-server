@@ -26,6 +26,8 @@ namespace TurnBase.Server.Game.Battle.Core
         public IBattleTurnHandler BattleTurnHandler => _turnHandler;
         public IBattleUser[] Users => _users.ToArray();
 
+        public bool GameOver { get; private set; }
+
         private IMapDataJson _levelData;
         private IBattleTurnHandler _turnHandler;
 
@@ -35,7 +37,6 @@ namespace TurnBase.Server.Game.Battle.Core
         private List<IBattleDrop> _drops;
 
         private bool _gameStarted;
-        private bool _gameOver;
         private bool _disposed;
         private Random _randomizer;
 
@@ -46,10 +47,10 @@ namespace TurnBase.Server.Game.Battle.Core
             _allNpcs = new List<IBattleNpcUnit>();
             _allUnits = new List<IBattleUnit>();
 
+            _turnHandler = new BattleTurnHandler(this);
             _randomizer = new Random();
-            _users = users;
 
-            // WE LOAD LEVEL DATA AND DIFFICULITY DATA.
+            _users = users;
             _levelData = levelData;
 
             _nodes = _levelData.IMapHexNodes
@@ -106,9 +107,6 @@ namespace TurnBase.Server.Game.Battle.Core
                 _allUnits.Add(user);
                 index++;
             }
-
-            // WE CREATE TURN HANDLER.
-            _turnHandler = new BattleTurnHandler(this);
         }
 
         public void CallGroupAggrieving(int groupIndex)

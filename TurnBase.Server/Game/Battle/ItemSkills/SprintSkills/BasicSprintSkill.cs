@@ -19,6 +19,11 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
         {
         }
 
+        public override bool IsSkillReadyToUse()
+        {
+            return !Battle.IsInCombat || base.IsSkillReadyToUse();
+        }
+
         public override void OnSkillUse(BattleSkillUseDTO useData)
         {
             // WE MAKE SURE MOVE INDEX IS VALID.

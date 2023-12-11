@@ -2,7 +2,7 @@
   "Stage": 1,
   "Level": 1,
   "DistancePerHex": 3.47410154,
-  "PlayerSpawnPoints": [ 294 ],
+  "PlayerSpawnPoints": [ 294,295 ],
   "Enemies": [
     {
       "Group": 1,

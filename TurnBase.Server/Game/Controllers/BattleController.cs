@@ -13,6 +13,8 @@ namespace TurnBase.Server.Game.Controllers
 {
     public static class BattleController
     {
+        // TEMPORARY TO TEST MULTIPLAYER.
+        private static BattleUser _waitingUser;
         public static SocketResponse StartABattle(ISocketMethodParameter smp)
         {
             if (smp.SocketUser.CurrentBattle != null)
@@ -39,9 +41,15 @@ namespace TurnBase.Server.Game.Controllers
                 isFirstCompletion: isFirstCompletion
             );
 
+            if (_waitingUser == null)
+            {
+                _waitingUser = battleUser;
+                return SocketResponse.GetSuccess();
+            }
+
             // WE CREATE A CAMPAIGN LEVEL.
             BattleService.CreateALevel(new IBattleUser[]
-                { battleUser },
+                { battleUser, _waitingUser },
                 requestData.StageIndex,
                 requestData.LevelIndex
             );

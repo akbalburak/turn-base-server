@@ -15,6 +15,8 @@ public partial class TblItemSkill
 
     public int TargetId { get; set; }
 
+    public bool IsCombatSkill { get; set; }
+
     public virtual TblItemSkillShape Shape { get; set; } = null!;
 
     public virtual TblItemSkillTarget Target { get; set; } = null!;

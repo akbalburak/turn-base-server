@@ -86,7 +86,7 @@ namespace TurnBase.Server.Game.Battle.Core
                 return;
 
             _disposed = true;
-            _gameOver = true;
+            GameOver = true;
 
             OnDisposed?.Invoke(this);
         }

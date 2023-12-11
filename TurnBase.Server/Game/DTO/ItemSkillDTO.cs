@@ -12,9 +12,11 @@ namespace TurnBase.Server.Game.DTO
         [JsonProperty("C")] public ItemSkillDataDTO[] Data { get; private set; }
         [JsonProperty("D")] public ItemSkillShapes Shape { get; private set; }
         [JsonProperty("E")] public ItemSkillTargets Target { get; private set; }
+        [JsonProperty("F")] public bool IsCombatSkill { get; private set; }
 
         public ItemSkillDTO(DBLayer.Models.TblItemSkill itemData)
         {
+            IsCombatSkill = itemData.IsCombatSkill;
             Target = (ItemSkillTargets)itemData.TargetId;
             ItemSkill = (ItemSkills)itemData.Id;
             FinalizeTurnInUse = itemData.FinalizeTurnInUse;

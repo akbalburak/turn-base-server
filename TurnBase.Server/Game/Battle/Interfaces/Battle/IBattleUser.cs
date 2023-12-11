@@ -20,8 +20,10 @@ namespace TurnBase.Server.Game.Battle.Interfaces
 
         public Action<IBattleUser> OnUserConnected { get; set; }
         public Action<IBattleUser> OnUserDisconnected { get; set; }
+        bool IsReady { get; }
 
         void SetAsDisconnected();
         void SetAsConnected();
+        void SetAsReady();
     }
 }

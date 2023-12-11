@@ -15,6 +15,7 @@
         YouHaveDrop = 11,
         ClaimADrop = 12,
         LeaveBattle = 13,
-        ReconnectBattle = 14
+        ReconnectBattle = 14,
+        CombatStateChanged = 15
     }
 }

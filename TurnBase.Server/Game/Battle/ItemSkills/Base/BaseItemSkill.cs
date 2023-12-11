@@ -45,7 +45,9 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
 
         public virtual bool IsSkillReadyToUse()
         {
-            return CurrentCooldown <= 0 && Owner.IsManaEnough(UsageManaCost);
+            return CurrentCooldown <= 0 && 
+                Owner.IsManaEnough(UsageManaCost) && 
+                Battle.BattleTurnHandler.IsUnitTurn(Owner);
         }
 
         public void UseSkill(BattleSkillUseDTO useData)

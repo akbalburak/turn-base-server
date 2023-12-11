@@ -14,6 +14,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Battle
 
         double GetRandomValue { get; }
         Action<IBattleItem> OnDisposed { get; set; }
+        bool GameOver { get; }
 
         void ExecuteAction(ISocketUser socketUser, BattleActionRequestDTO requestData);
 

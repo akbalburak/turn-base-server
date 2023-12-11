@@ -10,6 +10,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("D")] public BattleTurnDTO TurnData { get; set; }
         [JsonProperty("E")] public BattleDropDTO[] Drops { get; set; }
         [JsonProperty("F")] public BattleInventoryDTO[] LootInventory { get; set; }
+        [JsonProperty("G")] public bool IsInCombat { get; set; }
 
         public BattleLoadAllDTO()
         {

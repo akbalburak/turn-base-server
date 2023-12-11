@@ -7,7 +7,8 @@ namespace TurnBase.Server.Game.Battle.Core
 {
     public class BattleTurnHandler : IBattleTurnHandler
     {
-        public bool IsInCombat => _isInCombat;
+        public Action<bool> OnInCombatStateChanged { get; set; }
+        public bool IsInCombat { get; private set; }
         public IBattleTurnItem[] TurnItems => _unitAttackTurns.ToArray();
 
         private IBattleItem _battle;
@@ -16,7 +17,6 @@ namespace TurnBase.Server.Game.Battle.Core
 
         private List<BattleTurnItem> _unitAttackTurns;
         private BattleTurnItem _currentTurn;
-        private bool _isInCombat;
 
         public BattleTurnHandler(IBattleItem battle)
         {
@@ -102,10 +102,13 @@ namespace TurnBase.Server.Game.Battle.Core
             int teamCount = _unitAttackTurns.Select(x => x.Unit.UnitData.TeamIndex).Distinct().Count();
             bool isInCombat = teamCount > 1;
 
-            if (_isInCombat == isInCombat)
+            if (IsInCombat == isInCombat)
                 return;
 
-            _isInCombat = isInCombat;
+            IsInCombat = isInCombat;
+            OnInCombatStateChanged?.Invoke(isInCombat);
+
+            _battle.SendToAllUsers(BattleActions.CombatStateChanged, new BattleCombatStateChangedDTO(this));
         }
         private void RemoveUnit(IBattleUnit unit)
         {

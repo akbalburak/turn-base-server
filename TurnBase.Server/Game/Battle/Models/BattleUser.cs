@@ -21,11 +21,13 @@ namespace TurnBase.Server.Game.Battle.Models
 
         public string PlayerName { get; private set; }
         public bool IsFirstCompletion { get; private set; }
+        public bool IsReady { get; private set; }
 
         public bool IsConnected { get; private set; }
 
         public int GetNewDataId => ++_lastDataId;
         public int GetLastDataId => _lastDataId;
+
 
         private int _lastDataId;
 
@@ -146,6 +148,11 @@ namespace TurnBase.Server.Game.Battle.Models
         private void OnUserTimeout()
         {
             SetAsDisconnected();
+        }
+
+        public void SetAsReady()
+        {
+            IsReady = true;
         }
     }
 }
