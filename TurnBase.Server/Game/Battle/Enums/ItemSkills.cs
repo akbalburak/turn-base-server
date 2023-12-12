@@ -7,6 +7,7 @@
         FinishHim = 3,
         SplashSlashSkill = 4,
         OneHandedBasicAttackSkill = 5,
-        BasicSprint = 6
+        BasicSprint = 6,
+        SmallHealthPotionSkill = 7
     }
 }

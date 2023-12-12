@@ -7,6 +7,8 @@
         Radius = 3,
         Stack = 4,
         ManaCost = 5,
-        Cooldown = 6
+        Cooldown = 6,
+        Recovery = 7,
+        Consumable = 8
     }
 }

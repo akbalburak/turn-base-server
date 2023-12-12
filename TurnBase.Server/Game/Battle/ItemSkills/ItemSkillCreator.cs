@@ -2,6 +2,7 @@
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills;
+using TurnBase.Server.Game.Battle.ItemSkills.PotionSkills;
 using TurnBase.Server.Game.Battle.ItemSkills.SprintSkills;
 using TurnBase.Server.Game.DTO.Interfaces;
 
@@ -13,7 +14,8 @@ namespace TurnBase.Server.Game.Battle.Skills
             IItemSkillDTO skill,
             IBattleItem battle,
             IBattleUnit owner,
-            float itemQuality)
+            float itemQuality,
+            IInventoryItemDTO inventoryItem = null)
         {
             return skill.ItemSkill switch
             {
@@ -23,6 +25,7 @@ namespace TurnBase.Server.Game.Battle.Skills
                 Enums.ItemSkills.SplashSlashSkill => new SplashSlashSkill(uniqueId, skill, battle, owner, itemQuality),
                 Enums.ItemSkills.BasicSprint => new BasicSprintSkill(uniqueId, skill, battle, owner, itemQuality),
                 Enums.ItemSkills.OneHandedBasicAttackSkill => new OneHandedBasicAttackSkill(uniqueId, skill, battle, owner, itemQuality),
+                Enums.ItemSkills.SmallHealthPotionSkill => new HealthPotionSkill(uniqueId, skill, battle, owner, itemQuality, inventoryItem),
                 _ => null,
             };
         }

@@ -103,7 +103,8 @@ namespace TurnBase.Server.Game.Battle.Models
                         skill: skill,
                         battle: UnitData.BattleItem,
                         owner: this,
-                        userItem.Quality
+                        itemQuality: userItem.Quality,
+                        inventoryItem: userItem
                     );
 
                     // IF SOME HOW SKILL UNDEFINED JUST SKIP.

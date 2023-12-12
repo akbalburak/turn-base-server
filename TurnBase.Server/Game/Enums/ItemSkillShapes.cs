@@ -3,6 +3,7 @@
     public enum ItemSkillShapes
     {
         Path = 1,
-        PlayerCenteredCircle = 2
+        PlayerCenteredCircle = 2,
+        PlayerSelf = 3
     }
 }

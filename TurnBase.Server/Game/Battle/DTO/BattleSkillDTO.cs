@@ -15,6 +15,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("F")] public int CurrentStackSize { get; private set; }
 
         [JsonProperty("G")] public float SkillQuality { get; private set; }
+        [JsonProperty("H")] public int ConsumableCount { get; private set; }
 
         public BattleSkillDTO(IItemSkill skill)
         {
@@ -28,6 +29,11 @@ namespace TurnBase.Server.Game.Battle.DTO
         {
             this.InitialStackSize = skill.InitialStackSize;
             this.CurrentStackSize = skill.CurrentStackSize;
+        }
+
+        public BattleSkillDTO(IItemConsumableSkill skill) : this((IItemSkill)skill)
+        {
+            ConsumableCount = skill.LeftUseCount;
         }
     }
 }

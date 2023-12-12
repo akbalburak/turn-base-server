@@ -71,6 +71,20 @@ namespace TurnBase.Server.Game.Battle.Core
 
                         }
 
+                        // WE REMOVE SPENT ITEMS.
+                        foreach (IInventoryItemDTO equipment in battleUser.Equipments)
+                        {
+                            var itemData = ItemService.GetItem(equipment.ItemID);
+                            switch (itemData.TypeId)
+                            {
+                                case Game.Enums.ItemTypes.Potion:
+                                    {
+
+                                    }
+                                    break;
+                            }
+                        }
+
                         userData.UpdateInventory(inventory);
                     }
 

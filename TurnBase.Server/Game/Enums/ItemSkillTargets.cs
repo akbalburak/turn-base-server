@@ -4,6 +4,7 @@
     {
         AnyTile = 1,
         EnemyUnit = 2,
-        AllyUnit = 3
+        AllyUnit = 3,
+        Self = 4
     }
 }

@@ -204,5 +204,11 @@ namespace TurnBase.Server.Game.Battle.Models
             if (UnitData.BattleItem.BattleTurnHandler.IsUnitTurn(this))
                 UnitData.BattleItem.FinalizeTurn();
         }
+
+        public void IncreaseHealth(int health)
+        {
+            Health += health;
+            Health = Math.Min(Health, Stats.MaxHealth);
+        }
     }
 }

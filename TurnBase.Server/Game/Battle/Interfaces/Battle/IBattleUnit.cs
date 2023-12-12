@@ -12,6 +12,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         Action<IBattleUnit> OnUnitDie { get; set; }
 
         int Health { get; }
+        void IncreaseHealth(int health);
         int Mana { get; }
         bool IsAggrieved { get; }
 

@@ -38,6 +38,7 @@ namespace TurnBase.Server.Models
                     Quantity = quantity,
                     IsNew = true,
                     InventoryItemID = ++IdCounter,
+                    SelectedSkills = new int[item.Skills.Length]
                 };
 
                 userItem.SetChangeHandler(_changeHandler);
@@ -61,6 +62,7 @@ namespace TurnBase.Server.Models
                 Quality = quality,
                 Level = level,
                 IsNew = true,
+                SelectedSkills = new int[item.Skills.Length]
             };
 
             userItem.SetChangeHandler(_changeHandler);
