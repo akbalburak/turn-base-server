@@ -13,6 +13,9 @@ namespace TurnBase.Server.Game.Controllers
     {
         public static SocketResponse EquipItem(ISocketMethodParameter smp)
         {
+            if (smp.SocketUser.IsInBattle)
+                return SocketResponse.GetError("You cant do that while in battle!");
+
             EquipItemRequestDTO requestData = smp.GetRequestData<EquipItemRequestDTO>();
 
             // USER INFORMATION.
@@ -54,6 +57,9 @@ namespace TurnBase.Server.Game.Controllers
 
         public static SocketResponse UnequipItem(ISocketMethodParameter smp)
         {
+            if (smp.SocketUser.IsInBattle)
+                return SocketResponse.GetError("You cant do that while in battle!");
+
             EquipItemRequestDTO requestData = smp.GetRequestData<EquipItemRequestDTO>();
 
             // USER INFORMATION.

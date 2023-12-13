@@ -56,10 +56,16 @@ namespace TurnBase.Server.Game.Battle.Core
         private void OnUserConnected(IBattleUser user)
         {
             SendToAllUsers(Enums.BattleActions.ReconnectBattle, new BattleDisconnectDTO(user));
+            StopTimeoutTimer();
         }
         private void OnUserDisconnected(IBattleUser user)
         {
             SendToAllUsers(Enums.BattleActions.LeaveBattle, new BattleDisconnectDTO(user));
+
+            if (!_users.All(x => x.IsConnected == false))
+                return;
+
+            StartTimeoutTimer();
         }
     }
 }

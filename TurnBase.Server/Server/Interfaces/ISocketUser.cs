@@ -7,10 +7,12 @@ namespace TurnBase.Server.Server.Interfaces
     {
         Action OnUserTimeout { get; set; }
 
-        IBattleItem CurrentBattle { get; }
         ISocketUserData User { get; }
 
         void SendToClient(SocketResponse responseData);
+
+        bool IsInBattle { get; }
+        IBattleItem CurrentBattle { get; }
         void SetBattle(IBattleItem battle);
         void ClearBattle();
     }

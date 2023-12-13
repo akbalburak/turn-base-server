@@ -18,6 +18,14 @@ namespace TurnBase.Server.Server.ServerModels
         public ISocketUserData User { get; }
         public IBattleItem CurrentBattle { get; private set; }
 
+        public bool IsInBattle
+        {
+            get
+            {
+                return CurrentBattle != null;
+            }
+        }
+
         private List<SocketResponse> _unExpectedNotReceivedResponses;
         private List<(ISocketRequest, byte[])> _waitingResponses;
 

@@ -41,15 +41,21 @@ namespace TurnBase.Server.Game.Battle.Core
         {
             socketUser.ClearBattle();
 
-            IBattleUser user = GetUser(socketUser);
-            if (user.IsConnected == false)
+            // WE GET THE USER.
+            IBattleUser actionUser = GetUser(socketUser);
+            if (actionUser.IsConnected == false)
                 return;
 
-            user.SetAsDisconnected();
+            // WE SET AS DISCONNECTED.
+            actionUser.SetAsDisconnected();
 
             // IF ALL USERS LEFT WE WILL TERMINATE THE GAME.
             if (_users.All(x => x.IsConnected == false))
+            {
+                // WE FINALIZE GAME FOR ALL USERS.
+                FinalizeBattle(isVictory: false);
                 Dispose();
+            }
         }
 
         private void ClaimDrop(ISocketUser socketUser, BattleActionRequestDTO requestData)

@@ -64,9 +64,9 @@ namespace TurnBase.Server.Game.Battle.Core
                     }
 
                     SendToAllUsers(BattleActions.BattleEnd, team1EndData);
-
-                    CompleteCampaign(user, userId: user.SocketUser.User.Id);
                 }
+
+                FinalizeBattle(isVictory: true);
 
                 return;
             }

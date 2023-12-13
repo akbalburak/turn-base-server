@@ -12,7 +12,21 @@ namespace TurnBase.Server.Game.Battle.Core
 {
     public partial class BattleItem
     {
-        public void CompleteCampaign(IBattleUser battleUser, long userId)
+        private bool _isFinalizing;
+
+        private void FinalizeBattle(bool isVictory)
+        {
+            if (_isFinalizing)
+                return;
+
+            _isFinalizing = true;
+
+            // WE FINALIZE GAME FOR ALL USERS.
+            foreach (IBattleUser user in _users)
+                FinalizeBattleForUser(user, isVictory: isVictory);
+        }
+
+        private void FinalizeBattleForUser(IBattleUser battleUser, bool isVictory)
         {
             Task.Run(() =>
             {
@@ -20,56 +34,56 @@ namespace TurnBase.Server.Game.Battle.Core
                 {
                     using ISocketMethodParameter smp = new SocketMethodParameter(battleUser.SocketUser, null);
 
-                    TrackedUser userData = UserService.GetTrackedUser(smp, userId);
+                    TrackedUser userData = UserService.GetTrackedUser(smp, battleUser.SocketUser.User.Id);
 
-                    // WE GET THE CAMPAIGN DATA.
-                    CampaignDTO campaign = userData.GetCampaign();
-
-                    // WHEN THIS LEVEL COMPLETED FOR THE FIRST TIME.
-                    bool firstTimeVictory = !campaign.IsLevelAlreadyCompleted(_levelData.Stage, _levelData.Level);
-
-                    // WE COMPLETE THE CAMPAIGN FOR THE USER.
-                    campaign.SaveLevelProgress(_levelData.Stage, _levelData.Level, isCompleted: true);
-                    userData.UpdateCampaign(campaign);
+                    List<IStoreableItemDTO> userRewards = new List<IStoreableItemDTO>();
 
                     // ALL THE REWARDS EARNED IN THE GAME.
-                    List<IStoreableItemDTO> rewards = new List<IStoreableItemDTO>();
-                    rewards.AddRange(battleUser.LootInventory.IItems);
+                    userRewards.AddRange(battleUser.LootInventory.IItems);
 
-                    // IF CAMPAIGN EARNED FIRST TIME.
-                    if (firstTimeVictory)
-                        rewards.AddRange(_levelData.IFirstCompletionRewards);
-                    
-                    // IF THIS IS THE FIRST TIME ITS COMPLETED.
+                    // ONLY IF VICTORY WE WILL GIVE REWARDS.
+                    if (isVictory)
+                    {
+                        // WE GET THE CAMPAIGN DATA.
+                        CampaignDTO campaign = userData.GetCampaign();
+
+                        // WHEN THIS LEVEL COMPLETED FOR THE FIRST TIME.
+                        bool firstTimeVictory = !campaign.IsLevelAlreadyCompleted(_levelData.Stage, _levelData.Level);
+
+                        // WE COMPLETE THE CAMPAIGN FOR THE USER.
+                        campaign.SaveLevelProgress(_levelData.Stage, _levelData.Level, isCompleted: true);
+                        userData.UpdateCampaign(campaign);
+
+                        // IF CAMPAIGN EARNED FIRST TIME.
+                        if (firstTimeVictory)
+                            userRewards.AddRange(_levelData.IFirstCompletionRewards);
+                    }
+
                     InventoryDTO inventory = userData.GetInventory();
 
-                    if (rewards.Count > 0)
+                    // WE GAVE ALL USER EARNED REWARDS 
+                    foreach (IStoreableItemDTO reward in userRewards)
                     {
-                        // WE ADD VICTORY REWARD ITEMS INTO INVENTORY. 
-                        foreach (IInventoryItemDTO reward in rewards)
+                        // WE MAKE SURE ITEM EXISTS.
+                        IItemDTO itemData = ItemService.GetItem(reward.ItemID);
+                        if (itemData == null)
+                            continue;
+
+                        // IF ITEM CAN STACK WE ADD AS STACKABLE.
+                        if (itemData.CanStack)
                         {
-                            // WE MAKE SURE ITEM EXISTS.
-                            IItemDTO itemData = ItemService.GetItem(reward.ItemID);
-                            if (itemData == null)
-                                continue;
-
-                            // IF ITEM CAN STACK WE ADD AS STACKABLE.
-                            if (itemData.CanStack)
-                            {
-                                inventory.AddStackable(
-                                    item: itemData,
-                                    quantity: reward.Quantity
-                                );
-                            }
-                            else
-                            {
-                                inventory.AddNonStackableItem(
-                                    item: itemData,
-                                    level: reward.Level,
-                                    quality: reward.Quality
-                                );
-                            }
-
+                            inventory.AddStackable(
+                                item: itemData,
+                                quantity: reward.Quantity
+                            );
+                        }
+                        else
+                        {
+                            inventory.AddNonStackableItem(
+                                item: itemData,
+                                level: reward.Level,
+                                quality: reward.Quality
+                            );
                         }
                     }
 

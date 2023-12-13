@@ -125,7 +125,7 @@ namespace TurnBase.Server.Game.Battle.Models
             SocketUser = socketUser;
             SocketUser.OnUserTimeout += OnUserTimeout;
 
-            IsConnected = true;
+            SetAsConnected();
         }
 
         public void SetAsDisconnected()
