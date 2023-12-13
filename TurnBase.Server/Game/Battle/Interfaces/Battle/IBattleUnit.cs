@@ -30,6 +30,7 @@ namespace TurnBase.Server.Game.Battle.Interfaces
 
         void SetUnitData(IBattleUnitData unitData);
 
+        IItemConsumableSkill[] GetConsumableSkills();
         void AddSkill(IItemSkill skill);
         void LoadSkills();
         void UseSkill(BattleSkillUseDTO useData);

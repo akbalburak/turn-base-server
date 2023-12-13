@@ -27,11 +27,6 @@ namespace TurnBase.Server.Game.DTO
             return SocketResponse.GetSuccess(ActionTypes.InventoryModified, this);
         }
 
-        public void RemoveQuantity(int quantity)
-        {
-            Quantity -= quantity;
-            this.SetAsModified();
-        }
         public void UpdateEquipState(bool isEquipped)
         {
             Equipped = isEquipped;

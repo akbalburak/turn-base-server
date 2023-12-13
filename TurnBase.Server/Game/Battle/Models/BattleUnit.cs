@@ -70,6 +70,12 @@ namespace TurnBase.Server.Game.Battle.Models
 
             skillToUse.UseSkill(useData);
         }
+        public IItemConsumableSkill[] GetConsumableSkills()
+        {
+            return this.Skills.Where(x => x is IItemConsumableSkill)
+                .Cast<IItemConsumableSkill>()
+                .ToArray();
+        }
 
         public void CallUnitTurnStart()
         {

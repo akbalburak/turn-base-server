@@ -10,6 +10,7 @@ namespace TurnBase.Server.Game.DTO.Interfaces
         ItemSkillTargets Target { get; }
 
         bool FinalizeTurnInUse { get; }
+        bool IsCombatSkill { get; }
 
         double GetDataValue(ItemSkillData data, float quality);
         int GetDataValueAsInt(ItemSkillData data, float quality);

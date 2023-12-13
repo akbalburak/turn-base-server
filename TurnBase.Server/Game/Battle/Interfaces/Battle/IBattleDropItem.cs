@@ -2,7 +2,7 @@
 
 namespace TurnBase.Server.Game.Battle.Interfaces.Battle
 {
-    public interface IBattleDropItem : IInventoryItemDTO
+    public interface IBattleDropItem : IStoreableItemDTO
     {
         int DropItemId { get; }
         bool Claimed { get; }

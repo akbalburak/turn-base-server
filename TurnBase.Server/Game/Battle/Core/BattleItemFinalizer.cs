@@ -1,4 +1,5 @@
 ﻿using TurnBase.Server.Game.Battle.Interfaces;
+using TurnBase.Server.Game.Battle.Interfaces.Item;
 using TurnBase.Server.Game.DTO;
 using TurnBase.Server.Game.DTO.Interfaces;
 using TurnBase.Server.Game.Services;
@@ -32,18 +33,18 @@ namespace TurnBase.Server.Game.Battle.Core
                     userData.UpdateCampaign(campaign);
 
                     // ALL THE REWARDS EARNED IN THE GAME.
-                    List<IInventoryItemDTO> rewards = new List<IInventoryItemDTO>();
+                    List<IStoreableItemDTO> rewards = new List<IStoreableItemDTO>();
                     rewards.AddRange(battleUser.LootInventory.IItems);
 
                     // IF CAMPAIGN EARNED FIRST TIME.
                     if (firstTimeVictory)
                         rewards.AddRange(_levelData.IFirstCompletionRewards);
+                    
+                    // IF THIS IS THE FIRST TIME ITS COMPLETED.
+                    InventoryDTO inventory = userData.GetInventory();
 
                     if (rewards.Count > 0)
                     {
-                        // IF THIS IS THE FIRST TIME ITS COMPLETED.
-                        InventoryDTO inventory = userData.GetInventory();
-
                         // WE ADD VICTORY REWARD ITEMS INTO INVENTORY. 
                         foreach (IInventoryItemDTO reward in rewards)
                         {
@@ -70,23 +71,20 @@ namespace TurnBase.Server.Game.Battle.Core
                             }
 
                         }
-
-                        // WE REMOVE SPENT ITEMS.
-                        foreach (IInventoryItemDTO equipment in battleUser.Equipments)
-                        {
-                            var itemData = ItemService.GetItem(equipment.ItemID);
-                            switch (itemData.TypeId)
-                            {
-                                case Game.Enums.ItemTypes.Potion:
-                                    {
-
-                                    }
-                                    break;
-                            }
-                        }
-
-                        userData.UpdateInventory(inventory);
                     }
+
+                    // WE REMOVE SPENT ITEMS.
+                    foreach (IItemConsumableSkill consumableSkill in battleUser.GetConsumableSkills())
+                    {
+                        int inventoryItemId = consumableSkill.InventoryItem.InventoryItemID;
+                        IEquipmentItemDTO inventoryItem = inventory.GetItem(inventoryItemId);
+                        if (inventoryItem == null)
+                            continue;
+
+                        inventory.RemoveStackable(inventoryItem, consumableSkill.UsageCount);
+                    }
+
+                    userData.UpdateInventory(inventory);
 
                     smp.UOW.SaveChanges();
                     smp.ExecuteOnSuccess();

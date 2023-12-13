@@ -9,7 +9,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
     public abstract class BaseItemSkill : IItemSkill
     {
         public int UniqueId { get; private set; }
-        
+
         public IItemSkillDTO SkillData { get; private set; }
         public IBattleItem Battle { get; private set; }
         public IBattleUnit Owner { get; private set; }
@@ -45,9 +45,16 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
 
         public virtual bool IsSkillReadyToUse()
         {
-            return CurrentCooldown <= 0 && 
-                Owner.IsManaEnough(UsageManaCost) && 
-                Battle.BattleTurnHandler.IsUnitTurn(Owner);
+            // NOT BEIGN COMBAT SKILLS ARE GOING TO BE AVAILABLE IF GAME NOT IN COMBAT MODE.
+            if (!SkillData.IsCombatSkill && Battle.IsInCombat == false)
+            {
+                return CurrentCooldown <= 0 &&
+                        Owner.IsManaEnough(UsageManaCost);
+            }
+
+            return CurrentCooldown <= 0 &&
+                    Owner.IsManaEnough(UsageManaCost) &&
+                    Battle.BattleTurnHandler.IsUnitTurn(Owner);
         }
 
         public void UseSkill(BattleSkillUseDTO useData)

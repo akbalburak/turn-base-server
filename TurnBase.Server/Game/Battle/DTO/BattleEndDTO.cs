@@ -25,7 +25,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("C")] public int Level { get; set; }
         [JsonProperty("D")] public float Quality { get; set; }
 
-        public BattleEndRewardDTO(IInventoryItemDTO reward)
+        public BattleEndRewardDTO(IStoreableItemDTO reward)
         {
             ItemID = reward.ItemID;
             Quantity = reward.Quantity;

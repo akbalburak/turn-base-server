@@ -9,8 +9,9 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
 {
     public abstract class BaseItemConsumableSkill : BaseItemSkill, IItemConsumableSkill
     {
+        public int UsageCount { get; private set; }
         public IInventoryItemDTO InventoryItem { get; private set; }
-        public int LeftUseCount { get; protected set; }
+        public int LeftUseCount { get; private set; }
 
         public BaseItemConsumableSkill(int uniqueId,
                                        IItemSkillDTO skill,
@@ -33,14 +34,8 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
 
         public override void OnSkillUse(BattleSkillUseDTO useData)
         {
-            ReduceUseCount(1);
-        }
-
-        protected void ReduceUseCount(int reduction)
-        {
-            LeftUseCount -= reduction;
-            if (LeftUseCount < 0)
-                LeftUseCount = 0;
+            LeftUseCount = Math.Max(LeftUseCount - 1, 0);
+            UsageCount++;
         }
 
         public override BattleSkillDTO GetSkillDataDTO()

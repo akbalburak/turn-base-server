@@ -2,6 +2,5 @@
 {
     public interface IInventoryDTO
     {
-        public IInventoryItemDTO[] IItems { get; }
     }
 }

@@ -10,9 +10,7 @@ namespace TurnBase.Server.Models
         [JsonProperty("A")] public int IdCounter { get; set; }
         [JsonProperty("B")] public List<InventoryItemDTO> Items { get; }
 
-        public IInventoryItemDTO[] IItems => Items.ToArray();
-
-
+     
         private IChangeHandler _changeHandler;
 
         public InventoryDTO()
@@ -77,7 +75,7 @@ namespace TurnBase.Server.Models
             if (userItem is not InventoryItemDTO userItemClass)
                 return;
 
-            userItemClass.Quality -= quantity;
+            userItemClass.Quantity -= quantity;
 
             if (userItem.Quantity <= 0)
                 Items.Remove(userItemClass);

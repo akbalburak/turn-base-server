@@ -40,14 +40,14 @@ namespace TurnBase.Server.Game.Battle.Models
     }
     public class BattleInventoryItem : IInventoryItemDTO
     {
-        public int InventoryItemId { get; }
+        public int InventoryItemID { get; }
         public int ItemID { get; }
         public int Quantity { get; private set; }
         public float Quality { get; private set; }
         public int Level { get; private set; }
         public BattleInventoryItem(int inventoryItemId, IBattleDropItem item)
         {
-            InventoryItemId = inventoryItemId;
+            InventoryItemID = inventoryItemId;
             ItemID = item.ItemID;
             Quality = item.Quality;
             Quantity = item.Quantity;

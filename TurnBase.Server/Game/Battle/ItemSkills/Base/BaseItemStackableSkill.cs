@@ -30,22 +30,24 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
         {
             ResetStack();
         }
-
         private void OnUnitTurnStarted(IBattleUnit unit)
         {
             ResetStack();
+        }
+
+        public override bool IsSkillReadyToUse()
+        {
+            return base.IsSkillReadyToUse() && CurrentStackSize > 0;
         }
 
         protected bool IsStackEnough(int quantity)
         {
             return CurrentStackSize >= quantity;
         }
-
         protected void UseStack(int quantiy)
         {
-            CurrentStackSize -= quantiy;
+            CurrentStackSize = Math.Max(CurrentStackSize - quantiy, 0);
         }
-
         protected void ResetStack()
         {
             CurrentStackSize = InitialStackSize;

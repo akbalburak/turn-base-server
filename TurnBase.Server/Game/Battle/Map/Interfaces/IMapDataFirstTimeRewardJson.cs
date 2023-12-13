@@ -2,7 +2,7 @@
 
 namespace TurnBase.Server.Game.Battle.Map.Interfaces
 {
-    public interface IMapDataFirstTimeRewardJson : IInventoryItemDTO
+    public interface IMapDataFirstTimeRewardJson : IStoreableItemDTO
     {
     }
 }
