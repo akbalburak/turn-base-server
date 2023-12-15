@@ -11,7 +11,8 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("E")] public BattleDropDTO[] Drops { get; set; }
         [JsonProperty("F")] public BattleInventoryDTO[] LootInventory { get; set; }
         [JsonProperty("G")] public bool IsInCombat { get; set; }
-
+        [JsonProperty("H")] public int Stage { get; set; }
+        [JsonProperty("I")] public int Level { get; set; }
         public BattleLoadAllDTO()
         {
             Units = Array.Empty<BattleNpcUnitDTO>();

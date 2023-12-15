@@ -124,6 +124,8 @@ namespace TurnBase.Server.Game.Battle.Core
             // ALL THE REQUIRED DATA TO CONTINUE GAME.
             BattleLoadAllDTO loadData = new BattleLoadAllDTO()
             {
+                Stage = _levelData.Stage,
+                Level = _levelData.Level,
                 IsInCombat = _turnHandler.IsInCombat,
                 Units = _allNpcs.Select(npc => new BattleNpcUnitDTO(this, npc)).ToArray(),
                 Players = _users.Select(user => new BattlePlayerDTO(this, user, user.SocketUser == socketUser)).ToArray(),
