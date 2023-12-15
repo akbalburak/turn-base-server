@@ -11,9 +11,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("C")] public int SkillOwnerId { get; private set; }
         [JsonProperty("D")] public bool FinalizeTurn { get; private set; }
         [JsonProperty("E")] public int UsageManaCost { get; private set; }
-        [JsonProperty("F")] public int UsedQuantity { get; private set; }
-        [JsonProperty("G")] public Dictionary<ItemSkillUsageAttributes, object> Attributes { get; private set; }
-
+        [JsonProperty("F")] public Dictionary<ItemSkillUsageAttributes, object> Attributes { get; private set; }
 
         public BattleSkillUsageDTO(IItemSkill itemSkill)
         {
@@ -24,14 +22,6 @@ namespace TurnBase.Server.Game.Battle.DTO
             UsageManaCost = itemSkill.UsageManaCost;
 
             this.Attributes = new Dictionary<ItemSkillUsageAttributes, object>();
-
-            foreach (var attribute in itemSkill.GetTempAttributes())
-                Attributes.Add(attribute.Key, attribute.Value);
-        }
-
-        public BattleSkillUsageDTO(IItemConsumableSkill skill, int useCount) : this(skill)
-        {
-            UsedQuantity = useCount;
         }
 
         public T GetAttribute<T>(ItemSkillUsageAttributes attribute)
@@ -40,5 +30,13 @@ namespace TurnBase.Server.Game.Battle.DTO
                 return default;
             return (T)Convert.ChangeType(value, typeof(T));
         }
+
+        public void AddAttribute(ItemSkillUsageAttributes key, object data)
+        {
+            if (Attributes.ContainsKey(key))
+                throw new Exception($"{key} already defined at Attributes dictionary in BaseItemSkill");
+            Attributes.Add(key, data);
+        }
+
     }
 }

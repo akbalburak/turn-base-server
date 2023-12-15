@@ -30,10 +30,10 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
             Owner.AttackToUnit(targetUnit, damage);
 
             // WE ADD ATTRIBUTES TO SEND CLIENTS.
-            base.AddAttribute(Enums.ItemSkillUsageAttributes.TargetUnitId, targetUnit.UnitData.UniqueId);
-            base.AddAttribute(Enums.ItemSkillUsageAttributes.Damage, damage);
-
-            return base.OnSkillUsing(useData);
+            BattleSkillUsageDTO usageData = base.OnSkillUsing(useData);
+            usageData.AddAttribute(Enums.ItemSkillUsageAttributes.TargetUnitId, targetUnit.UnitData.UniqueId);
+            usageData.AddAttribute(Enums.ItemSkillUsageAttributes.Damage, damage);
+            return usageData;
         }
 
         public override int? GetNodeIndexForAI()

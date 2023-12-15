@@ -22,7 +22,5 @@ namespace TurnBase.Server.Game.Battle.Interfaces.Item
 
         BattleSkillDTO GetSkillDataDTO();
         int? GetNodeIndexForAI();
-
-        IDictionary<ItemSkillUsageAttributes, object> GetTempAttributes();
     }
 }

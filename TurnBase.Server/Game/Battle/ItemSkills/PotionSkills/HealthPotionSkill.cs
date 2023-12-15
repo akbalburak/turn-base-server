@@ -28,9 +28,9 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.PotionSkills
             Owner.IncreaseHealth(recoveryValue);
 
             // WE ADD ATTRIBUTE.
-            base.AddAttribute(ItemSkillUsageAttributes.RecoveryValue, recoveryValue);
-
-            return base.OnSkillUsing(useData);
+            BattleSkillUsageDTO usageData = base.OnSkillUsing(useData);
+            usageData.AddAttribute(ItemSkillUsageAttributes.RecoveryValue, recoveryValue);
+            return usageData;
         }
     }
 }

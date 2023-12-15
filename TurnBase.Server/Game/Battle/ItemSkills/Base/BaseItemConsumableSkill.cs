@@ -37,7 +37,9 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
             LeftUseCount = Math.Max(LeftUseCount - 1, 0);
             UsageCount++;
 
-            return new BattleSkillUsageDTO(this, useCount: 1);
+            BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
+            usageData.AddAttribute(Enums.ItemSkillUsageAttributes.ConsumableUseCount, 1);
+            return usageData;
         }
 
         public override BattleSkillDTO GetSkillDataDTO()

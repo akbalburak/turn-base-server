@@ -24,9 +24,6 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
 
         public float SkillQuality { get; private set; }
 
-
-        private Dictionary<ItemSkillUsageAttributes, object> _attributes;
-
         public BaseItemSkill(
             int uniqueId,
             IItemSkillDTO skill,
@@ -35,8 +32,6 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
             float itemQuality
         )
         {
-            _attributes = new Dictionary<ItemSkillUsageAttributes, object>();
-
             SkillQuality = itemQuality;
 
             UniqueId = uniqueId;
@@ -70,10 +65,8 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
             Owner.UseMana(UsageManaCost);
 
             CurrentCooldown = InitialCooldown;
-            
-            BattleSkillUsageDTO usageData = OnSkillUsing(useData);
-            _attributes.Clear();
 
+            BattleSkillUsageDTO usageData = OnSkillUsing(useData);
             if (usageData != null)
             {
                 Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
@@ -99,12 +92,6 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
         {
             CurrentCooldown = 0;
         }
-        protected void AddAttribute(ItemSkillUsageAttributes key, object data)
-        {
-            if (_attributes.ContainsKey(key))
-                throw new Exception($"{key} already defined at Attributes dictionary in BaseItemSkill");
-            _attributes.Add(key, data);
-        }
 
         private void OnUnitTurnStarted(IBattleUnit unit)
         {
@@ -121,10 +108,6 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
         public virtual int? GetNodeIndexForAI()
         {
             return null;
-        }
-        public IDictionary<ItemSkillUsageAttributes, object> GetTempAttributes()
-        {
-            return _attributes.ToDictionary(x=> x.Key, x=> x.Value);
         }
     }
 }

@@ -34,18 +34,18 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
             int damage = SkillData.GetDataValueAsInt(ItemSkillData.Damage, SkillQuality);
             Owner.AttackToUnit(targetUnit, damage);
 
-            // WE ADD ATTRIBUTES.
-            base.AddAttribute(Enums.ItemSkillUsageAttributes.TargetUnitId, targetUnit.UnitData.UniqueId);
-            base.AddAttribute(Enums.ItemSkillUsageAttributes.Damage, damage);
-
             // IF TARGET UNIT IS DEATH DONT START COOLDOWN.
             if (targetUnit.IsDeath)
-            {
-                base.AddAttribute(Enums.ItemSkillUsageAttributes.DontStartCooldown, true);
                 ResetCooldown();
-            }
 
-            return base.OnSkillUsing(useData);
+            // WE ADD ATTRIBUTES.
+            BattleSkillUsageDTO usageData = base.OnSkillUsing(useData);
+            usageData.AddAttribute(Enums.ItemSkillUsageAttributes.TargetUnitId, targetUnit.UnitData.UniqueId);
+            usageData.AddAttribute(Enums.ItemSkillUsageAttributes.Damage, damage);
+            if (targetUnit.IsDeath)
+                usageData.AddAttribute(Enums.ItemSkillUsageAttributes.DontStartCooldown, true);
+
+            return usageData;
         }
     }
 }

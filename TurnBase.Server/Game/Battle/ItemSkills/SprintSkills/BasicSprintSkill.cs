@@ -53,6 +53,9 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
             if (Owner.CurrentNode == lastValidPath)
                 return null;
 
+            // SKILL USAGE DATA FOR THE PLAYER.
+            BattleSkillUsageDTO usageData = base.OnSkillUsing(useData);
+
             // ONLY IN COMBAT MOVEMENT COST IS SPENT.
             if (Battle.IsInCombat)
             {
@@ -64,10 +67,10 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
                     return null;
 
                 base.UseStack(movementCost);
-                base.AddAttribute(Enums.ItemSkillUsageAttributes.StackUsageCost, movementCost);
+                usageData.AddAttribute(Enums.ItemSkillUsageAttributes.StackUsageCost, movementCost);
             }
 
-            base.AddAttribute(Enums.ItemSkillUsageAttributes.Node, lastValidPathIndex);
+            usageData.AddAttribute(Enums.ItemSkillUsageAttributes.Node, lastValidPathIndex);
 
             Owner.ChangeNode(lastValidPath);
 
@@ -75,7 +78,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
             foreach (IAStarNode pathNode in path)
                 pathNode.TriggerAggro(Owner);
 
-            return base.OnSkillUsing(useData);
+            return usageData;
         }
 
         public override int? GetNodeIndexForAI()

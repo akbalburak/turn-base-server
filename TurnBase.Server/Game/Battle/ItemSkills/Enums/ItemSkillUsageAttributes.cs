@@ -7,6 +7,7 @@
         Damage = 3,
         DontStartCooldown = 4,
         Node = 5,
-        StackUsageCost = 6
+        StackUsageCost = 6,
+        ConsumableUseCount = 7
     }
 }
