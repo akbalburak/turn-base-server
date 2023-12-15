@@ -2,6 +2,7 @@
 {
     public enum BattleEffects
     {
-        Bleeding = 1
+        Bleeding = 1,
+        HealthBonus = 2
     }
 }

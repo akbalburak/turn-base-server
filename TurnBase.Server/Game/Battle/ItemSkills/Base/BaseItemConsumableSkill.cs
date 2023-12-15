@@ -32,10 +32,12 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.Base
             return base.IsSkillReadyToUse() && LeftUseCount > 0;
         }
 
-        public override void OnSkillUse(BattleSkillUseDTO useData)
+        protected override BattleSkillUsageDTO OnSkillUsing(BattleSkillUseDTO useData)
         {
             LeftUseCount = Math.Max(LeftUseCount - 1, 0);
             UsageCount++;
+
+            return new BattleSkillUsageDTO(this, useCount: 1);
         }
 
         public override BattleSkillDTO GetSkillDataDTO()

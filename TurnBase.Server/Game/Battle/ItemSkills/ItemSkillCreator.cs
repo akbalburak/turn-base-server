@@ -1,6 +1,7 @@
 ﻿using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.Interfaces.Item;
+using TurnBase.Server.Game.Battle.ItemSkills.FoodSkills;
 using TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills;
 using TurnBase.Server.Game.Battle.ItemSkills.PotionSkills;
 using TurnBase.Server.Game.Battle.ItemSkills.SprintSkills;
@@ -26,6 +27,7 @@ namespace TurnBase.Server.Game.Battle.Skills
                 Enums.ItemSkills.BasicSprint => new BasicSprintSkill(uniqueId, skill, battle, owner, itemQuality),
                 Enums.ItemSkills.OneHandedBasicAttackSkill => new OneHandedBasicAttackSkill(uniqueId, skill, battle, owner, itemQuality),
                 Enums.ItemSkills.SmallHealthPotionSkill => new HealthPotionSkill(uniqueId, skill, battle, owner, itemQuality, inventoryItem),
+                Enums.ItemSkills.BatSoup => new BatSoupSkill(uniqueId, skill, battle, owner, itemQuality, inventoryItem),
                 _ => null,
             };
         }

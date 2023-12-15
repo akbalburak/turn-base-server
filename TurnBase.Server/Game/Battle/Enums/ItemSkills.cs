@@ -8,6 +8,7 @@
         SplashSlashSkill = 4,
         OneHandedBasicAttackSkill = 5,
         BasicSprint = 6,
-        SmallHealthPotionSkill = 7
+        SmallHealthPotionSkill = 7,
+        BatSoup = 8
     }
 }

@@ -19,19 +19,15 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
         {
         }
 
-        public override void OnSkillUse(BattleSkillUseDTO useData)
+        protected override BattleSkillUsageDTO OnSkillUsing(BattleSkillUseDTO useData)
         {
             // WE MAKE SURE MOVE INDEX IS VALID.
             if (useData.TargetNodeIndex < 0 || useData.TargetNodeIndex >= Battle.NodeSize)
-                return;
+                return null;
 
             // WE GET THE POINTS.
             IAStarNode fromPoint = Owner.CurrentNode;
             IAStarNode targetPoint = Battle.GetNodeByIndex(useData.TargetNodeIndex);
-
-            // IF ALREADY IN THE SAME LOCATION.
-            if (Owner.CurrentNode == targetPoint)
-                return;
 
             // WE LOOK FOR THE PATH.
             IAStarNode[] path = Battle.GetPath(fromPoint, targetPoint);
@@ -47,15 +43,15 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
                 }
             }
 
+            // IF NO PATH TO MOVE.
             if (path.Length == 0)
-                return;
+                return null;
 
+            // IF ALREADY IN THE SAME LOCATION.
             IAStarNode lastValidPath = path.Last();
             int lastValidPathIndex = Battle.GetNodeIndex(lastValidPath);
-
-            // SKILL USAGE DATA.
-            BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
-            usageData.AddTargetNode(lastValidPathIndex);
+            if (Owner.CurrentNode == lastValidPath)
+                return null;
 
             // ONLY IN COMBAT MOVEMENT COST IS SPENT.
             if (Battle.IsInCombat)
@@ -65,19 +61,21 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.SprintSkills
 
                 // IF SKILL STACK NOT ENOUGH JUST RETURN.
                 if (!base.IsStackEnough(movementCost))
-                    return;
+                    return null;
 
                 base.UseStack(movementCost);
-                usageData.AddStackUsageCost(movementCost);
+                base.AddAttribute(Enums.ItemSkillUsageAttributes.StackUsageCost, movementCost);
             }
 
-            Owner.ChangeNode(lastValidPath);
+            base.AddAttribute(Enums.ItemSkillUsageAttributes.Node, lastValidPathIndex);
 
-            Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
+            Owner.ChangeNode(lastValidPath);
 
             // WE TELL ALL THE UNITS IN RANGE TO AGGRO.
             foreach (IAStarNode pathNode in path)
                 pathNode.TriggerAggro(Owner);
+
+            return base.OnSkillUsing(useData);
         }
 
         public override int? GetNodeIndexForAI()

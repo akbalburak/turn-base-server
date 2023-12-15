@@ -41,5 +41,6 @@ namespace TurnBase.Server.Game.Battle.Interfaces
         void UseMana(int usageManaCost);
         bool IsAnEnemy(IBattleUnit owner);
         void UseAI();
+        void ChangeHealth(int newHealth);
     }
 }

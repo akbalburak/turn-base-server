@@ -9,6 +9,9 @@ using TurnBase.Server.Game.Enums;
 
 namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
 {
+    /// <summary>
+    /// IF TARGET ENEMY KILLED AFTER ATTACK. SKILL COOLDOWN RESETS.
+    /// </summary>
     public class FinishHimSkill : BaseItemSkill
     {
         public FinishHimSkill(int uniqueId,
@@ -20,32 +23,29 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
         {
         }
 
-        public override void OnSkillUse(BattleSkillUseDTO useData)
+        protected override BattleSkillUsageDTO OnSkillUsing(BattleSkillUseDTO useData)
         {
             // WE GET TARGET UNIT IN NODE.
             IBattleUnit targetUnit = Battle.GetUnitInNode(useData.TargetNodeIndex);
             if (targetUnit == null || !targetUnit.IsAnEnemy(Owner))
-                return;
+                return null;
 
             // SKILL DAMAGE TO HIT.
             int damage = SkillData.GetDataValueAsInt(ItemSkillData.Damage, SkillQuality);
-
-            // SKILL USAGE DATA.
-            BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
-
-            // WE DO THE SLASH.
             Owner.AttackToUnit(targetUnit, damage);
-            usageData.AddToDamage(targetUnit.UnitData.UniqueId, damage);
+
+            // WE ADD ATTRIBUTES.
+            base.AddAttribute(Enums.ItemSkillUsageAttributes.TargetUnitId, targetUnit.UnitData.UniqueId);
+            base.AddAttribute(Enums.ItemSkillUsageAttributes.Damage, damage);
 
             // IF TARGET UNIT IS DEATH DONT START COOLDOWN.
             if (targetUnit.IsDeath)
             {
-                usageData.DontStartCooldown = true;
+                base.AddAttribute(Enums.ItemSkillUsageAttributes.DontStartCooldown, true);
                 ResetCooldown();
             }
 
-            // SEND TO USER.
-            Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
+            return base.OnSkillUsing(useData);
         }
     }
 }

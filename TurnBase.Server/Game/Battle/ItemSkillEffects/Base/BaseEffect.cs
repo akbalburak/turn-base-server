@@ -2,6 +2,7 @@
 using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
+using TurnBase.Server.Game.Battle.ItemSkillEffects.Enums;
 using TurnBase.Server.Game.DTO.Interfaces;
 using TurnBase.Server.Game.Enums;
 
@@ -10,6 +11,8 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
     public abstract class BaseEffect : IItemSkillEffect
     {
         public Action<IItemSkillEffect> OnEffectCompleted { get; set; }
+
+        protected Dictionary<ItemSkillEffectAttributes, object> Attributes { get; private set; }
 
         public bool IsFriendEffect { get; private set; }
         public int LeftTurnDuration { get; private set; }
@@ -21,6 +24,7 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
         public IItemSkillDTO Skill { get; private set; }
         public float EffectQuality { get; set; }
 
+
         public BaseEffect(
             BattleEffects effect,
             IBattleItem battle,
@@ -30,6 +34,8 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
             float itemQuality
         )
         {
+            Attributes = new Dictionary<ItemSkillEffectAttributes, object>();
+
             Effect = effect;
             Battle = battle;
             ByWhom = byWhom;
@@ -59,11 +65,6 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
         {
             LeftTurnDuration--;
 
-            BattleEffectTurnExecutionDTO dataToSend = OnEffectExecuting();
-            if (dataToSend != null)
-            {
-                Battle.SendToAllUsers(BattleActions.EffectExecutionTurn, dataToSend);
-            }
 
             if (LeftTurnDuration > 0)
                 return;
@@ -73,24 +74,48 @@ namespace TurnBase.Server.Game.Battle.ItemSkillEffects.Base
 
         protected virtual void OnEffectStarted()
         {
-            Battle.SendToAllUsers(BattleActions.EffectStarted, new BattleEffectStartedDTO(this));
+            Battle.SendToAllUsers(BattleActions.EffectStarted, GetEffectStartDTO());
+            Attributes.Clear();
         }
-
-        protected abstract BattleEffectTurnExecutionDTO OnEffectExecuting();
-
+        protected virtual void OnEffectTurnOver()
+        {
+        }
         protected virtual void OnEffectOver()
         {
             ByWhom.OnUnitTurnStart -= OnUnitTurnStarted;
             ByWhom.OnUnitDie -= OnUnitDie;
 
-            Battle.SendToAllUsers(BattleActions.EffectOver, new BattleEffectOverDTO(this));
+            Battle.SendToAllUsers(BattleActions.EffectOver, GetEffectOverDTO());
+            Attributes.Clear();
 
             OnEffectCompleted?.Invoke(this);
         }
 
-        public BattleEffectStartedDTO GetEffectDataDTO()
+
+        protected void SendTurnOverData()
+        {
+            Battle.SendToAllUsers(BattleActions.EffectExecutionTurn, GetEffectTurnOver());
+            Attributes.Clear();
+        }
+
+
+        public BattleEffectStartedDTO GetEffectStartDTO()
         {
             return new BattleEffectStartedDTO(this);
         }
+        public BattleEffectTurnExecutionDTO GetEffectTurnOver()
+        {
+            return new BattleEffectTurnExecutionDTO(this);
+        }
+        public BattleEffectOverDTO GetEffectOverDTO()
+        {
+            return new BattleEffectOverDTO(this);
+        }
+
+        public IDictionary<ItemSkillEffectAttributes, object> GetTempAttributes()
+        {
+            return Attributes.ToDictionary(x => x.Key, x => x.Value);
+        }
+
     }
 }

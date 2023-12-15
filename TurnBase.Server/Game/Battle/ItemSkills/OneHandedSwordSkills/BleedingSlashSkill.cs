@@ -4,13 +4,17 @@ using TurnBase.Server.Game.Battle.Enums;
 using TurnBase.Server.Game.Battle.Interfaces;
 using TurnBase.Server.Game.Battle.Interfaces.Battle;
 using TurnBase.Server.Game.Battle.ItemSkills.Base;
-using TurnBase.Server.Game.Battle.Pathfinding.Interfaces;
 using TurnBase.Server.Game.DTO.Interfaces;
 
 namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
 {
+    /// <summary>
+    /// BLEED TARGET ENEMY AND CAUSE DAMAGE PER TURN.
+    /// </summary>
     public class BleedingSlashSkill : BaseItemSkill
     {
+        private IBattleUnit _targetUnit;
+
         public BleedingSlashSkill(int uniqueId,
             IItemSkillDTO skill,
             IBattleItem battle,
@@ -20,34 +24,37 @@ namespace TurnBase.Server.Game.Battle.ItemSkills.OneHandedSwordSkills
         {
         }
 
-        public override void OnSkillUse(BattleSkillUseDTO useData)
+        protected override BattleSkillUsageDTO OnSkillUsing(BattleSkillUseDTO useData)
         {
             // WE GET TARGET UNIT IN NODE.
-            IBattleUnit targetUnit = Battle.GetUnitInNode(useData.TargetNodeIndex);
-            if (targetUnit == null || !targetUnit.IsAnEnemy(Owner))
-                return;
-
-            // SKILL USAGE DATA.
-            BattleSkillUsageDTO usageData = new BattleSkillUsageDTO(this);
+            _targetUnit = Battle.GetUnitInNode(useData.TargetNodeIndex);
+            if (_targetUnit == null || !_targetUnit.IsAnEnemy(Owner))
+                return null;
 
             // WE DO THE SLASH.
-            int damage = Owner.GetBaseDamage(targetUnit);
-            Owner.AttackToUnit(targetUnit, damage);
-            usageData.AddToDamage(targetUnit.UnitData.UniqueId, damage);
+            int damage = Owner.GetBaseDamage(_targetUnit);
+            Owner.AttackToUnit(_targetUnit, damage);
 
-            // SEND TO USER.
-            Battle.SendToAllUsers(BattleActions.UnitUseSkill, usageData);
+            // WE STORE ATTRIBUTES.
+            base.AddAttribute(Enums.ItemSkillUsageAttributes.TargetUnitId,_targetUnit.UnitData.UniqueId);
+            base.AddAttribute(Enums.ItemSkillUsageAttributes.Damage, damage);
+            
+            return base.OnSkillUsing(useData);
+        }
 
+        protected override void OnSkillUsed(BattleSkillUsageDTO usageData)
+        {
             // WE WILL CREATE A BLEEDING EFFECT.
             EffectBuilder.BuildEffect(
                 effect: BattleEffects.Bleeding,
                 battle: Battle,
                 byWhom: Owner,
-                toWhom: targetUnit,
+                toWhom: _targetUnit,
                 skill: SkillData,
                 itemQuality: base.SkillQuality
             );
 
+            _targetUnit = null;
         }
     }
 }

@@ -9,6 +9,7 @@
         ManaCost = 5,
         Cooldown = 6,
         Recovery = 7,
-        Consumable = 8
+        Consumable = 8,
+        HealthBonus = 9
     }
 }

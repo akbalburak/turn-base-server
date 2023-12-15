@@ -216,5 +216,10 @@ namespace TurnBase.Server.Game.Battle.Models
             Health += health;
             Health = Math.Min(Health, Stats.MaxHealth);
         }
+
+        public void ChangeHealth(int newHealth)
+        {
+            Health = newHealth;
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace TurnBase.Server.Game.Battle.DTO
             TeamIndex = battleUnit.UnitData.TeamIndex;
             NodeIndex = battleItem.GetNodeIndex(battleUnit.CurrentNode);
             Skills = battleUnit.Skills.Select(v => v.GetSkillDataDTO()).ToArray();
-            Effects = battleUnit.Effects.Select(v => v.GetEffectDataDTO()).ToArray();
+            Effects = battleUnit.Effects.Select(v => v.GetEffectStartDTO()).ToArray();
 
             // WHEN DEAD WE WILL SEND EXTRA COUPLE DATA.
             if (IsDead)

@@ -71,5 +71,14 @@ namespace TurnBase.Server.Game.Battle.Models
                 Damage = 1;
 
         }
+
+        public void IncreaseMaxHealth(int bonusHealth)
+        {
+            MaxHealth += bonusHealth;
+        }
+        public void DecreaseMaxHealth(int bonusHealth)
+        {
+            MaxHealth -= bonusHealth;
+        }
     }
 }
