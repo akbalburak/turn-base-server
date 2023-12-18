@@ -96,6 +96,7 @@ namespace TurnBase.Server.Game.Controllers
 
             return SocketResponse.GetSuccess();
         }
+        
         public static SocketResponse ExecuteActionInBattle(ISocketMethodParameter smp)
         {
             if (smp.SocketUser.CurrentBattle == null)

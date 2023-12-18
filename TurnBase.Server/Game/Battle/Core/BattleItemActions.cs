@@ -124,6 +124,7 @@ namespace TurnBase.Server.Game.Battle.Core
             // ALL THE REQUIRED DATA TO CONTINUE GAME.
             BattleLoadAllDTO loadData = new BattleLoadAllDTO()
             {
+                ChatRoom = ChatRoom,
                 Stage = _levelData.Stage,
                 Level = _levelData.Level,
                 IsInCombat = _turnHandler.IsInCombat,

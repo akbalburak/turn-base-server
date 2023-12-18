@@ -2,7 +2,7 @@
 {
     public partial class BattleItem
     {
-        const float TimeoutMins = .5f;
+        const float TimeoutMins = 1f;
 
         private Timer _timer;
 

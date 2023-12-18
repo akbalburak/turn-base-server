@@ -27,6 +27,7 @@ namespace TurnBase.Server.Game.Battle.Core
         public IBattleUser[] Users => _users.ToArray();
 
         public bool GameOver { get; private set; }
+        public string ChatRoom { get; }
 
         private IMapDataJson _levelData;
         private IBattleTurnHandler _turnHandler;
@@ -43,6 +44,8 @@ namespace TurnBase.Server.Game.Battle.Core
 
         public BattleItem(IBattleUser[] users, IMapDataJson levelData)
         {
+            ChatRoom = $"{Guid.NewGuid()}";
+
             _drops = new List<IBattleDrop>();
             _allNpcs = new List<IBattleNpcUnit>();
             _allUnits = new List<IBattleUnit>();

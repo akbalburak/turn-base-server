@@ -13,6 +13,7 @@ namespace TurnBase.Server.Game.Battle.DTO
         [JsonProperty("G")] public bool IsInCombat { get; set; }
         [JsonProperty("H")] public int Stage { get; set; }
         [JsonProperty("I")] public int Level { get; set; }
+        [JsonProperty("J")] public string ChatRoom { get; set; }
         public BattleLoadAllDTO()
         {
             Units = Array.Empty<BattleNpcUnitDTO>();
