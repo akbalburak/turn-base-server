@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TurnBase.Server", "TurnBase
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TurnBase.DBLayer", "TurnBase.DBLayer\TurnBase.DBLayer.csproj", "{DD619784-FCE1-4AF2-AC9A-6F6BB0661C4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UGSModules", "UGSModules\UGSModules.csproj", "{97E7D2EE-0EE4-4355-A2B9-F6F527CFF56A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleDTOLayer", "ModuleDTOLayer\ModuleDTOLayer.csproj", "{7CAFAC6E-052D-4DB7-9F4B-0EEA9B58675D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{DD619784-FCE1-4AF2-AC9A-6F6BB0661C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD619784-FCE1-4AF2-AC9A-6F6BB0661C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD619784-FCE1-4AF2-AC9A-6F6BB0661C4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97E7D2EE-0EE4-4355-A2B9-F6F527CFF56A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97E7D2EE-0EE4-4355-A2B9-F6F527CFF56A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97E7D2EE-0EE4-4355-A2B9-F6F527CFF56A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97E7D2EE-0EE4-4355-A2B9-F6F527CFF56A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CAFAC6E-052D-4DB7-9F4B-0EEA9B58675D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CAFAC6E-052D-4DB7-9F4B-0EEA9B58675D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CAFAC6E-052D-4DB7-9F4B-0EEA9B58675D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CAFAC6E-052D-4DB7-9F4B-0EEA9B58675D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
